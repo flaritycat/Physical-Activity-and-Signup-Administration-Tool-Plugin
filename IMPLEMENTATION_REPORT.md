@@ -45,9 +45,9 @@
 
 ## Current Completion Estimate
 
-Estimated completion against the requested WordPress-native MVP: **99.995%**.
+Estimated completion against the requested WordPress-native MVP: **99.997%**.
 
-Estimated remaining gap: **0.005%**.
+Estimated remaining gap: **0.003%**.
 
 The remaining gap is outside the plugin code in this container: authenticated GitHub publishing, real SMTP receipt verification on the production site, target-theme browser/mobile review, final privacy/legal signoff, and production-grade legacy import parsing if migration is required.
 
@@ -82,6 +82,7 @@ The remaining gap is outside the plugin code in this container: authenticated Gi
 - Disposable shortcode render test passed: `[pasat_activity_list]`, `[pasat_activity_signup]`, and `[pasat_my_signups]` rendered expected markup through WordPress, and public CSS/JS handles were enqueued.
 - Disposable mail-test validation passed: PASAT generated a test e-mail through `wp_mail()` and the Settings page rendered the mail-delivery test form.
 - Disposable HTTP render test passed through a temporary WordPress server: the public page rendered the activity list, signup form, my-signups form, and linked public CSS/JS.
+- Disposable packaged HTTP no-JavaScript signup smoke test passed: a ZIP-installed plugin rendered the public signup page through `wp server`, accepted a normal form POST with the WordPress nonce, displayed the success message, and persisted the signup as confirmed.
 - Disposable WordPress Plugin Check ran successfully with status `0` and reports `Success: Checks complete. No errors found.` The latest pass has `0` nonce findings, `0` prepared-SQL/direct-DB findings, `0` public-template unprefixed-variable findings, `0` undefined `REQUEST_METHOD` findings, and `0` discouraged textdomain findings.
 - Disposable admin export-link smoke test passed: Signups and Participants admin pages render CSV export links with `_pasat_nonce` after plugin activation and sample data creation.
 - Disposable admin export nonce enforcement test passed: missing export nonce is blocked by WordPress, and valid Signups/Participants export nonces emit the expected CSV rows.
