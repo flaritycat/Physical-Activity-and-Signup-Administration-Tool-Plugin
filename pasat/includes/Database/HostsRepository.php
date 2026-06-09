@@ -58,6 +58,17 @@ final class HostsRepository extends Repository {
 		) > 0;
 	}
 
+	public function activity_ids_for_user( int $user_id ): array {
+		$ids = $this->wpdb->get_col(
+			$this->wpdb->prepare(
+				"SELECT activity_id FROM {$this->table} WHERE user_id = %d",
+				$user_id
+			)
+		);
+
+		return array_map( 'absint', $ids ?: array() );
+	}
+
 	public function remove( int $activity_id, int $user_id ): bool {
 		return false !== $this->wpdb->delete(
 			$this->table,

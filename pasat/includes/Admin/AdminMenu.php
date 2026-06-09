@@ -2,6 +2,7 @@
 namespace PASAT\Admin;
 
 use PASAT\Database\ActivitiesRepository;
+use PASAT\Database\HostsRepository;
 use PASAT\Database\SignupsRepository;
 use PASAT\Helpers;
 
@@ -47,10 +48,11 @@ final class AdminMenu {
 
 		$activities = new ActivitiesRepository();
 		$signups    = new SignupsRepository();
+		$host_ids   = current_user_can( 'pasat_manage_all_activities' ) ? null : ( new HostsRepository() )->activity_ids_for_user( get_current_user_id() );
 		$counts     = $activities->counts();
 		$totals     = $signups->totals();
-		$upcoming   = $activities->list( array( 'upcoming' => true, 'limit' => 8 ) );
-		$recent     = $signups->list( array() );
+		$upcoming   = $activities->list( array_filter( array( 'upcoming' => true, 'limit' => 8, 'assigned_user_id' => current_user_can( 'pasat_manage_all_activities' ) ? 0 : get_current_user_id() ) ) );
+		$recent     = $signups->list( null === $host_ids ? array() : array( 'activity_ids' => $host_ids ) );
 		$recent     = array_slice( $recent, 0, 8 );
 		$settings   = Helpers::settings();
 		$page_id    = absint( $settings['public_page_id'] ?? 0 );

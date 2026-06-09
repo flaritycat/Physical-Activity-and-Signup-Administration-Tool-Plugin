@@ -21,17 +21,17 @@ final class Routes {
 		register_rest_route( 'pasat/v1', '/admin/activities', array( 'methods' => 'GET', 'callback' => array( $admin_activities, 'index' ), 'permission_callback' => array( $admin_activities, 'can_read' ) ) );
 		register_rest_route( 'pasat/v1', '/admin/activities', array( 'methods' => 'POST', 'callback' => array( $admin_activities, 'create' ), 'permission_callback' => array( $admin_activities, 'can_manage' ) ) );
 		register_rest_route( 'pasat/v1', '/admin/activities/(?P<id>\d+)', array( 'methods' => 'GET', 'callback' => array( $admin_activities, 'show' ), 'permission_callback' => array( $admin_activities, 'can_read' ) ) );
-		register_rest_route( 'pasat/v1', '/admin/activities/(?P<id>\d+)', array( 'methods' => 'PUT,PATCH', 'callback' => array( $admin_activities, 'update' ), 'permission_callback' => array( $admin_activities, 'can_manage' ) ) );
+		register_rest_route( 'pasat/v1', '/admin/activities/(?P<id>\d+)', array( 'methods' => array( 'PUT', 'PATCH' ), 'callback' => array( $admin_activities, 'update' ), 'permission_callback' => array( $admin_activities, 'can_manage' ) ) );
 		register_rest_route( 'pasat/v1', '/admin/activities/(?P<id>\d+)', array( 'methods' => 'DELETE', 'callback' => array( $admin_activities, 'delete' ), 'permission_callback' => array( $admin_activities, 'can_manage' ) ) );
 
 		register_rest_route( 'pasat/v1', '/admin/venues', array( 'methods' => 'GET', 'callback' => array( $admin_venues, 'index' ), 'permission_callback' => array( $admin_venues, 'can_manage' ) ) );
 		register_rest_route( 'pasat/v1', '/admin/venues', array( 'methods' => 'POST', 'callback' => array( $admin_venues, 'create' ), 'permission_callback' => array( $admin_venues, 'can_manage' ) ) );
 		register_rest_route( 'pasat/v1', '/admin/venues/(?P<id>\d+)', array( 'methods' => 'GET', 'callback' => array( $admin_venues, 'show' ), 'permission_callback' => array( $admin_venues, 'can_manage' ) ) );
-		register_rest_route( 'pasat/v1', '/admin/venues/(?P<id>\d+)', array( 'methods' => 'PUT,PATCH', 'callback' => array( $admin_venues, 'update' ), 'permission_callback' => array( $admin_venues, 'can_manage' ) ) );
+		register_rest_route( 'pasat/v1', '/admin/venues/(?P<id>\d+)', array( 'methods' => array( 'PUT', 'PATCH' ), 'callback' => array( $admin_venues, 'update' ), 'permission_callback' => array( $admin_venues, 'can_manage' ) ) );
 		register_rest_route( 'pasat/v1', '/admin/venues/(?P<id>\d+)', array( 'methods' => 'DELETE', 'callback' => array( $admin_venues, 'delete' ), 'permission_callback' => array( $admin_venues, 'can_manage' ) ) );
 
 		register_rest_route( 'pasat/v1', '/admin/signups', array( 'methods' => 'GET', 'callback' => array( $admin_signups, 'index' ), 'permission_callback' => array( $admin_signups, 'can_read' ) ) );
-		register_rest_route( 'pasat/v1', '/admin/signups/(?P<id>\d+)', array( 'methods' => 'PUT,PATCH', 'callback' => array( $admin_signups, 'update' ), 'permission_callback' => array( $admin_signups, 'can_manage' ) ) );
+		register_rest_route( 'pasat/v1', '/admin/signups/(?P<id>\d+)', array( 'methods' => array( 'PUT', 'PATCH' ), 'callback' => array( $admin_signups, 'update' ), 'permission_callback' => array( $admin_signups, 'can_manage' ) ) );
 		register_rest_route( 'pasat/v1', '/admin/signups/(?P<id>\d+)/cancel', array( 'methods' => 'POST', 'callback' => array( $admin_signups, 'cancel_signup' ), 'permission_callback' => array( $admin_signups, 'can_manage' ) ) );
 	}
 }

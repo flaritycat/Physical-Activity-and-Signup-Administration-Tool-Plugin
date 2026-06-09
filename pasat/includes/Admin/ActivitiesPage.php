@@ -112,7 +112,11 @@ final class ActivitiesPage {
 
 	private static function table(): void {
 		$repo       = new ActivitiesRepository();
-		$activities = $repo->list( array( 'limit' => 500 ) );
+		$args       = array( 'limit' => 500 );
+		if ( ! current_user_can( 'pasat_manage_all_activities' ) ) {
+			$args['assigned_user_id'] = get_current_user_id();
+		}
+		$activities = $repo->list( $args );
 		?>
 		<table class="widefat striped">
 			<thead><tr><th><?php esc_html_e( 'Title', 'pasat' ); ?></th><th><?php esc_html_e( 'Starts', 'pasat' ); ?></th><th><?php esc_html_e( 'Venue', 'pasat' ); ?></th><th><?php esc_html_e( 'Capacity', 'pasat' ); ?></th><th><?php esc_html_e( 'Status', 'pasat' ); ?></th><th><?php esc_html_e( 'Actions', 'pasat' ); ?></th></tr></thead>

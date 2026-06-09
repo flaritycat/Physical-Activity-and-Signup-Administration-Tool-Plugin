@@ -98,9 +98,18 @@ final class ActivitiesRepository extends Repository {
 			$params[] = $like;
 		}
 
+		$join_hosts = '';
+		if ( ! empty( $args['assigned_user_id'] ) ) {
+			$hosts      = Helpers::table( 'activity_hosts' );
+			$join_hosts = " INNER JOIN {$hosts} ah ON ah.activity_id = a.id";
+			$where[]    = 'ah.user_id = %d';
+			$params[]   = absint( $args['assigned_user_id'] );
+		}
+
 		$limit = isset( $args['limit'] ) ? max( 1, min( 200, (int) $args['limit'] ) ) : 200;
-		$sql   = "SELECT a.*, v.name AS venue_name, v.address AS venue_address
+		$sql   = "SELECT DISTINCT a.*, v.name AS venue_name, v.address AS venue_address
 			FROM {$this->table} a
+			{$join_hosts}
 			LEFT JOIN {$venues} v ON v.id = a.venue_id
 			WHERE " . implode( ' AND ', $where ) . '
 			ORDER BY COALESCE(a.starts_at, a.created_at) ASC, a.title ASC

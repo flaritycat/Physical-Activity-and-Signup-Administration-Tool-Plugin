@@ -1,6 +1,7 @@
 <?php
 namespace PASAT\REST;
 
+use PASAT\Database\HostsRepository;
 use PASAT\Database\SignupsRepository;
 use PASAT\Email\Mailer;
 use WP_REST_Request;
@@ -20,14 +21,17 @@ final class AdminSignupsController {
 	}
 
 	public function index( WP_REST_Request $request ): WP_REST_Response {
+		$args = array(
+			'activity_id' => absint( $request->get_param( 'activity_id' ) ),
+			'status'      => sanitize_key( $request->get_param( 'status' ) ),
+			'search'      => sanitize_text_field( $request->get_param( 'search' ) ),
+		);
+		if ( ! current_user_can( 'pasat_manage_all_activities' ) ) {
+			$args['activity_ids'] = ( new HostsRepository() )->activity_ids_for_user( get_current_user_id() );
+		}
+
 		return new WP_REST_Response(
-			( new SignupsRepository() )->list(
-				array(
-					'activity_id' => absint( $request->get_param( 'activity_id' ) ),
-					'status'      => sanitize_key( $request->get_param( 'status' ) ),
-					'search'      => sanitize_text_field( $request->get_param( 'search' ) ),
-				)
-			)
+			( new SignupsRepository() )->list( $args )
 		);
 	}
 

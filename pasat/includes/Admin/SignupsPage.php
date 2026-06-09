@@ -3,6 +3,7 @@ namespace PASAT\Admin;
 
 use PASAT\Database\ActivitiesRepository;
 use PASAT\Database\AuditLogRepository;
+use PASAT\Database\HostsRepository;
 use PASAT\Database\SignupsRepository;
 use PASAT\Email\Mailer;
 use PASAT\Helpers;
@@ -27,8 +28,20 @@ final class SignupsPage {
 		$status      = sanitize_key( $_GET['status'] ?? '' );
 		$search      = sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) );
 		$repo        = new SignupsRepository();
-		$signups     = $repo->list( array( 'activity_id' => $activity_id, 'status' => $status, 'search' => $search ) );
-		$activities  = ( new ActivitiesRepository() )->list( array( 'limit' => 500 ) );
+		$host_ids    = current_user_can( 'pasat_manage_all_activities' ) ? null : ( new HostsRepository() )->activity_ids_for_user( get_current_user_id() );
+		$args        = array( 'activity_id' => $activity_id, 'status' => $status, 'search' => $search );
+		if ( null !== $host_ids ) {
+			$args['activity_ids'] = $host_ids;
+			if ( $activity_id && ! in_array( $activity_id, $host_ids, true ) ) {
+				$args['activity_ids'] = array();
+			}
+		}
+		$signups     = $repo->list( $args );
+		$activity_args = array( 'limit' => 500 );
+		if ( ! current_user_can( 'pasat_manage_all_activities' ) ) {
+			$activity_args['assigned_user_id'] = get_current_user_id();
+		}
+		$activities  = ( new ActivitiesRepository() )->list( $activity_args );
 		?>
 		<div class="wrap pasat-admin">
 			<h1><?php esc_html_e( 'PASAT Signups', 'pasat' ); ?></h1>

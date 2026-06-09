@@ -142,6 +142,16 @@ final class SignupsRepository extends Repository {
 			$params[] = absint( $args['activity_id'] );
 		}
 
+		if ( isset( $args['activity_ids'] ) && is_array( $args['activity_ids'] ) ) {
+			$ids = array_values( array_filter( array_map( 'absint', $args['activity_ids'] ) ) );
+			if ( ! $ids ) {
+				$where[] = '0=1';
+			} else {
+				$where[] = 's.activity_id IN (' . implode( ',', array_fill( 0, count( $ids ), '%d' ) ) . ')';
+				$params  = array_merge( $params, $ids );
+			}
+		}
+
 		if ( ! empty( $args['status'] ) && in_array( $args['status'], self::STATUSES, true ) ) {
 			$where[]  = 's.status = %s';
 			$params[] = $args['status'];
