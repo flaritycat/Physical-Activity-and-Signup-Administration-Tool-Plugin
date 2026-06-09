@@ -62,6 +62,9 @@ final class AdminMenu {
 			<?php if ( ! $page_id ) : ?>
 				<div class="notice notice-warning"><p><?php esc_html_e( 'No public PASAT page is selected. Add a page with [pasat_activity_list] and choose it in Settings.', 'pasat' ); ?></p></div>
 			<?php endif; ?>
+			<?php if ( ! get_option( 'pasat_mail_last_test_at', '' ) ) : ?>
+				<div class="notice notice-warning"><p><?php esc_html_e( 'No successful PASAT test e-mail has been recorded. Send one from PASAT Settings before opening public signups.', 'pasat' ); ?></p></div>
+			<?php endif; ?>
 			<div class="pasat-admin-metrics">
 				<div><strong><?php echo esc_html( array_sum( $counts ) ); ?></strong><span><?php esc_html_e( 'Activities', 'pasat' ); ?></span></div>
 				<div><strong><?php echo esc_html( (string) ( $totals['confirmed'] ?? 0 ) ); ?></strong><span><?php esc_html_e( 'Confirmed', 'pasat' ); ?></span></div>

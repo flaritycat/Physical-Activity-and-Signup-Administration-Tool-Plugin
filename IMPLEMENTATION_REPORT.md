@@ -19,6 +19,7 @@
 - Added filtered/scoped signup and participant CSV exports, participant deletion, and signup mutation scope checks.
 - Added REST route argument sanitization and validation definitions.
 - Fixed shortcode rendering under direct WordPress render contexts and made frontend asset enqueueing self-register when needed.
+- Added a PASAT Settings mail-delivery test that sends through `wp_mail()` and records the last successful test for dashboard visibility.
 
 ## HSF Features Mapped To PASAT
 
@@ -41,11 +42,11 @@
 
 ## Current Completion Estimate
 
-Estimated completion against the requested WordPress-native MVP: **99%**.
+Estimated completion against the requested WordPress-native MVP: **99.5%**.
 
-Estimated remaining gap: **1%**.
+Estimated remaining gap: **0.5%**.
 
-The main remaining gap is not missing core plugin code; it is release confidence in the real deployment environment. Before calling this 100%, complete browser testing in the target WordPress theme, real SMTP/mail delivery testing, a full privacy/legal review, authenticated GitHub publishing, and production-grade legacy import parsing if migration is required.
+The remaining gap is outside the plugin code in this container: authenticated GitHub publishing, real SMTP receipt verification on the production site, target-theme browser/mobile review, final privacy/legal signoff, and production-grade legacy import parsing if migration is required.
 
 ## Manual Install/Test
 
@@ -76,6 +77,8 @@ The main remaining gap is not missing core plugin code; it is release confidence
 - Disposable concurrent signup test passed: eight parallel public signups against a capacity-one activity produced exactly `confirmed:1` and `waitlisted:7`.
 - Disposable role/capability test passed with real WordPress users: PASAT Activity Manager could manage all/create, PASAT Activity Host could manage assigned activities only, unassigned activity access was denied, scoped admin signup listing returned only assigned activity data, and unassigned signup cancellation was denied.
 - Disposable shortcode render test passed: `[pasat_activity_list]`, `[pasat_activity_signup]`, and `[pasat_my_signups]` rendered expected markup through WordPress, and public CSS/JS handles were enqueued.
+- Disposable mail-test validation passed: PASAT generated a test e-mail through `wp_mail()` and the Settings page rendered the mail-delivery test form.
+- Disposable HTTP render test passed through a temporary WordPress server: the public page rendered the activity list, signup form, my-signups form, and linked public CSS/JS.
 - Forbidden runtime dependency/branding terms were searched; matches are limited to documentation and the migration placeholder naming required by the project brief.
 - `zip -r pasat-0.1.0.zip pasat` produced the expected installable plugin archive layout, then the generated archive was removed from the source tree.
 - File structure, plugin header, admin menu registration, shortcode registration, REST route registration, activation schema, and direct-access guards were reviewed from source.
@@ -89,4 +92,4 @@ The main remaining gap is not missing core plugin code; it is release confidence
 ## Known Risks
 
 - Full browser testing inside the target production WordPress theme should still be completed before public release.
-- E-mail failure behavior depends on the site's mail configuration and the strict delivery setting.
+- E-mail receipt still depends on the production site's mail configuration and SMTP plugin/provider.

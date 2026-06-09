@@ -311,8 +311,9 @@ find pasat -name "*.php" -print0 | xargs -0 -n1 php -l
 12. Run a WordPress personal data export for a participant e-mail.
 13. Run retention cleanup from **PASAT > Privacy**.
 14. Test the public page in the production theme on desktop and mobile viewports.
-15. Test confirmation, cancellation, waitlist promotion, and lookup e-mails through the production SMTP/mail setup.
-16. Confirm GitHub publishing credentials are configured and push the local commits.
+15. Use **PASAT > Settings > Mail Delivery Test** to send a test e-mail through the production SMTP/mail setup.
+16. Test confirmation, cancellation, waitlist promotion, and lookup e-mails through the production SMTP/mail setup.
+17. Confirm GitHub publishing credentials are configured and push the local commits.
 
 ## Known Limitations
 
@@ -321,7 +322,7 @@ find pasat -name "*.php" -print0 | xargs -0 -n1 php -l
 - Group/team signup is not implemented in the MVP.
 - Winner/history administration is deferred.
 - The importer is a placeholder and does not yet parse production exports.
-- Full production readiness still requires browser testing in the target WordPress theme, real mail delivery testing, authenticated GitHub publishing, and organization-specific privacy/legal review.
+- Full production readiness still requires browser testing in the target WordPress theme, real mail receipt testing, authenticated GitHub publishing, and organization-specific privacy/legal review.
 
 ## License
 

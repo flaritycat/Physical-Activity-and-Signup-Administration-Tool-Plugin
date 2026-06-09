@@ -1,7 +1,9 @@
 <?php
 namespace PASAT\Admin;
 
+use PASAT\Email\Mailer;
 use PASAT\Helpers;
+use PASAT\Security\Nonces;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -47,11 +49,13 @@ final class SettingsPage {
 		if ( ! current_user_can( 'pasat_manage_settings' ) ) {
 			wp_die( esc_html__( 'You do not have permission to manage PASAT settings.', 'pasat' ) );
 		}
+		self::handle_post();
 		$settings = Helpers::settings();
 		$pages    = get_pages();
 		?>
 		<div class="wrap pasat-admin">
 			<h1><?php esc_html_e( 'PASAT Settings', 'pasat' ); ?></h1>
+			<?php self::notices(); ?>
 			<form method="post" action="options.php">
 				<?php settings_fields( 'pasat_settings' ); ?>
 				<table class="form-table" role="presentation">
@@ -85,10 +89,55 @@ final class SettingsPage {
 				</table>
 				<?php submit_button(); ?>
 			</form>
+			<h2><?php esc_html_e( 'Mail Delivery Test', 'pasat' ); ?></h2>
+			<p><?php esc_html_e( 'Send a test e-mail through WordPress mail to confirm PASAT notifications can leave this site.', 'pasat' ); ?></p>
+			<form method="post" class="pasat-admin-form">
+				<?php Nonces::field( 'settings_mail_test' ); ?>
+				<input type="hidden" name="pasat_action" value="send_test_email">
+				<table class="form-table" role="presentation">
+					<tr>
+						<th><label for="pasat-test-email"><?php esc_html_e( 'Test Recipient', 'pasat' ); ?></label></th>
+						<td><input class="regular-text" type="email" id="pasat-test-email" name="test_email" value="<?php echo esc_attr( get_option( 'admin_email' ) ); ?>" required></td>
+					</tr>
+				</table>
+				<?php submit_button( __( 'Send Test E-mail', 'pasat' ), 'secondary' ); ?>
+			</form>
 			<h2><?php esc_html_e( 'Legacy Import', 'pasat' ); ?></h2>
 			<p><?php esc_html_e( 'This plugin is a WordPress-native rewrite. Legacy data can be imported later from structured JSON or CSV exports. Legacy passwords and external authentication data should be replaced with WordPress users and roles.', 'pasat' ); ?></p>
 		</div>
 		<?php
+	}
+
+	private static function handle_post(): void {
+		if ( 'POST' !== $_SERVER['REQUEST_METHOD'] || 'send_test_email' !== sanitize_key( $_POST['pasat_action'] ?? '' ) ) {
+			return;
+		}
+
+		Nonces::verify( 'settings_mail_test' );
+		$email = sanitize_email( wp_unslash( $_POST['test_email'] ?? '' ) );
+		$sent  = is_email( $email ) && Mailer::send_test_email( $email );
+		if ( $sent ) {
+			update_option( 'pasat_mail_last_test_at', Helpers::now() );
+		}
+
+		wp_safe_redirect(
+			add_query_arg(
+				'pasat_mail_test',
+				$sent ? 'success' : 'failed',
+				admin_url( 'admin.php?page=pasat-settings' )
+			)
+		);
+		exit;
+	}
+
+	private static function notices(): void {
+		$result = sanitize_key( $_GET['pasat_mail_test'] ?? '' );
+		if ( 'success' === $result ) {
+			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'PASAT test e-mail was accepted by WordPress mail.', 'pasat' ) . '</p></div>';
+		}
+		if ( 'failed' === $result ) {
+			echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'PASAT test e-mail could not be sent. Check the site mail configuration or SMTP plugin.', 'pasat' ) . '</p></div>';
+		}
 	}
 
 	private static function text_row( string $key, string $label, array $settings ): void {

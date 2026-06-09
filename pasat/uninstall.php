@@ -26,4 +26,5 @@ foreach ( $tables as $table ) {
 
 delete_option( 'pasat_settings' );
 delete_option( 'pasat_db_version' );
+delete_option( 'pasat_mail_last_test_at' );
 wp_clear_scheduled_hook( 'pasat_daily_retention_cleanup' );

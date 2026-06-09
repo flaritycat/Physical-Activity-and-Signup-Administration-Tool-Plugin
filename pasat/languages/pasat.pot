@@ -93,3 +93,27 @@ msgstr ""
 
 msgid "Selected users can manage this activity when they have the PASAT Activity Host role or equivalent assigned-activity capability."
 msgstr ""
+
+msgid "PASAT test e-mail for {site_name}"
+msgstr ""
+
+msgid "Mail Delivery Test"
+msgstr ""
+
+msgid "Send a test e-mail through WordPress mail to confirm PASAT notifications can leave this site."
+msgstr ""
+
+msgid "Test Recipient"
+msgstr ""
+
+msgid "Send Test E-mail"
+msgstr ""
+
+msgid "PASAT test e-mail was accepted by WordPress mail."
+msgstr ""
+
+msgid "PASAT test e-mail could not be sent. Check the site mail configuration or SMTP plugin."
+msgstr ""
+
+msgid "No successful PASAT test e-mail has been recorded. Send one from PASAT Settings before opening public signups."
+msgstr ""

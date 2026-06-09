@@ -86,6 +86,23 @@ final class Mailer {
 		return self::send( $recipient_email, $subject, $body );
 	}
 
+	public static function send_test_email( string $recipient_email ): bool {
+		$settings = Helpers::settings();
+		$context  = array(
+			'organization_name' => $settings['organization_name'] ?? get_bloginfo( 'name' ),
+			'site_name'         => wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ),
+			'site_url'          => home_url( '/' ),
+		);
+
+		$subject = Templates::replace( __( 'PASAT test e-mail for {site_name}', 'pasat' ), $context );
+		$body    = Templates::replace(
+			__( "This is a PASAT test e-mail from {site_name}.\n\nIf you received it, WordPress mail delivery is working for PASAT notifications.\n\n{organization_name}\n{site_url}", 'pasat' ),
+			$context
+		);
+
+		return self::send( $recipient_email, $subject, $body );
+	}
+
 	private static function send( string $to, string $subject, string $body ): bool {
 		$headers = array();
 		$sender  = trim( (string) Helpers::setting( 'sender_name', '' ) );
