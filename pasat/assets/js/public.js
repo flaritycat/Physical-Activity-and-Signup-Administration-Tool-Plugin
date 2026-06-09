@@ -147,9 +147,14 @@
 				'Accept': 'application/json'
 			}
 		}).then(function (response) {
-			return response.ok ? response.json() : [];
+			if (!response.ok) {
+				throw new Error('PASAT board refresh failed');
+			}
+			return response.json();
 		}).then(function (activities) {
-			renderBoard(board, Array.isArray(activities) ? activities : []);
+			if (Array.isArray(activities)) {
+				renderBoard(board, activities);
+			}
 		}).catch(function () {
 			var updated = board.querySelector('[data-pasat-board-updated]');
 			if (updated) {

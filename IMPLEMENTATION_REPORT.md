@@ -46,9 +46,9 @@
 
 ## Current Completion Estimate
 
-Estimated completion against the requested WordPress-native MVP: **99.9997%**.
+Estimated completion against the requested WordPress-native MVP: **99.9998%**.
 
-Estimated remaining gap: **0.0003%**.
+Estimated remaining gap: **0.0002%**.
 
 The remaining gap is outside the plugin code in this container: authenticated GitHub publishing, real SMTP receipt verification on the production site, target-theme browser/mobile review, final privacy/legal signoff, and organization-specific mapping for messy legacy import files if migration is required.
 
@@ -88,6 +88,7 @@ The remaining gap is outside the plugin code in this container: authenticated Gi
 - Disposable activity board smoke test passed: `[pasat_activity_board]` rendered read-only polling board markup, enqueued PASAT public assets, and the public REST activity endpoint returned matching confirmed, waitlisted, remaining, and signup-open values.
 - Disposable venue map smoke test passed: `[pasat_venue_map]` rendered coordinate-enabled venue cards, external map links, and machine-readable venue data while omitting venues without coordinates.
 - Disposable privacy policy guide smoke test passed: PASAT registered suggested Privacy Policy Guide content mentioning activity signups and retention behavior.
+- Disposable browser/mobile smoke test passed in Chromium against a ZIP-installed plugin: desktop and mobile public shortcode rendering had no detected horizontal overflow or title/button overlap, the polling board preserved server-rendered content when a REST refresh is unavailable, AJAX signup displayed success, and the signup persisted as confirmed.
 - Disposable WordPress Plugin Check ran successfully with status `0` and reports `Success: Checks complete. No errors found.` The latest pass has `0` nonce findings, `0` prepared-SQL/direct-DB findings, `0` public-template unprefixed-variable findings, `0` undefined `REQUEST_METHOD` findings, and `0` discouraged textdomain findings.
 - Disposable admin export-link smoke test passed: Signups and Participants admin pages render CSV export links with `_pasat_nonce` after plugin activation and sample data creation.
 - Disposable admin export nonce enforcement test passed: missing export nonce is blocked by WordPress, and valid Signups/Participants export nonces emit the expected CSV rows.
@@ -106,6 +107,6 @@ The remaining gap is outside the plugin code in this container: authenticated Gi
 
 ## Known Risks
 
-- Full browser testing inside the target production WordPress theme should still be completed before public release.
+- Browser/mobile smoke testing passed in a disposable WordPress theme; final review inside the target production WordPress theme should still be completed before public release.
 - E-mail receipt still depends on the production site's mail configuration and SMTP plugin/provider.
 - GitHub publishing remains blocked until credentials or integration write access are available.
