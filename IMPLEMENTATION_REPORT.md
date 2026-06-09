@@ -43,9 +43,9 @@
 
 ## Current Completion Estimate
 
-Estimated completion against the requested WordPress-native MVP: **99.7%**.
+Estimated completion against the requested WordPress-native MVP: **99.8%**.
 
-Estimated remaining gap: **0.3%**.
+Estimated remaining gap: **0.2%**.
 
 The remaining gap is outside the plugin code in this container: authenticated GitHub publishing, real SMTP receipt verification on the production site, target-theme browser/mobile review, final privacy/legal signoff, and production-grade legacy import parsing if migration is required.
 
@@ -89,7 +89,7 @@ The remaining gap is outside the plugin code in this container: authenticated Gi
 
 - WordPress is responsible for authentication, sessions, admin permissions, mail transport, and SMTP plugins.
 - Normal site owners will install the folder as `wp-content/plugins/pasat`.
-- Direct pushes to GitHub may require credentials not present in this container.
+- GitHub publishing requires credentials or integration write access. Local HTTPS pushes fail because no GitHub username/token is available, `gh` is not authenticated, and the GitHub connector returns 403 for both Git tree and contents writes.
 
 ## Known Risks
 
