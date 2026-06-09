@@ -45,9 +45,9 @@
 
 ## Current Completion Estimate
 
-Estimated completion against the requested WordPress-native MVP: **99.97%**.
+Estimated completion against the requested WordPress-native MVP: **99.98%**.
 
-Estimated remaining gap: **0.03%**.
+Estimated remaining gap: **0.02%**.
 
 The remaining gap is outside the plugin code in this container: authenticated GitHub publishing, real SMTP receipt verification on the production site, target-theme browser/mobile review, final privacy/legal signoff, and production-grade legacy import parsing if migration is required.
 
@@ -87,6 +87,7 @@ The remaining gap is outside the plugin code in this container: authenticated Gi
 - Disposable admin export nonce enforcement test passed: missing export nonce is blocked by WordPress, and valid Signups/Participants export nonces emit the expected CSV rows.
 - Forbidden runtime dependency/branding terms were searched; matches are limited to documentation and the migration placeholder naming required by the project brief.
 - `zip -r pasat-0.1.0.zip pasat` produced the expected installable plugin archive layout, then the generated archive was removed from the source tree.
+- Disposable ZIP install smoke test passed: a generated PASAT ZIP installed through `wp plugin install`, activated successfully, created the six custom tables, stored schema version `0.1.0`, and registered the required public shortcodes.
 - File structure, plugin header, admin menu registration, shortcode registration, REST route registration, activation schema, and direct-access guards were reviewed from source.
 
 ## Assumptions
