@@ -143,12 +143,14 @@ final class Shortcodes {
 
 	public static function venue_map(): string {
 		Assets::enqueue();
-		$venues = array_filter(
-			( new VenuesRepository() )->list(),
-			static fn( array $venue ): bool => '' !== (string) ( $venue['latitude'] ?? '' ) && '' !== (string) ( $venue['longitude'] ?? '' )
+		$venues = array_values(
+			array_filter(
+				( new VenuesRepository() )->list(),
+				static fn( array $venue ): bool => '' !== (string) ( $venue['latitude'] ?? '' ) && '' !== (string) ( $venue['longitude'] ?? '' )
+			)
 		);
 
-		return '<div class="pasat-venue-map" data-venues="' . esc_attr( wp_json_encode( array_values( $venues ) ) ) . '">' . esc_html__( 'Venue map data is available for theme or script integration.', 'pasat' ) . '</div>';
+		return Renderer::render( 'public/venue-map.php', array( 'venues' => $venues ) );
 	}
 
 	public static function activity_board(): string {

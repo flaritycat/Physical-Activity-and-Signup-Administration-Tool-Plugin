@@ -176,7 +176,7 @@ Lets participants request a private, time-limited e-mail lookup link before view
 [pasat_venue_map]
 ```
 
-Outputs venue coordinate data for theme or script integration.
+Displays venues/locations that have latitude and longitude, including address, capacity/type metadata, and an external map link. The markup also includes machine-readable venue data for theme or script integration.
 
 ```text
 [pasat_activity_board]
@@ -326,7 +326,7 @@ find pasat -name "*.php" -print0 | xargs -0 -n1 php -l
 ## Known Limitations
 
 - The activity board is a simple read-only polling display, not a realtime service.
-- The venue map shortcode exposes coordinate data but does not bundle a map provider.
+- The venue map shortcode displays coordinate-enabled venues and links to an external map, but does not bundle a full map provider.
 - Group/team signup is not implemented in the MVP.
 - Winner/history administration is deferred.
 - The importer handles structured JSON/CSV rows but may still need organization-specific field mapping for messy legacy exports.

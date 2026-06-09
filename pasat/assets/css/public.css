@@ -59,6 +59,49 @@
 	margin-top: 0.5rem;
 }
 
+.pasat-venue-map {
+	box-sizing: border-box;
+	display: grid;
+	gap: 1rem;
+	max-width: 960px;
+}
+
+.pasat-venue-card {
+	align-items: center;
+	border: 1px solid rgba(0, 0, 0, 0.14);
+	border-radius: 8px;
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: 2rem minmax(0, 1fr) auto;
+	padding: 1rem;
+}
+
+.pasat-venue-card__pin {
+	background: #165a72;
+	border-radius: 999px 999px 999px 0;
+	height: 1.2rem;
+	transform: rotate(-45deg);
+	width: 1.2rem;
+}
+
+.pasat-venue-card__title {
+	margin: 0 0 0.35rem;
+}
+
+.pasat-venue-card__meta,
+.pasat-venue-card__coordinates {
+	margin: 0.15rem 0;
+}
+
+.pasat-venue-card__coordinates {
+	color: rgba(0, 0, 0, 0.62);
+	font-size: 0.92rem;
+}
+
+.pasat-venue-card__description {
+	margin-top: 0.65rem;
+}
+
 .pasat-button {
 	background: #165a72;
 	border: 0;
@@ -152,11 +195,16 @@
 
 @media (max-width: 680px) {
 	.pasat-card,
-	.pasat-grid {
+	.pasat-grid,
+	.pasat-venue-card {
 		grid-template-columns: 1fr;
 	}
 
 	.pasat-card__aside {
 		align-items: flex-start;
+	}
+
+	.pasat-venue-card__pin {
+		display: none;
 	}
 }

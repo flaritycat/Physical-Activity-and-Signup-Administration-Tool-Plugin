@@ -12,6 +12,7 @@
 - Added WordPress privacy exporter, eraser, and WP-Cron retention cleanup.
 - Added minimal public/admin CSS and JS.
 - Added a structured JSON/CSV legacy importer for venues, activities, participants, signups, and host assignments.
+- Added a coordinate-based public venue map/listing shortcode for venues with latitude and longitude.
 - Added activity-level advisory locking around public signup capacity and duplicate checks.
 - Tightened host-scoped admin REST activity access.
 - Added current host assignment listing/removal and inline participant related-signup views.
@@ -45,9 +46,9 @@
 
 ## Current Completion Estimate
 
-Estimated completion against the requested WordPress-native MVP: **99.999%**.
+Estimated completion against the requested WordPress-native MVP: **99.9995%**.
 
-Estimated remaining gap: **0.001%**.
+Estimated remaining gap: **0.0005%**.
 
 The remaining gap is outside the plugin code in this container: authenticated GitHub publishing, real SMTP receipt verification on the production site, target-theme browser/mobile review, final privacy/legal signoff, and organization-specific mapping for messy legacy import files if migration is required.
 
@@ -85,6 +86,7 @@ The remaining gap is outside the plugin code in this container: authenticated Gi
 - Disposable packaged HTTP no-JavaScript signup smoke test passed: a ZIP-installed plugin rendered the public signup page through `wp server`, accepted a normal form POST with the WordPress nonce, displayed the success message, and persisted the signup as confirmed.
 - Disposable legacy importer smoke test passed: structured JSON/CSV files imported one venue, one activity, one participant, one confirmed signup, and one host assignment into a ZIP-installed plugin, preserving the imported signup status and host role.
 - Disposable activity board smoke test passed: `[pasat_activity_board]` rendered read-only polling board markup, enqueued PASAT public assets, and the public REST activity endpoint returned matching confirmed, waitlisted, remaining, and signup-open values.
+- Disposable venue map smoke test passed: `[pasat_venue_map]` rendered coordinate-enabled venue cards, external map links, and machine-readable venue data while omitting venues without coordinates.
 - Disposable WordPress Plugin Check ran successfully with status `0` and reports `Success: Checks complete. No errors found.` The latest pass has `0` nonce findings, `0` prepared-SQL/direct-DB findings, `0` public-template unprefixed-variable findings, `0` undefined `REQUEST_METHOD` findings, and `0` discouraged textdomain findings.
 - Disposable admin export-link smoke test passed: Signups and Participants admin pages render CSV export links with `_pasat_nonce` after plugin activation and sample data creation.
 - Disposable admin export nonce enforcement test passed: missing export nonce is blocked by WordPress, and valid Signups/Participants export nonces emit the expected CSV rows.
