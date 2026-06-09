@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-09T18:14:56+00:00\n"
+"POT-Creation-Date: 2026-06-09T18:23:36+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pasat\n"
@@ -876,6 +876,53 @@ msgstr ""
 msgid "Signup failed."
 msgstr ""
 
+#. translators: %d is the number of confirmed signups for an activity.
+#: includes/Frontend/Assets.php:22
+#, php-format
+msgid "%d confirmed"
+msgstr ""
+
+#: includes/Frontend/Assets.php:23
+#: templates/public/activity-list.php:35
+msgid "Full"
+msgstr ""
+
+#: includes/Frontend/Assets.php:24
+#: templates/public/activity-list.php:67
+msgid "No public activities are currently available."
+msgstr ""
+
+#: includes/Frontend/Assets.php:25
+#: templates/public/activity-list.php:39
+msgid "Open"
+msgstr ""
+
+#: includes/Frontend/Assets.php:26
+msgid "Signup closed"
+msgstr ""
+
+#. translators: %d is the number of remaining confirmed signup spots.
+#: includes/Frontend/Assets.php:28
+#: templates/public/activity-list.php:42
+#, php-format
+msgid "%d spots left"
+msgstr ""
+
+#: includes/Frontend/Assets.php:29
+msgid "Updated just now"
+msgstr ""
+
+#: includes/Frontend/Assets.php:30
+#: templates/public/activity-list.php:33
+msgid "Waitlist open"
+msgstr ""
+
+#. translators: %d is the number of waitlisted signups for an activity.
+#: includes/Frontend/Assets.php:32
+#, php-format
+msgid "%d waitlisted"
+msgstr ""
+
 #: includes/Frontend/Shortcodes.php:59
 msgid "The signup form expired. Please try again."
 msgstr ""
@@ -1160,30 +1207,14 @@ msgstr ""
 msgid "Please wait before trying again."
 msgstr ""
 
-#: templates/public/activity-list.php:33
-msgid "Waitlist open"
-msgstr ""
-
-#: templates/public/activity-list.php:35
-msgid "Full"
-msgstr ""
-
-#: templates/public/activity-list.php:39
-msgid "Open"
-msgstr ""
-
-#. translators: %d is the number of remaining confirmed signup spots.
-#: templates/public/activity-list.php:42
-#, php-format
-msgid "%d spots left"
-msgstr ""
-
-#: templates/public/activity-list.php:49
-msgid "Sign Up"
-msgstr ""
-
+#. translators: 1: confirmed signup count, 2: waitlisted signup count.
 #: templates/public/activity-list.php:54
-msgid "No public activities are currently available."
+#, php-format
+msgid "%1$d confirmed, %2$d waitlisted"
+msgstr ""
+
+#: templates/public/activity-list.php:61
+msgid "Sign Up"
 msgstr ""
 
 #: templates/public/my-signups.php:18

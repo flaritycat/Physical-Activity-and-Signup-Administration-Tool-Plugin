@@ -17,6 +17,20 @@ final class Assets {
 				'nonce'         => wp_create_nonce( 'wp_rest' ),
 				'signupSuccess' => __( 'Signup received. Please check your e-mail.', 'pasat' ),
 				'signupFailed'  => __( 'Signup failed.', 'pasat' ),
+				'board'         => array(
+					/* translators: %d is the number of confirmed signups for an activity. */
+					'confirmed'    => __( '%d confirmed', 'pasat' ),
+					'full'         => __( 'Full', 'pasat' ),
+					'noActivities' => __( 'No public activities are currently available.', 'pasat' ),
+					'open'         => __( 'Open', 'pasat' ),
+					'signupClosed' => __( 'Signup closed', 'pasat' ),
+					/* translators: %d is the number of remaining confirmed signup spots. */
+					'spotsLeft'    => __( '%d spots left', 'pasat' ),
+					'updated'      => __( 'Updated just now', 'pasat' ),
+					'waitlistOpen' => __( 'Waitlist open', 'pasat' ),
+					/* translators: %d is the number of waitlisted signups for an activity. */
+					'waitlisted'   => __( '%d waitlisted', 'pasat' ),
+				),
 			)
 		);
 	}

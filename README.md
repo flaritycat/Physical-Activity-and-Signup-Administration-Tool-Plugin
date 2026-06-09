@@ -182,7 +182,7 @@ Outputs venue coordinate data for theme or script integration.
 [pasat_activity_board]
 ```
 
-Displays a simple read-only board of upcoming activities.
+Displays a simple read-only board of upcoming activities and refreshes public capacity status through PASAT's REST API when JavaScript is available.
 
 ## Public Signup Behavior
 
@@ -325,7 +325,7 @@ find pasat -name "*.php" -print0 | xargs -0 -n1 php -l
 
 ## Known Limitations
 
-- The activity board is a simple read-only display, not a realtime service.
+- The activity board is a simple read-only polling display, not a realtime service.
 - The venue map shortcode exposes coordinate data but does not bundle a map provider.
 - Group/team signup is not implemented in the MVP.
 - Winner/history administration is deferred.
