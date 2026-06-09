@@ -51,7 +51,7 @@ $warning_required = $activity && ! empty( $activity['requires_warning_ack'] );
 			<label class="pasat-check"><input type="checkbox" name="consent_given" value="1" required> <span><?php echo esc_html( $settings['consent_text'] ); ?></span></label>
 		<?php endif; ?>
 		<?php if ( '' !== trim( (string) $warning_text ) ) : ?>
-			<label class="pasat-check"><input type="checkbox" name="warning_acknowledged" value="1" <?php required( $warning_required ); ?>> <span><?php echo esc_html( $warning_text ); ?></span></label>
+			<label class="pasat-check"><input type="checkbox" name="warning_acknowledged" value="1" <?php echo $warning_required ? 'required' : ''; ?>> <span><?php echo esc_html( $warning_text ); ?></span></label>
 		<?php endif; ?>
 		<button class="pasat-button" type="submit"><?php esc_html_e( 'Submit Signup', 'pasat' ); ?></button>
 	</form>

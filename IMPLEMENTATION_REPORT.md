@@ -18,6 +18,7 @@
 - Added activity edit host assignment controls for administrators who can manage hosts.
 - Added filtered/scoped signup and participant CSV exports, participant deletion, and signup mutation scope checks.
 - Added REST route argument sanitization and validation definitions.
+- Fixed shortcode rendering under direct WordPress render contexts and made frontend asset enqueueing self-register when needed.
 
 ## HSF Features Mapped To PASAT
 
@@ -40,11 +41,11 @@
 
 ## Current Completion Estimate
 
-Estimated completion against the requested WordPress-native MVP: **98%**.
+Estimated completion against the requested WordPress-native MVP: **99%**.
 
-Estimated remaining gap: **2%**.
+Estimated remaining gap: **1%**.
 
-The main remaining gap is not missing core plugin code; it is release confidence in the real deployment environment. Before calling this 100%, complete browser testing in the target WordPress theme, real SMTP/mail delivery testing, role/capability testing with real users, a full privacy/legal review, authenticated GitHub publishing, and production-grade legacy import parsing if migration is required.
+The main remaining gap is not missing core plugin code; it is release confidence in the real deployment environment. Before calling this 100%, complete browser testing in the target WordPress theme, real SMTP/mail delivery testing, a full privacy/legal review, authenticated GitHub publishing, and production-grade legacy import parsing if migration is required.
 
 ## Manual Install/Test
 
@@ -73,6 +74,8 @@ The main remaining gap is not missing core plugin code; it is release confidence
 - Disposable WordPress activation test passed on WordPress 7.0 with MariaDB: plugin activated, schema version was `0.1.0`, all six custom PASAT tables were created, representative public/admin REST routes registered, the activity signup advisory lock returned `lock:ok`, and the required public shortcodes registered.
 - Disposable end-to-end signup test passed: a capacity-one published activity accepted the first signup as confirmed, rejected a duplicate e-mail signup, waitlisted the second participant, extracted the cancellation token from captured `wp_mail()` content, cancelled the confirmed signup through the public cancellation flow, promoted the waitlisted participant, and exported participant signup data through the WordPress privacy exporter.
 - Disposable concurrent signup test passed: eight parallel public signups against a capacity-one activity produced exactly `confirmed:1` and `waitlisted:7`.
+- Disposable role/capability test passed with real WordPress users: PASAT Activity Manager could manage all/create, PASAT Activity Host could manage assigned activities only, unassigned activity access was denied, scoped admin signup listing returned only assigned activity data, and unassigned signup cancellation was denied.
+- Disposable shortcode render test passed: `[pasat_activity_list]`, `[pasat_activity_signup]`, and `[pasat_my_signups]` rendered expected markup through WordPress, and public CSS/JS handles were enqueued.
 - Forbidden runtime dependency/branding terms were searched; matches are limited to documentation and the migration placeholder naming required by the project brief.
 - `zip -r pasat-0.1.0.zip pasat` produced the expected installable plugin archive layout, then the generated archive was removed from the source tree.
 - File structure, plugin header, admin menu registration, shortcode registration, REST route registration, activation schema, and direct-access guards were reviewed from source.
@@ -86,5 +89,4 @@ The main remaining gap is not missing core plugin code; it is release confidence
 ## Known Risks
 
 - Full browser testing inside the target production WordPress theme should still be completed before public release.
-- Some advanced permission combinations should be tested with real WordPress users.
 - E-mail failure behavior depends on the site's mail configuration and the strict delivery setting.

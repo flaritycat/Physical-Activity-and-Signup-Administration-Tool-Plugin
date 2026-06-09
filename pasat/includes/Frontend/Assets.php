@@ -22,6 +22,10 @@ final class Assets {
 	}
 
 	public static function enqueue(): void {
+		if ( ! wp_style_is( 'pasat-public', 'registered' ) || ! wp_script_is( 'pasat-public', 'registered' ) ) {
+			self::register();
+		}
+
 		wp_enqueue_style( 'pasat-public' );
 		wp_enqueue_script( 'pasat-public' );
 	}

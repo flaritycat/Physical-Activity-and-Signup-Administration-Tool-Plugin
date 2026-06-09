@@ -67,4 +67,4 @@ Initial WordPress-native MVP with custom tables, admin pages, shortcodes, public
 
 Includes verified e-mail lookup for participant signups, activity cancellation notices, host assignment management, participant related-signup views, filtered/scoped CSV exports, participant deletion, REST argument validation, and activity-level signup locking for capacity checks.
 
-Validated with disposable WordPress activation, signup/waitlist/cancellation promotion, privacy export, package integrity, and concurrent capacity tests.
+Validated with disposable WordPress activation, signup/waitlist/cancellation promotion, privacy export, real-user role/capability checks, shortcode rendering, package integrity, and concurrent capacity tests.
