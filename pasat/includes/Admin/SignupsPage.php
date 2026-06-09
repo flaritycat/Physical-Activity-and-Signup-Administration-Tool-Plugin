@@ -21,6 +21,7 @@ final class SignupsPage {
 			wp_die( esc_html__( 'You do not have permission to view signups.', 'pasat' ) );
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Export nonce is verified before CSV output in export_csv().
 		if ( isset( $_GET['pasat_export'] ) ) {
 			self::export_csv();
 		}
@@ -47,7 +48,7 @@ final class SignupsPage {
 				<select name="status"><option value=""><?php esc_html_e( 'All statuses', 'pasat' ); ?></option><?php foreach ( SignupsRepository::STATUSES as $item ) : ?><option value="<?php echo esc_attr( $item ); ?>" <?php selected( $status, $item ); ?>><?php echo esc_html( ucfirst( $item ) ); ?></option><?php endforeach; ?></select>
 				<input type="search" name="s" value="<?php echo esc_attr( $search ); ?>" placeholder="<?php esc_attr_e( 'Search name, e-mail, activity', 'pasat' ); ?>">
 				<?php submit_button( __( 'Filter', 'pasat' ), 'secondary', '', false ); ?>
-				<a class="button" href="<?php echo esc_url( add_query_arg( 'pasat_export', 'signups' ) ); ?>"><?php esc_html_e( 'Export CSV', 'pasat' ); ?></a>
+				<a class="button" href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'pasat_export', 'signups' ), Nonces::action( 'signups_export' ), '_pasat_nonce' ) ); ?>"><?php esc_html_e( 'Export CSV', 'pasat' ); ?></a>
 			</form>
 			<table class="widefat striped">
 				<thead><tr><th><?php esc_html_e( 'Participant', 'pasat' ); ?></th><th><?php esc_html_e( 'E-mail', 'pasat' ); ?></th><th><?php esc_html_e( 'Activity', 'pasat' ); ?></th><th><?php esc_html_e( 'Status', 'pasat' ); ?></th><th><?php esc_html_e( 'Created', 'pasat' ); ?></th><th><?php esc_html_e( 'Actions', 'pasat' ); ?></th></tr></thead>
@@ -158,6 +159,7 @@ final class SignupsPage {
 		if ( ! current_user_can( 'pasat_export_participants' ) ) {
 			wp_die( esc_html__( 'You do not have permission to export signup data.', 'pasat' ) );
 		}
+		check_admin_referer( Nonces::action( 'signups_export' ), '_pasat_nonce' );
 		$repo    = new SignupsRepository();
 		$signups = $repo->list( self::current_query_args() );
 		header( 'Content-Type: text/csv; charset=utf-8' );
@@ -182,12 +184,15 @@ final class SignupsPage {
 	}
 
 	private static function current_query_args(): array {
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
+		// These GET values are read-only list filters; CSV export verifies a dedicated nonce before emitting data.
 		$activity_id = absint( $_GET['activity_id'] ?? 0 );
 		$args        = array(
 			'activity_id' => $activity_id,
 			'status'      => sanitize_key( $_GET['status'] ?? '' ),
 			'search'      => sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) ),
 		);
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		if ( ! current_user_can( 'pasat_manage_all_activities' ) ) {
 			$host_ids             = ( new HostsRepository() )->activity_ids_for_user( get_current_user_id() );
@@ -201,6 +206,7 @@ final class SignupsPage {
 	}
 
 	private static function notice(): void {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a read-only admin notice flag after a nonce-protected POST redirect.
 		if ( ! empty( $_GET['updated'] ) ) {
 			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Signup updated.', 'pasat' ) . '</p></div>';
 		}

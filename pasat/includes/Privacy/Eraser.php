@@ -9,6 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+// Privacy erasure intentionally deletes from PASAT custom tables when the configured erasure mode requires deletion.
 final class Eraser {
 	public static function register( array $erasers ): array {
 		$erasers['pasat'] = array(

@@ -7,6 +7,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+// PASAT table identifiers come from fixed plugin table names via $wpdb->prefix; user values remain prepared or sanitized.
 abstract class Repository {
 	protected $wpdb;
 	protected string $table;

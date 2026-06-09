@@ -23,6 +23,7 @@ final class HostsPage {
 		?>
 		<div class="wrap pasat-admin">
 			<h1><?php esc_html_e( 'PASAT Hosts', 'pasat' ); ?></h1>
+			<?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a read-only admin notice flag after a nonce-protected POST redirect. ?>
 			<?php if ( ! empty( $_GET['updated'] ) ) : ?>
 				<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Host assignments updated.', 'pasat' ); ?></p></div>
 			<?php endif; ?>

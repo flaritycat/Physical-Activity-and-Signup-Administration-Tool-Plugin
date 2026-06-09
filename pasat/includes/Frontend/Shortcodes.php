@@ -158,6 +158,7 @@ final class Shortcodes {
 	}
 
 	public static function handle_cancellation_link(): void {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Public cancellation links use high-entropy signed tokens, not WordPress session nonces.
 		$token  = isset( $_GET['token'] ) ? rawurldecode( sanitize_text_field( wp_unslash( $_GET['token'] ) ) ) : '';
 		$result = PublicSignupController::process_cancellation( $token );
 		$key    = is_wp_error( $result ) ? 'pasat_cancel_error' : 'pasat_cancelled';

@@ -24,8 +24,11 @@ final class ActivitiesPage {
 		self::handle_post();
 
 		$repo   = new ActivitiesRepository();
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
+		// These GET values select read-only admin views. Mutations are handled by nonce-protected POST actions.
 		$action = sanitize_key( wp_unslash( $_GET['action'] ?? '' ) );
 		$id     = absint( wp_unslash( $_GET['id'] ?? 0 ) );
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 		$can_create = current_user_can( 'pasat_manage_all_activities' );
 
 		echo '<div class="wrap pasat-admin">';
@@ -76,9 +79,10 @@ final class ActivitiesPage {
 
 		if ( 'save' === $action ) {
 			$before = $id ? $repo->get( $id ) : null;
-			$id = $repo->save( wp_unslash( $_POST ), $id );
-			self::maybe_save_hosts( $id );
-			self::maybe_notify_cancellation( $id, $before, sanitize_key( wp_unslash( $_POST['status'] ?? '' ) ) );
+			$post = wp_unslash( $_POST );
+			$id = $repo->save( $post, $id );
+			self::maybe_save_hosts( $id, $post );
+			self::maybe_notify_cancellation( $id, $before, sanitize_key( $post['status'] ?? '' ) );
 			$audit->log( 'activity.save', 'activity', $id, 'Saved activity' );
 			wp_safe_redirect( admin_url( 'admin.php?page=pasat-activities&updated=1' ) );
 			exit;
@@ -150,12 +154,12 @@ final class ActivitiesPage {
 		<?php
 	}
 
-	private static function maybe_save_hosts( int $activity_id ): void {
-		if ( ! current_user_can( 'pasat_manage_hosts' ) || ! isset( $_POST['pasat_hosts_field_present'] ) ) {
+	private static function maybe_save_hosts( int $activity_id, array $post ): void {
+		if ( ! current_user_can( 'pasat_manage_hosts' ) || ! isset( $post['pasat_hosts_field_present'] ) ) {
 			return;
 		}
 
-		$user_ids = isset( $_POST['host_user_ids'] ) && is_array( $_POST['host_user_ids'] ) ? array_map( 'absint', wp_unslash( $_POST['host_user_ids'] ) ) : array();
+		$user_ids = isset( $post['host_user_ids'] ) && is_array( $post['host_user_ids'] ) ? array_map( 'absint', $post['host_user_ids'] ) : array();
 		( new HostsRepository() )->replace_for_activity( $activity_id, $user_ids );
 		( new AuditLogRepository() )->log( 'activity.hosts_replace', 'activity', $activity_id, 'Updated activity host assignments' );
 	}
@@ -237,6 +241,7 @@ final class ActivitiesPage {
 	}
 
 	private static function notice(): void {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a read-only admin notice flag after a nonce-protected POST redirect.
 		if ( ! empty( $_GET['updated'] ) ) {
 			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Activity saved.', 'pasat' ) . '</p></div>';
 		}

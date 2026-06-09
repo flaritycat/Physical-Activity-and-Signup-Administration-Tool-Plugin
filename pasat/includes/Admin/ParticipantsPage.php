@@ -17,11 +17,13 @@ final class ParticipantsPage {
 			wp_die( esc_html__( 'You do not have permission to view participants.', 'pasat' ) );
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Export nonce is verified before CSV output in export_csv().
 		if ( isset( $_GET['pasat_export'] ) ) {
 			self::export_csv();
 		}
 
 		self::handle_post();
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This GET value is a read-only list filter; CSV export verifies a dedicated nonce.
 		$query        = sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) );
 		$repo         = new ParticipantsRepository();
 		$participants = $repo->search( $query );
@@ -29,7 +31,7 @@ final class ParticipantsPage {
 		<div class="wrap pasat-admin">
 			<h1><?php esc_html_e( 'PASAT Participants', 'pasat' ); ?></h1>
 			<p><?php esc_html_e( 'Participant records contain personal data. Export, anonymize, or delete only when permitted by your site policy.', 'pasat' ); ?></p>
-			<form method="get" class="pasat-filter-row"><input type="hidden" name="page" value="pasat-participants"><input type="search" name="s" value="<?php echo esc_attr( $query ); ?>"><?php submit_button( __( 'Search', 'pasat' ), 'secondary', '', false ); ?> <a class="button" href="<?php echo esc_url( add_query_arg( 'pasat_export', 'participants' ) ); ?>"><?php esc_html_e( 'Export CSV', 'pasat' ); ?></a></form>
+			<form method="get" class="pasat-filter-row"><input type="hidden" name="page" value="pasat-participants"><input type="search" name="s" value="<?php echo esc_attr( $query ); ?>"><?php submit_button( __( 'Search', 'pasat' ), 'secondary', '', false ); ?> <a class="button" href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'pasat_export', 'participants' ), Nonces::action( 'participants_export' ), '_pasat_nonce' ) ); ?>"><?php esc_html_e( 'Export CSV', 'pasat' ); ?></a></form>
 			<table class="widefat striped">
 				<thead><tr><th><?php esc_html_e( 'Name', 'pasat' ); ?></th><th><?php esc_html_e( 'E-mail', 'pasat' ); ?></th><th><?php esc_html_e( 'Phone', 'pasat' ); ?></th><th><?php esc_html_e( 'Age', 'pasat' ); ?></th><th><?php esc_html_e( 'Consent', 'pasat' ); ?></th><th><?php esc_html_e( 'Related Signups', 'pasat' ); ?></th><th><?php esc_html_e( 'Actions', 'pasat' ); ?></th></tr></thead>
 				<tbody>
@@ -135,6 +137,7 @@ final class ParticipantsPage {
 		if ( ! current_user_can( 'pasat_export_participants' ) ) {
 			wp_die( esc_html__( 'You do not have permission to export participant data.', 'pasat' ) );
 		}
+		check_admin_referer( Nonces::action( 'participants_export' ), '_pasat_nonce' );
 		$query        = sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) );
 		$participants = ( new ParticipantsRepository() )->search( $query, 1000 );
 		header( 'Content-Type: text/csv; charset=utf-8' );

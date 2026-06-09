@@ -9,6 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+// Retention scans PASAT custom tables directly; table identifiers are fixed plugin tables and values are prepared.
 final class Retention {
 	public static function run_scheduled(): void {
 		self::run_cleanup();

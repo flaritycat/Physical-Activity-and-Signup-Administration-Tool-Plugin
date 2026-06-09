@@ -9,6 +9,8 @@ if ( ! defined( 'ABSPATH' ) || ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
+// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
+// Uninstall cleanup intentionally drops only PASAT tables built from fixed plugin table names.
 global $wpdb;
 
 $pasat_tables = array(

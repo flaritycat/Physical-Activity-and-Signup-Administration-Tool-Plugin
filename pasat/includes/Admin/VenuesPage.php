@@ -17,8 +17,11 @@ final class VenuesPage {
 
 		self::handle_post();
 		$repo   = new VenuesRepository();
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
+		// These GET values select read-only admin views. Mutations are handled by nonce-protected POST actions.
 		$action = sanitize_key( wp_unslash( $_GET['action'] ?? '' ) );
 		$id     = absint( wp_unslash( $_GET['id'] ?? 0 ) );
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		echo '<div class="wrap pasat-admin"><h1>' . esc_html__( 'PASAT Venues', 'pasat' ) . ' <a class="page-title-action" href="' . esc_url( admin_url( 'admin.php?page=pasat-venues&action=new' ) ) . '">' . esc_html__( 'Add New', 'pasat' ) . '</a></h1>';
 		self::notice();
@@ -107,6 +110,7 @@ final class VenuesPage {
 	}
 
 	private static function notice(): void {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a read-only admin notice flag after a nonce-protected POST redirect.
 		if ( ! empty( $_GET['updated'] ) ) {
 			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Venue saved.', 'pasat' ) . '</p></div>';
 		}

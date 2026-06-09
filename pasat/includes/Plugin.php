@@ -42,6 +42,7 @@ final class Plugin {
 	}
 
 	public function load_textdomain(): void {
+		// phpcs:ignore PluginCheck.CodeAnalysis.DiscouragedFunctions.load_plugin_textdomainFound -- PASAT supports manual installs outside WordPress.org with bundled language files.
 		load_plugin_textdomain( 'pasat', false, dirname( PASAT_PLUGIN_BASENAME ) . '/languages' );
 	}
 }

@@ -3,6 +3,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// phpcs:disable WordPress.Security.NonceVerification.Recommended
+// Public query values in this template are read-only status messages or activity preselection and are sanitized before use.
 $pasat_activities       = $pasat['activities'] ?? array();
 $pasat_activity         = $pasat['activity'] ?? null;
 $pasat_settings         = $pasat['settings'] ?? PASAT\Helpers::settings();

@@ -136,6 +136,7 @@ final class SettingsPage {
 	}
 
 	private static function notices(): void {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a read-only admin notice flag set after a nonce-protected POST redirect.
 		$result = sanitize_key( wp_unslash( $_GET['pasat_mail_test'] ?? '' ) );
 		if ( 'success' === $result ) {
 			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'PASAT test e-mail was accepted by WordPress mail.', 'pasat' ) . '</p></div>';
