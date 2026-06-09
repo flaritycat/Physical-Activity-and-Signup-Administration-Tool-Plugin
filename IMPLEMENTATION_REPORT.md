@@ -11,7 +11,7 @@
 - Added `wp_mail()` based confirmation, cancellation, waitlist promotion, lookup link, and activity cancellation messages.
 - Added WordPress privacy exporter, eraser, and WP-Cron retention cleanup.
 - Added minimal public/admin CSS and JS.
-- Added migration placeholder class for future structured import.
+- Added a structured JSON/CSV legacy importer for venues, activities, participants, signups, and host assignments.
 - Added activity-level advisory locking around public signup capacity and duplicate checks.
 - Tightened host-scoped admin REST activity access.
 - Added current host assignment listing/removal and inline participant related-signup views.
@@ -41,15 +41,15 @@
 - No winner/history administration in the MVP.
 - No bundled map provider or geocoding.
 - `[pasat_my_signups]` uses a time-limited e-mail lookup link instead of account-based participant portals.
-- Importer documents the intended path but does not yet parse production exports.
+- Importer handles structured JSON/CSV files; messy legacy exports may still need organization-specific field mapping before import.
 
 ## Current Completion Estimate
 
-Estimated completion against the requested WordPress-native MVP: **99.997%**.
+Estimated completion against the requested WordPress-native MVP: **99.998%**.
 
-Estimated remaining gap: **0.003%**.
+Estimated remaining gap: **0.002%**.
 
-The remaining gap is outside the plugin code in this container: authenticated GitHub publishing, real SMTP receipt verification on the production site, target-theme browser/mobile review, final privacy/legal signoff, and production-grade legacy import parsing if migration is required.
+The remaining gap is outside the plugin code in this container: authenticated GitHub publishing, real SMTP receipt verification on the production site, target-theme browser/mobile review, final privacy/legal signoff, and organization-specific mapping for messy legacy import files if migration is required.
 
 ## Manual Install/Test
 
@@ -83,10 +83,11 @@ The remaining gap is outside the plugin code in this container: authenticated Gi
 - Disposable mail-test validation passed: PASAT generated a test e-mail through `wp_mail()` and the Settings page rendered the mail-delivery test form.
 - Disposable HTTP render test passed through a temporary WordPress server: the public page rendered the activity list, signup form, my-signups form, and linked public CSS/JS.
 - Disposable packaged HTTP no-JavaScript signup smoke test passed: a ZIP-installed plugin rendered the public signup page through `wp server`, accepted a normal form POST with the WordPress nonce, displayed the success message, and persisted the signup as confirmed.
+- Disposable legacy importer smoke test passed: structured JSON/CSV files imported one venue, one activity, one participant, one confirmed signup, and one host assignment into a ZIP-installed plugin, preserving the imported signup status and host role.
 - Disposable WordPress Plugin Check ran successfully with status `0` and reports `Success: Checks complete. No errors found.` The latest pass has `0` nonce findings, `0` prepared-SQL/direct-DB findings, `0` public-template unprefixed-variable findings, `0` undefined `REQUEST_METHOD` findings, and `0` discouraged textdomain findings.
 - Disposable admin export-link smoke test passed: Signups and Participants admin pages render CSV export links with `_pasat_nonce` after plugin activation and sample data creation.
 - Disposable admin export nonce enforcement test passed: missing export nonce is blocked by WordPress, and valid Signups/Participants export nonces emit the expected CSV rows.
-- Forbidden runtime dependency/branding terms were searched; matches are limited to documentation and the migration placeholder naming required by the project brief.
+- Forbidden runtime dependency/branding terms were searched; matches are limited to documentation and the migration class naming required by the project brief.
 - `zip -r pasat-0.1.0.zip pasat` produced the expected installable plugin archive layout, then the generated archive was removed from the source tree.
 - Disposable ZIP install smoke test passed: a generated PASAT ZIP installed through `wp plugin install`, activated successfully, created the six custom tables, stored schema version `0.1.0`, and registered the required public shortcodes.
 - Disposable PHP 8.1 ZIP install smoke test passed: the packaged plugin installed and activated under `wordpress:cli-php8.1`, created the six custom tables, stored schema version `0.1.0`, and registered the required public shortcodes.

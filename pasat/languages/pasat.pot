@@ -4,116 +4,1212 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Physical Activity Signup and Administration Tool 0.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pasat\n"
-"POT-Creation-Date: 2026-06-09 00:00+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-06-09T18:14:56+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pasat\n"
 
-msgid "PASAT"
+#. Plugin Name of the plugin
+#: pasat.php
+msgid "Physical Activity Signup and Administration Tool"
 msgstr ""
 
-msgid "Activity"
+#. Description of the plugin
+#: pasat.php
+msgid "A WordPress plugin for managing public signups and administration for physical activities, sessions, classes, and events."
 msgstr ""
 
-msgid "Signup confirmation: {activity_title}"
+#. Author of the plugin
+#: pasat.php
+msgid "Project Contributors"
 msgstr ""
 
-msgid "Signup received. Please check your e-mail."
+#: includes/Admin/ActivitiesPage.php:21
+msgid "You do not have permission to manage activities."
 msgstr ""
 
-msgid "Signup failed."
+#: includes/Admin/ActivitiesPage.php:35
+msgid "PASAT Activities"
 msgstr ""
 
-msgid "Your signup lookup link for {site_name}"
+#: includes/Admin/ActivitiesPage.php:37
+#: includes/Admin/VenuesPage.php:26
+msgid "Add New"
 msgstr ""
 
-msgid "Enter your e-mail address to receive a private signup lookup link."
-msgstr ""
-
-msgid "Request Lookup"
-msgstr ""
-
-msgid "Activity cancelled: {activity_title}"
-msgstr ""
-
-msgid "Activity Cancellation Subject"
-msgstr ""
-
-msgid "Activity Cancellation Body"
-msgstr ""
-
-msgid "Your verified signups are listed below."
-msgstr ""
-
-msgid "You do not have permission to view this activity."
-msgstr ""
-
+#: includes/Admin/ActivitiesPage.php:45
+#: includes/Admin/ActivitiesPage.php:77
 msgid "You do not have permission to create activities."
 msgstr ""
 
-msgid "Host assignments updated."
+#: includes/Admin/ActivitiesPage.php:48
+msgid "You do not have permission to edit this activity."
 msgstr ""
 
-msgid "Current Host Assignments"
+#: includes/Admin/ActivitiesPage.php:74
+msgid "You do not have permission to change this activity."
 msgstr ""
 
-msgid "Deleted user"
+#: includes/Admin/ActivitiesPage.php:122
+#: includes/Admin/ActivitiesPage.php:197
+#: includes/Admin/AdminMenu.php:75
+msgid "Title"
 msgstr ""
 
-msgid "Remove"
+#: includes/Admin/ActivitiesPage.php:123
+#: includes/Admin/VenuesPage.php:75
+msgid "Description"
 msgstr ""
 
-msgid "Related Signups"
+#: includes/Admin/ActivitiesPage.php:124
+msgid "Activity Type"
 msgstr ""
 
-msgid "No signups"
+#: includes/Admin/ActivitiesPage.php:125
+msgid "Season Year"
 msgstr ""
 
-msgid "%d signup"
+#: includes/Admin/ActivitiesPage.php:126
+msgid "Starts At"
 msgstr ""
 
-msgid "%d signups"
+#: includes/Admin/ActivitiesPage.php:127
+msgid "Ends At"
 msgstr ""
 
-msgid "Signup is busy for this activity. Please try again in a moment."
+#: includes/Admin/ActivitiesPage.php:128
+#: includes/Admin/ActivitiesPage.php:197
+#: includes/Admin/AdminMenu.php:75
+#: includes/Privacy/Exporter.php:51
+#: templates/public/my-signups.php:19
+msgid "Venue"
 msgstr ""
 
-msgid "You do not have permission to manage this signup."
+#: includes/Admin/ActivitiesPage.php:128
+#: includes/Domain/Venue.php:10
+msgid "No venue"
 msgstr ""
 
-msgid "Delete this participant and related signups?"
+#: includes/Admin/ActivitiesPage.php:129
+#: includes/Admin/ActivitiesPage.php:197
+#: includes/Admin/VenuesPage.php:78
+#: includes/Admin/VenuesPage.php:91
+msgid "Capacity"
 msgstr ""
 
-msgid "Delete"
+#: includes/Admin/ActivitiesPage.php:130
+msgid "Waitlist"
 msgstr ""
 
+#: includes/Admin/ActivitiesPage.php:130
+msgid "Enable waitlist when full"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:131
+msgid "Signup Opens"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:132
+msgid "Signup Closes"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:133
+#: includes/Admin/ActivitiesPage.php:197
+#: includes/Admin/AdminMenu.php:75
+#: includes/Admin/AdminMenu.php:92
+#: includes/Admin/SignupsPage.php:54
+#: includes/Privacy/Exporter.php:52
+#: templates/public/my-signups.php:20
+msgid "Status"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:134
+msgid "Visibility"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:134
+msgid "Public"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:134
+msgid "Unlisted"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:134
+msgid "Private"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:135
+msgid "Age Limits"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:135
+msgid "Minimum"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:135
+msgid "Maximum"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:136
+msgid "Warning Acknowledgement"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:136
+msgid "Require acknowledgement"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:139
+#: includes/Admin/AdminMenu.php:30
 msgid "Hosts"
 msgstr ""
 
+#: includes/Admin/ActivitiesPage.php:147
 msgid "Selected users can manage this activity when they have the PASAT Activity Host role or equivalent assigned-activity capability."
 msgstr ""
 
-msgid "PASAT test e-mail for {site_name}"
+#: includes/Admin/ActivitiesPage.php:152
+msgid "Save Activity"
 msgstr ""
 
+#: includes/Admin/ActivitiesPage.php:152
+msgid "Create Activity"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:197
+#: includes/Admin/AdminMenu.php:75
+msgid "Starts"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:197
+#: includes/Admin/HostsPage.php:49
+#: includes/Admin/ParticipantsPage.php:36
+#: includes/Admin/SignupsPage.php:54
+#: includes/Admin/VenuesPage.php:91
+msgid "Actions"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:207
+#: includes/Admin/VenuesPage.php:99
+msgid "Edit"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:208
+msgid "Publish"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:209
+#: includes/Admin/SignupsPage.php:140
+msgid "Cancel"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:210
+msgid "Archive"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:211
+msgid "Duplicate"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:216
+msgid "No activities yet."
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:246
+msgid "Activity saved."
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:16
+#: includes/Admin/AdminMenu.php:17
+#: templates/admin/page-header.php:6
+msgid "PASAT"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:25
+msgid "Dashboard"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:26
+#: includes/Admin/AdminMenu.php:69
+msgid "Activities"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:27
+msgid "Venues"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:28
+msgid "Signups"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:29
+msgid "Participants"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:31
+msgid "Settings"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:32
+msgid "Privacy"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:46
+msgid "You do not have permission to view PASAT."
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:61
+msgid "PASAT Dashboard"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:63
+msgid "No public PASAT page is selected. Add a page with [pasat_activity_list] and choose it in Settings."
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:66
+msgid "No successful PASAT test e-mail has been recorded. Send one from PASAT Settings before opening public signups."
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:70
+#: includes/Domain/Waitlist.php:11
+msgid "Confirmed"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:71
+#: includes/Domain/Waitlist.php:12
+msgid "Waitlisted"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:73
+msgid "Upcoming Activities"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:86
+msgid "No upcoming activities yet."
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:90
+msgid "Recent Signups"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:92
+#: includes/Admin/SignupsPage.php:54
+#: includes/Email/Mailer.php:70
+msgid "Participant"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:92
+#: includes/Admin/HostsPage.php:34
+#: includes/Admin/HostsPage.php:45
+#: includes/Admin/SignupsPage.php:54
+#: includes/Helpers.php:15
+#: includes/Privacy/Exporter.php:50
+#: templates/public/my-signups.php:17
+#: templates/public/signup-form.php:32
+msgid "Activity"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:92
+#: includes/Admin/PrivacyPage.php:55
+#: includes/Admin/SignupsPage.php:54
+msgid "Created"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:103
+msgid "No signups yet."
+msgstr ""
+
+#: includes/Admin/HostsPage.php:16
+msgid "You do not have permission to manage hosts."
+msgstr ""
+
+#: includes/Admin/HostsPage.php:25
+msgid "PASAT Hosts"
+msgstr ""
+
+#: includes/Admin/HostsPage.php:28
+msgid "Host assignments updated."
+msgstr ""
+
+#: includes/Admin/HostsPage.php:35
+msgid "WordPress User"
+msgstr ""
+
+#: includes/Admin/HostsPage.php:36
+msgid "Role Label"
+msgstr ""
+
+#: includes/Admin/HostsPage.php:38
+msgid "Assign Host"
+msgstr ""
+
+#: includes/Admin/HostsPage.php:40
+msgid "Hosts with the PASAT Activity Host role can manage only activities assigned here unless they also have broader PASAT capabilities."
+msgstr ""
+
+#: includes/Admin/HostsPage.php:41
+msgid "Current Host Assignments"
+msgstr ""
+
+#: includes/Admin/HostsPage.php:46
+msgid "User"
+msgstr ""
+
+#: includes/Admin/HostsPage.php:47
+msgid "Role"
+msgstr ""
+
+#: includes/Admin/HostsPage.php:48
+msgid "Assigned"
+msgstr ""
+
+#: includes/Admin/HostsPage.php:56
+msgid "Deleted user"
+msgstr ""
+
+#: includes/Admin/HostsPage.php:64
+msgid "Remove"
+msgstr ""
+
+#: includes/Admin/HostsPage.php:70
+msgid "No host assignments yet."
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:17
+msgid "You do not have permission to view participants."
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:32
+msgid "PASAT Participants"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:33
+msgid "Participant records contain personal data. Export, anonymize, or delete only when permitted by your site policy."
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:34
+msgid "Search"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:34
+#: includes/Admin/SignupsPage.php:51
+msgid "Export CSV"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:36
+#: includes/Admin/VenuesPage.php:74
+#: includes/Admin/VenuesPage.php:91
+msgid "Name"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:36
+#: includes/Admin/SignupsPage.php:54
+#: includes/Privacy/Exporter.php:35
+#: templates/public/my-signups.php:41
+#: templates/public/signup-form.php:49
+msgid "E-mail"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:36
+#: includes/Privacy/Exporter.php:36
+#: templates/public/signup-form.php:50
+msgid "Phone"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:36
+#: includes/Privacy/Exporter.php:37
+#: templates/public/signup-form.php:46
+msgid "Age"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:36
+msgid "Consent"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:36
+msgid "Related Signups"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:44
+#: includes/Privacy/Exporter.php:38
+msgid "Yes"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:44
+#: includes/Privacy/Exporter.php:38
+msgid "No"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:49
+msgid "No participants found."
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:62
+msgid "You do not have permission to modify participant data."
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:88
+#: includes/Admin/SettingsPage.php:76
+msgid "Anonymize"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:94
+msgid "Delete this participant and related signups?"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:94
+#: includes/Admin/SettingsPage.php:76
+#: includes/Admin/VenuesPage.php:101
+msgid "Delete"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:102
+msgid "No signups"
+msgstr ""
+
+#. translators: %d is the number of related signups.
+#: includes/Admin/ParticipantsPage.php:111
+#, php-format
+msgid "%d signup"
+msgid_plural "%d signups"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Admin/ParticipantsPage.php:138
+msgid "You do not have permission to export participant data."
+msgstr ""
+
+#: includes/Admin/PrivacyPage.php:16
+msgid "You do not have permission to run PASAT privacy tools."
+msgstr ""
+
+#: includes/Admin/PrivacyPage.php:23
+msgid "PASAT Privacy"
+msgstr ""
+
+#: includes/Admin/PrivacyPage.php:24
+msgid "PASAT integrates with WordPress personal data export and erasure tools. It also runs a daily retention cleanup using WP-Cron."
+msgstr ""
+
+#. translators: %d is the configured retention period in days.
+#: includes/Admin/PrivacyPage.php:31
+#, php-format
+msgid "Retention period: %d days"
+msgstr ""
+
+#. translators: %s is the configured participant erasure mode.
+#: includes/Admin/PrivacyPage.php:42
+#, php-format
+msgid "Erasure mode: %s"
+msgstr ""
+
+#: includes/Admin/PrivacyPage.php:52
+msgid "Run Retention Cleanup Now"
+msgstr ""
+
+#: includes/Admin/PrivacyPage.php:54
+msgid "Recent Audit Log"
+msgstr ""
+
+#: includes/Admin/PrivacyPage.php:55
+msgid "Action"
+msgstr ""
+
+#: includes/Admin/PrivacyPage.php:55
+msgid "Object"
+msgstr ""
+
+#: includes/Admin/PrivacyPage.php:55
+msgid "Message"
+msgstr ""
+
+#: includes/Admin/PrivacyPage.php:57
+msgid "No audit entries yet."
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:51
+msgid "You do not have permission to manage PASAT settings."
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:58
+msgid "PASAT Settings"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:63
+msgid "Organization Name"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:64
+msgid "Public Page"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:64
+msgid "Select page"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:65
+msgid "Activity Label"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:66
+msgid "Host Label"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:67
+msgid "Default Season Year"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:68
+msgid "Default Capacity"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:69
+msgid "Default Waitlist Enabled"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:70
+msgid "Require Consent Checkbox"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:71
+msgid "Consent Text"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:72
+msgid "Default Warning Text"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:73
+msgid "Fail Signup If E-mail Fails"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:74
+msgid "Allow Duplicate E-mail Per Activity"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:75
+msgid "Retention Period Days"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:76
+msgid "Erasure Mode"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:78
+msgid "E-mail Templates"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:79
+msgid "Available placeholders: {organization_name}, {activity_title}, {activity_date}, {activity_time}, {venue_name}, {participant_name}, {signup_status}, {cancellation_url}, {site_name}, {site_url}."
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:81
+msgid "Sender Name"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:82
+msgid "Confirmation Subject"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:83
+msgid "Confirmation Body"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:84
+msgid "Cancellation Subject"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:85
+msgid "Cancellation Body"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:86
+msgid "Waitlist Promotion Subject"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:87
+msgid "Waitlist Promotion Body"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:88
+msgid "Activity Cancellation Subject"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:89
+msgid "Activity Cancellation Body"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:93
 msgid "Mail Delivery Test"
 msgstr ""
 
+#: includes/Admin/SettingsPage.php:94
 msgid "Send a test e-mail through WordPress mail to confirm PASAT notifications can leave this site."
 msgstr ""
 
+#: includes/Admin/SettingsPage.php:100
 msgid "Test Recipient"
 msgstr ""
 
+#: includes/Admin/SettingsPage.php:104
 msgid "Send Test E-mail"
 msgstr ""
 
+#: includes/Admin/SettingsPage.php:106
+msgid "Legacy Import"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:107
+msgid "This plugin is a WordPress-native rewrite. Import structured JSON or CSV exports for venues, activities, participants, signups, and host assignments. Legacy passwords and external authentication data should be replaced with WordPress users and roles."
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:113
+msgid "Import Type"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:123
+msgid "JSON or CSV File"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:126
+msgid "Maximum file size: 2 MB. CSV files must include a header row. JSON files may be an array of rows or an object containing the selected import type."
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:130
+msgid "Run Import"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:193
 msgid "PASAT test e-mail was accepted by WordPress mail."
 msgstr ""
 
+#: includes/Admin/SettingsPage.php:196
 msgid "PASAT test e-mail could not be sent. Check the site mail configuration or SMTP plugin."
 msgstr ""
 
-msgid "No successful PASAT test e-mail has been recorded. Send one from PASAT Settings before opening public signups."
+#. translators: 1: imported row count, 2: skipped row count.
+#: includes/Admin/SettingsPage.php:215
+#, php-format
+msgid "PASAT import complete. Imported %1$d rows and skipped %2$d rows."
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:247
+msgid "Enabled"
+msgstr ""
+
+#: includes/Admin/SignupsPage.php:21
+msgid "You do not have permission to view signups."
+msgstr ""
+
+#: includes/Admin/SignupsPage.php:43
+#: includes/Privacy/Exporter.php:47
+msgid "PASAT Signups"
+msgstr ""
+
+#: includes/Admin/SignupsPage.php:47
+msgid "All activities"
+msgstr ""
+
+#: includes/Admin/SignupsPage.php:48
+msgid "All statuses"
+msgstr ""
+
+#: includes/Admin/SignupsPage.php:49
+msgid "Search name, e-mail, activity"
+msgstr ""
+
+#: includes/Admin/SignupsPage.php:50
+msgid "Filter"
+msgstr ""
+
+#: includes/Admin/SignupsPage.php:66
+#: templates/public/my-signups.php:33
+msgid "No signups found."
+msgstr ""
+
+#: includes/Admin/SignupsPage.php:79
+msgid "You do not have permission to manage signups."
+msgstr ""
+
+#: includes/Admin/SignupsPage.php:91
+#: includes/REST/AdminSignupsController.php:46
+#: includes/REST/AdminSignupsController.php:67
+msgid "You do not have permission to manage this signup."
+msgstr ""
+
+#: includes/Admin/SignupsPage.php:96
+#: includes/REST/AdminSignupsController.php:71
+msgid "Cancelled by administrator."
+msgstr ""
+
+#: includes/Admin/SignupsPage.php:143
+msgid "Confirm"
+msgstr ""
+
+#: includes/Admin/SignupsPage.php:160
+msgid "You do not have permission to export signup data."
+msgstr ""
+
+#: includes/Admin/SignupsPage.php:211
+msgid "Signup updated."
+msgstr ""
+
+#: includes/Admin/VenuesPage.php:15
+msgid "You do not have permission to manage venues."
+msgstr ""
+
+#: includes/Admin/VenuesPage.php:26
+msgid "PASAT Venues"
+msgstr ""
+
+#: includes/Admin/VenuesPage.php:76
+#: includes/Admin/VenuesPage.php:91
+msgid "Address"
+msgstr ""
+
+#: includes/Admin/VenuesPage.php:77
+#: includes/Admin/VenuesPage.php:91
+msgid "Type"
+msgstr ""
+
+#: includes/Admin/VenuesPage.php:79
+msgid "Coordinates"
+msgstr ""
+
+#: includes/Admin/VenuesPage.php:79
+msgid "Latitude"
+msgstr ""
+
+#: includes/Admin/VenuesPage.php:79
+msgid "Longitude"
+msgstr ""
+
+#: includes/Admin/VenuesPage.php:81
+msgid "Save Venue"
+msgstr ""
+
+#: includes/Admin/VenuesPage.php:81
+msgid "Create Venue"
+msgstr ""
+
+#: includes/Admin/VenuesPage.php:106
+msgid "No venues yet."
+msgstr ""
+
+#: includes/Admin/VenuesPage.php:115
+msgid "Venue saved."
+msgstr ""
+
+#: includes/Capabilities.php:33
+msgid "PASAT Activity Manager"
+msgstr ""
+
+#: includes/Capabilities.php:52
+msgid "PASAT Activity Host"
+msgstr ""
+
+#. translators: %s is the source activity title.
+#: includes/Database/ActivitiesRepository.php:72
+#, php-format
+msgid "%s copy"
+msgstr ""
+
+#: includes/Database/ParticipantsRepository.php:67
+msgid "Anonymized"
+msgstr ""
+
+#. translators: %d is the anonymized participant ID.
+#: includes/Database/ParticipantsRepository.php:70
+#, php-format
+msgid "Participant %d"
+msgstr ""
+
+#: includes/Domain/Participant.php:12
+msgid "Minor participant"
+msgstr ""
+
+#: includes/Domain/Waitlist.php:13
+msgid "Cancelled"
+msgstr ""
+
+#: includes/Email/Mailer.php:76
+msgid "Your signup lookup link for {site_name}"
+msgstr ""
+
+#. translators: %s is a private signup lookup URL.
+#: includes/Email/Mailer.php:80
+#, php-format
+msgid ""
+"Use this private link to view your activity signups:\n"
+"\n"
+"%s\n"
+"\n"
+"The link expires soon. If you did not request it, you can ignore this e-mail.\n"
+"\n"
+"{organization_name}"
+msgstr ""
+
+#: includes/Email/Mailer.php:97
+msgid "PASAT test e-mail for {site_name}"
+msgstr ""
+
+#: includes/Email/Mailer.php:99
+msgid ""
+"This is a PASAT test e-mail from {site_name}.\n"
+"\n"
+"If you received it, WordPress mail delivery is working for PASAT notifications.\n"
+"\n"
+"{organization_name}\n"
+"{site_url}"
+msgstr ""
+
+#: includes/Frontend/Assets.php:18
+msgid "Signup received. Please check your e-mail."
+msgstr ""
+
+#: includes/Frontend/Assets.php:19
+msgid "Signup failed."
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:59
+msgid "The signup form expired. Please try again."
+msgstr ""
+
+#. translators: %s is signup status.
+#: includes/Frontend/Shortcodes.php:67
+#, php-format
+msgid "Signup received. Your status is %s. Please check your e-mail for details."
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:93
+msgid "Enter your e-mail address to receive a private signup lookup link."
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:105
+msgid "Your verified signups are listed below."
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:105
+msgid "No signups were found for this verified e-mail address."
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:107
+msgid "The signup lookup link is invalid or expired."
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:113
+msgid "The lookup form expired. Please try again."
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:124
+msgid "If that e-mail address can receive mail, a private signup lookup link has been sent."
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:126
+msgid "Please enter a valid e-mail address."
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:151
+msgid "Venue map data is available for theme or script integration."
+msgstr ""
+
+#: includes/Helpers.php:13
+msgid "Organization"
+msgstr ""
+
+#: includes/Helpers.php:16
+msgid "Host"
+msgstr ""
+
+#: includes/Helpers.php:20
+msgid "Signup confirmation: {activity_title}"
+msgstr ""
+
+#: includes/Helpers.php:22
+msgid "Signup cancelled: {activity_title}"
+msgstr ""
+
+#: includes/Helpers.php:24
+msgid "You are confirmed: {activity_title}"
+msgstr ""
+
+#: includes/Helpers.php:26
+msgid "Activity cancelled: {activity_title}"
+msgstr ""
+
+#: includes/Helpers.php:32
+msgid "I consent to the processing of my signup information for activity administration."
+msgstr ""
+
+#: includes/Helpers.php:33
+msgid "I acknowledge the activity information and any safety warnings."
+msgstr ""
+
+#: includes/Migration/HsfImporter.php:36
+msgid "PASAT imports structured JSON or CSV exports for venues, activities, participants, signups, and host assignments. Passwords and external authentication records are not imported; map hosts and administrators to WordPress users instead."
+msgstr ""
+
+#: includes/Migration/HsfImporter.php:41
+msgid "Choose a JSON or CSV file to import."
+msgstr ""
+
+#: includes/Migration/HsfImporter.php:46
+msgid "The import file could not be uploaded."
+msgstr ""
+
+#: includes/Migration/HsfImporter.php:51
+msgid "The import file is too large. Use a file smaller than 2 MB."
+msgstr ""
+
+#: includes/Migration/HsfImporter.php:60
+msgid "This import source is not supported yet."
+msgstr ""
+
+#: includes/Migration/HsfImporter.php:64
+#: includes/Migration/HsfImporter.php:406
+msgid "The import file could not be read."
+msgstr ""
+
+#: includes/Migration/HsfImporter.php:75
+msgid "No import rows were found."
+msgstr ""
+
+#. translators: 1: row number, 2: error message.
+#: includes/Migration/HsfImporter.php:96
+#, php-format
+msgid "Row %1$d: %2$s"
+msgstr ""
+
+#. translators: 1: imported count, 2: skipped count, 3: source name.
+#: includes/Migration/HsfImporter.php:113
+#, php-format
+msgid "Imported %1$d rows and skipped %2$d rows from %3$s."
+msgstr ""
+
+#: includes/Migration/HsfImporter.php:131
+msgid "The JSON import file is invalid."
+msgstr ""
+
+#: includes/Migration/HsfImporter.php:149
+#: includes/Migration/HsfImporter.php:154
+msgid "The CSV import file needs a header row."
+msgstr ""
+
+#: includes/Migration/HsfImporter.php:186
+msgid "Unknown import source."
+msgstr ""
+
+#: includes/Migration/HsfImporter.php:193
+msgid "Venue name is required."
+msgstr ""
+
+#: includes/Migration/HsfImporter.php:212
+msgid "Activity title is required."
+msgstr ""
+
+#: includes/Migration/HsfImporter.php:246
+msgid "A valid participant e-mail is required."
+msgstr ""
+
+#: includes/Migration/HsfImporter.php:269
+msgid "Signup activity could not be matched."
+msgstr ""
+
+#: includes/Migration/HsfImporter.php:281
+msgid "Signup participant could not be matched."
+msgstr ""
+
+#: includes/Migration/HsfImporter.php:286
+msgid "An active signup already exists for this participant and activity."
+msgstr ""
+
+#: includes/Migration/HsfImporter.php:306
+msgid "Host activity could not be matched."
+msgstr ""
+
+#: includes/Migration/HsfImporter.php:314
+msgid "Host WordPress user could not be matched."
+msgstr ""
+
+#: includes/Migration/HsfImporter.php:401
+msgid "WordPress filesystem access is unavailable."
+msgstr ""
+
+#: includes/Privacy/Eraser.php:17
+#: includes/Privacy/Exporter.php:14
+msgid "PASAT activity signups"
+msgstr ""
+
+#: includes/Privacy/Eraser.php:50
+msgid "PASAT participant data was processed according to the configured erasure mode."
+msgstr ""
+
+#: includes/Privacy/Exporter.php:29
+msgid "PASAT Participant"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:32
+msgid "First name"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:33
+msgid "Last name"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:34
+#: templates/public/signup-form.php:45
+msgid "Nickname"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:38
+msgid "Consent given"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:39
+msgid "Consented at"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:53
+msgid "Created at"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:54
+msgid "Cancelled at"
+msgstr ""
+
+#: includes/REST/AdminActivitiesController.php:36
+msgid "You do not have permission to view this activity."
+msgstr ""
+
+#: includes/REST/AdminActivitiesController.php:40
+#: includes/REST/PublicActivitiesController.php:25
+#: includes/REST/PublicSignupController.php:64
+msgid "Activity not found."
+msgstr ""
+
+#: includes/REST/AdminSignupsController.php:51
+msgid "Capacity is not available for this waitlisted signup."
+msgstr ""
+
+#: includes/REST/AdminVenuesController.php:24
+msgid "Venue not found."
+msgstr ""
+
+#: includes/REST/AdminVenuesController.php:42
+msgid "Venue is used by at least one activity."
+msgstr ""
+
+#: includes/REST/PublicSignupController.php:54
+msgid "Please provide a valid activity, name, and e-mail address."
+msgstr ""
+
+#: includes/REST/PublicSignupController.php:58
+msgid "Consent is required before signup."
+msgstr ""
+
+#: includes/REST/PublicSignupController.php:68
+msgid "Signup is not open for this activity."
+msgstr ""
+
+#: includes/REST/PublicSignupController.php:73
+msgid "The participant does not meet the minimum age for this activity."
+msgstr ""
+
+#: includes/REST/PublicSignupController.php:76
+msgid "The participant exceeds the maximum age for this activity."
+msgstr ""
+
+#: includes/REST/PublicSignupController.php:81
+msgid "Please acknowledge the activity warning before signing up."
+msgstr ""
+
+#: includes/REST/PublicSignupController.php:86
+msgid "Signup is busy for this activity. Please try again in a moment."
+msgstr ""
+
+#: includes/REST/PublicSignupController.php:91
+msgid "This e-mail address already has an active signup for this activity."
+msgstr ""
+
+#: includes/REST/PublicSignupController.php:100
+msgid "This activity is full and the waitlist is not enabled."
+msgstr ""
+
+#: includes/REST/PublicSignupController.php:136
+msgid "Signup could not be completed because the confirmation e-mail failed."
+msgstr ""
+
+#: includes/REST/PublicSignupController.php:157
+msgid "Invalid cancellation link."
+msgstr ""
+
+#: includes/REST/PublicSignupController.php:163
+msgid "Invalid or expired cancellation link."
+msgstr ""
+
+#: includes/REST/PublicSignupController.php:166
+msgid "Cancelled by participant link."
+msgstr ""
+
+#: includes/Security/RateLimiter.php:17
+msgid "Please wait before trying again."
+msgstr ""
+
+#: templates/public/activity-list.php:33
+msgid "Waitlist open"
+msgstr ""
+
+#: templates/public/activity-list.php:35
+msgid "Full"
+msgstr ""
+
+#: templates/public/activity-list.php:39
+msgid "Open"
+msgstr ""
+
+#. translators: %d is the number of remaining confirmed signup spots.
+#: templates/public/activity-list.php:42
+#, php-format
+msgid "%d spots left"
+msgstr ""
+
+#: templates/public/activity-list.php:49
+msgid "Sign Up"
+msgstr ""
+
+#: templates/public/activity-list.php:54
+msgid "No public activities are currently available."
+msgstr ""
+
+#: templates/public/my-signups.php:18
+msgid "Date"
+msgstr ""
+
+#: templates/public/my-signups.php:42
+msgid "Request Lookup"
+msgstr ""
+
+#: templates/public/signup-form.php:17
+msgid "Your signup has been cancelled."
+msgstr ""
+
+#: templates/public/signup-form.php:34
+msgid "Choose activity"
+msgstr ""
+
+#: templates/public/signup-form.php:41
+msgid "First Name"
+msgstr ""
+
+#: templates/public/signup-form.php:42
+msgid "Last Name"
+msgstr ""
+
+#: templates/public/signup-form.php:58
+msgid "Submit Signup"
 msgstr ""

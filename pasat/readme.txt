@@ -52,7 +52,7 @@ Yes. Users with the PASAT Activity Host role can manage assigned activities when
 
 = Can I import legacy data? =
 
-The MVP includes an importer placeholder for future JSON or CSV migration. Passwords and external authentication records should be mapped to WordPress users instead of imported directly.
+Yes. PASAT includes a Legacy Import form for structured JSON or CSV files covering venues, activities, participants, signups, and host assignments. Passwords and external authentication records should be mapped to WordPress users instead of imported directly.
 
 == Screenshots ==
 

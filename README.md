@@ -279,9 +279,17 @@ PASAT does not implement a parallel authentication system.
 
 ## Migration Notes
 
-PASAT includes the placeholder importer class `PASAT\Migration\HsfImporter` for future structured JSON or CSV imports.
+PASAT includes the importer class `PASAT\Migration\HsfImporter` and a **Legacy Import** form under **PASAT > Settings**. It can import structured JSON or CSV files for:
+
+- venues
+- activities
+- participants
+- signups
+- host assignments
 
 Do not migrate legacy passwords or external authentication records directly. Map hosts and administrators to WordPress users and PASAT capabilities.
+
+CSV files must include a header row. JSON files may be an array of rows or an object containing the selected import type, such as `{ "venues": [...] }`. Signups can reference activities by `activity_id` or activity title, and participants by `participant_id` or e-mail address. Host imports map to existing WordPress users by `user_id`, e-mail, or login.
 
 ## Development
 
@@ -321,7 +329,7 @@ find pasat -name "*.php" -print0 | xargs -0 -n1 php -l
 - The venue map shortcode exposes coordinate data but does not bundle a map provider.
 - Group/team signup is not implemented in the MVP.
 - Winner/history administration is deferred.
-- The importer is a placeholder and does not yet parse production exports.
+- The importer handles structured JSON/CSV rows but may still need organization-specific field mapping for messy legacy exports.
 - Full production readiness still requires browser testing in the target WordPress theme, real mail receipt testing, authenticated GitHub publishing, and organization-specific privacy/legal review.
 
 ## License

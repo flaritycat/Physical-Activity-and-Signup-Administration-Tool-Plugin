@@ -3,6 +3,7 @@ namespace PASAT\Admin;
 
 use PASAT\Email\Mailer;
 use PASAT\Helpers;
+use PASAT\Migration\HsfImporter;
 use PASAT\Security\Nonces;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -103,7 +104,31 @@ final class SettingsPage {
 				<?php submit_button( __( 'Send Test E-mail', 'pasat' ), 'secondary' ); ?>
 			</form>
 			<h2><?php esc_html_e( 'Legacy Import', 'pasat' ); ?></h2>
-			<p><?php esc_html_e( 'This plugin is a WordPress-native rewrite. Legacy data can be imported later from structured JSON or CSV exports. Legacy passwords and external authentication data should be replaced with WordPress users and roles.', 'pasat' ); ?></p>
+			<p><?php esc_html_e( 'This plugin is a WordPress-native rewrite. Import structured JSON or CSV exports for venues, activities, participants, signups, and host assignments. Legacy passwords and external authentication data should be replaced with WordPress users and roles.', 'pasat' ); ?></p>
+			<form method="post" enctype="multipart/form-data" class="pasat-admin-form">
+				<?php Nonces::field( 'settings_import' ); ?>
+				<input type="hidden" name="pasat_action" value="legacy_import">
+				<table class="form-table" role="presentation">
+					<tr>
+						<th><label for="pasat-import-source"><?php esc_html_e( 'Import Type', 'pasat' ); ?></label></th>
+						<td>
+							<select id="pasat-import-source" name="import_source" required>
+								<?php foreach ( ( new HsfImporter() )->importable_sources() as $source ) : ?>
+									<option value="<?php echo esc_attr( $source ); ?>"><?php echo esc_html( ucwords( str_replace( '_', ' ', $source ) ) ); ?></option>
+								<?php endforeach; ?>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<th><label for="pasat-import-file"><?php esc_html_e( 'JSON or CSV File', 'pasat' ); ?></label></th>
+						<td>
+							<input type="file" id="pasat-import-file" name="import_file" accept=".json,.csv,application/json,text/csv" required>
+							<p class="description"><?php esc_html_e( 'Maximum file size: 2 MB. CSV files must include a header row. JSON files may be an array of rows or an object containing the selected import type.', 'pasat' ); ?></p>
+						</td>
+					</tr>
+				</table>
+				<?php submit_button( __( 'Run Import', 'pasat' ), 'secondary' ); ?>
+			</form>
 		</div>
 		<?php
 	}
@@ -114,25 +139,51 @@ final class SettingsPage {
 			return;
 		}
 
-		check_admin_referer( Nonces::action( 'settings_mail_test' ), '_pasat_nonce' );
-		if ( 'send_test_email' !== sanitize_key( wp_unslash( $_POST['pasat_action'] ?? '' ) ) ) {
-			return;
+		$action = sanitize_key( wp_unslash( $_POST['pasat_action'] ?? '' ) );
+		if ( 'send_test_email' === $action ) {
+			check_admin_referer( Nonces::action( 'settings_mail_test' ), '_pasat_nonce' );
+
+			$email = sanitize_email( wp_unslash( $_POST['test_email'] ?? '' ) );
+			$sent  = is_email( $email ) && Mailer::send_test_email( $email );
+			if ( $sent ) {
+				update_option( 'pasat_mail_last_test_at', Helpers::now() );
+			}
+
+			wp_safe_redirect(
+				add_query_arg(
+					'pasat_mail_test',
+					$sent ? 'success' : 'failed',
+					admin_url( 'admin.php?page=pasat-settings' )
+				)
+			);
+			exit;
 		}
 
-		$email = sanitize_email( wp_unslash( $_POST['test_email'] ?? '' ) );
-		$sent  = is_email( $email ) && Mailer::send_test_email( $email );
-		if ( $sent ) {
-			update_option( 'pasat_mail_last_test_at', Helpers::now() );
-		}
+		if ( 'legacy_import' === $action ) {
+			check_admin_referer( Nonces::action( 'settings_import' ), '_pasat_nonce' );
+			$source = sanitize_key( wp_unslash( $_POST['import_source'] ?? '' ) );
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File upload metadata is validated by the importer and not persisted directly.
+			$file   = isset( $_FILES['import_file'] ) && is_array( $_FILES['import_file'] ) ? $_FILES['import_file'] : array();
+			$result = ( new HsfImporter() )->import_uploaded_file( $file, $source );
+			$key    = 'pasat_import_result_' . get_current_user_id();
 
-		wp_safe_redirect(
-			add_query_arg(
-				'pasat_mail_test',
-				$sent ? 'success' : 'failed',
-				admin_url( 'admin.php?page=pasat-settings' )
-			)
-		);
-		exit;
+			set_transient(
+				$key,
+				is_wp_error( $result )
+					? array( 'error' => $result->get_error_message() )
+					: $result,
+				5 * MINUTE_IN_SECONDS
+			);
+
+			wp_safe_redirect(
+				add_query_arg(
+					'pasat_import',
+					is_wp_error( $result ) ? 'failed' : 'success',
+					admin_url( 'admin.php?page=pasat-settings' )
+				)
+			);
+			exit;
+		}
 	}
 
 	private static function notices(): void {
@@ -143,6 +194,40 @@ final class SettingsPage {
 		}
 		if ( 'failed' === $result ) {
 			echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'PASAT test e-mail could not be sent. Check the site mail configuration or SMTP plugin.', 'pasat' ) . '</p></div>';
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a read-only admin notice flag set after a nonce-protected POST redirect.
+		$import = sanitize_key( wp_unslash( $_GET['pasat_import'] ?? '' ) );
+		if ( '' !== $import ) {
+			$key     = 'pasat_import_result_' . get_current_user_id();
+			$summary = get_transient( $key );
+			delete_transient( $key );
+
+			if ( is_array( $summary ) && ! empty( $summary['error'] ) ) {
+				echo '<div class="notice notice-error is-dismissible"><p>' . esc_html( $summary['error'] ) . '</p></div>';
+				return;
+			}
+
+			if ( is_array( $summary ) ) {
+				echo '<div class="notice notice-success is-dismissible"><p>' . esc_html(
+					sprintf(
+						/* translators: 1: imported row count, 2: skipped row count. */
+						__( 'PASAT import complete. Imported %1$d rows and skipped %2$d rows.', 'pasat' ),
+						absint( $summary['imported'] ?? 0 ),
+						absint( $summary['skipped'] ?? 0 )
+					)
+				) . '</p>';
+
+				$errors = array_slice( array_map( 'sanitize_text_field', $summary['errors'] ?? array() ), 0, 5 );
+				if ( $errors ) {
+					echo '<ul>';
+					foreach ( $errors as $error ) {
+						echo '<li>' . esc_html( $error ) . '</li>';
+					}
+					echo '</ul>';
+				}
+				echo '</div>';
+			}
 		}
 	}
 
