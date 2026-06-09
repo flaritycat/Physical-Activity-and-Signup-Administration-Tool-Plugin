@@ -308,6 +308,14 @@ find pasat -name "*.php" -print0 | xargs -0 -n1 php -l
 
 `tools/check-release.sh` is the preferred preflight. It runs whitespace checks, PHP lint when PHP is available, JavaScript syntax checks when Node is available, direct-access guard checks, runtime legacy/dependency term checks, and the release ZIP build.
 
+Optional ZIP install smoke test for release maintainers with Docker:
+
+```text
+tools/smoke-zip-install.sh
+```
+
+This development-only script builds the ZIP, starts disposable WordPress CLI and MariaDB containers, installs and activates the ZIP, verifies PASAT table creation, and checks required shortcodes. Docker is not a PASAT runtime prerequisite.
+
 Build an installable plugin ZIP from the repository root:
 
 ```text
