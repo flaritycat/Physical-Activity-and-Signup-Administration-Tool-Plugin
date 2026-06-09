@@ -10,6 +10,8 @@ Text domain: `pasat`
 
 Main plugin file: `pasat/pasat.php`
 
+Release history: `CHANGELOG.md`
+
 ## What PASAT Does
 
 PASAT lets a WordPress site owner:
