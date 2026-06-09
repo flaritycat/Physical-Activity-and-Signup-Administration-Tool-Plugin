@@ -35,6 +35,55 @@ The plugin was designed after reviewing the previous standalone `HSF` applicatio
 
 PASAT does not bundle SMTP settings. Use an established WordPress SMTP plugin if your site needs authenticated SMTP delivery.
 
+## Server And Hosting Prerequisites
+
+PASAT is not a demanding plugin for normal community programs, classes, workshops, or small-to-medium activity schedules. It is a server-rendered WordPress plugin with small frontend assets, custom database tables, indexed lookup columns, and no long-running background worker.
+
+### Minimum Practical Hosting
+
+- Standard Linux WordPress hosting, shared hosting, VPS, or managed WordPress hosting
+- WordPress-compatible MySQL or MariaDB database
+- PHP 8.1 or newer with normal WordPress extensions enabled
+- HTTPS enabled, especially because participant contact data is submitted publicly
+- WordPress permalinks and REST API available
+- `wp_mail()` working, or an SMTP plugin configured
+- WP-Cron enabled, or a real server cron triggering `wp-cron.php`
+
+### Recommended Production Setup
+
+- PHP memory limit of at least 128 MB; 256 MB is more comfortable for admin exports and larger sites
+- Database backups enabled before plugin activation and before large imports
+- A transactional mail setup using a reputable SMTP or mail delivery plugin
+- A real cron job for reliable retention cleanup on low-traffic sites
+- Object/page caching is fine, but exclude pages containing signup forms from full-page cache when nonce or form behavior is affected
+- Web application firewall or host-level rate limiting for public sites with high exposure
+
+### Resource Expectations
+
+PASAT should be light for ordinary use. The plugin does not run Python, Docker, realtime sockets, queues, or a separate application server. Most work happens during normal WordPress requests: listing activities, submitting signups, sending mail, and rendering admin pages.
+
+Resource usage grows mainly with:
+
+- number of activities and signups
+- CSV export size
+- public signup bursts when registration opens
+- mail delivery latency from the WordPress mail transport
+- retention cleanup volume
+
+For high-volume signup openings, use reliable hosting, object caching where appropriate, a real cron job, and a transactional mail provider. The database schema includes useful indexes, but very large programs should still monitor database performance and retention settings.
+
+### Not Required
+
+PASAT does not require:
+
+- Python, FastAPI, or Uvicorn
+- Docker or Docker Compose
+- PostgreSQL
+- SQLAlchemy
+- JWT authentication
+- Node.js build tooling
+- Composer for normal installation
+
 ## Installation
 
 1. Copy the `pasat` folder into your WordPress plugin directory:

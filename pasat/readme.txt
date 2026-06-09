@@ -16,6 +16,14 @@ Physical Activity Signup and Administration Tool, short name PASAT, lets a WordP
 
 PASAT is WordPress-native. It uses WordPress users, roles, capabilities, nonces, REST routes, WP-Cron, custom database tables, and wp_mail().
 
+== Server Requirements ==
+
+PASAT is not demanding for normal activity programs. It runs as a native WordPress plugin and does not require Python, Docker, PostgreSQL, Node.js, Composer, queues, realtime sockets, or a separate app server.
+
+Minimum practical hosting: WordPress 6.0+, PHP 8.1+, MySQL/MariaDB, HTTPS, working REST API, working wp_mail() or an SMTP plugin, and WP-Cron or a real cron job.
+
+Recommended production hosting: PHP memory limit of at least 128 MB, regular database backups, reliable SMTP/transactional mail, and a real cron job for retention cleanup on low-traffic sites. For high-volume signup openings, use solid WordPress hosting and monitor database/mail performance.
+
 == Installation ==
 
 1. Upload the `pasat` folder to `/wp-content/plugins/pasat/`.
