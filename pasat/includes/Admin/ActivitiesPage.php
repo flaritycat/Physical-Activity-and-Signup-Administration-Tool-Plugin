@@ -24,8 +24,8 @@ final class ActivitiesPage {
 		self::handle_post();
 
 		$repo   = new ActivitiesRepository();
-		$action = sanitize_key( $_GET['action'] ?? '' );
-		$id     = absint( $_GET['id'] ?? 0 );
+		$action = sanitize_key( wp_unslash( $_GET['action'] ?? '' ) );
+		$id     = absint( wp_unslash( $_GET['id'] ?? 0 ) );
 		$can_create = current_user_can( 'pasat_manage_all_activities' );
 
 		echo '<div class="wrap pasat-admin">';
@@ -58,7 +58,7 @@ final class ActivitiesPage {
 			return;
 		}
 
-		Nonces::verify( 'activity' );
+		check_admin_referer( Nonces::action( 'activity' ), '_pasat_nonce' );
 		$repo   = new ActivitiesRepository();
 		$audit  = new AuditLogRepository();
 		$action = sanitize_key( wp_unslash( $_POST['pasat_action'] ?? '' ) );

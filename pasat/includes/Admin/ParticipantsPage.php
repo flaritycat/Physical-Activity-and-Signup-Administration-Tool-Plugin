@@ -59,7 +59,7 @@ final class ParticipantsPage {
 		if ( ! current_user_can( 'pasat_export_participants' ) ) {
 			wp_die( esc_html__( 'You do not have permission to modify participant data.', 'pasat' ) );
 		}
-		Nonces::verify( 'participant' );
+		check_admin_referer( Nonces::action( 'participant' ), '_pasat_nonce' );
 		$id     = absint( $_POST['participant_id'] ?? 0 );
 		$action = sanitize_key( wp_unslash( $_POST['pasat_action'] ?? '' ) );
 		if ( $id && 'anonymize' === $action ) {

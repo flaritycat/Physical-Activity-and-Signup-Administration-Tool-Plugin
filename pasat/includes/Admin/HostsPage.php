@@ -79,7 +79,7 @@ final class HostsPage {
 		if ( 'POST' !== $request_method ) {
 			return;
 		}
-		Nonces::verify( 'host' );
+		check_admin_referer( Nonces::action( 'host' ), '_pasat_nonce' );
 		$activity_id = absint( $_POST['activity_id'] ?? 0 );
 		$user_id     = absint( $_POST['user_id'] ?? 0 );
 		$role        = sanitize_text_field( wp_unslash( $_POST['host_role'] ?? 'host' ) );

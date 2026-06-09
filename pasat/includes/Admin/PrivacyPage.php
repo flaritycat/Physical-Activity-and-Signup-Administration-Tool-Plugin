@@ -65,7 +65,7 @@ final class PrivacyPage {
 		if ( 'POST' !== $request_method ) {
 			return;
 		}
-		Nonces::verify( 'privacy' );
+		check_admin_referer( Nonces::action( 'privacy' ), '_pasat_nonce' );
 		if ( 'run_retention' !== sanitize_key( wp_unslash( $_POST['pasat_action'] ?? '' ) ) ) {
 			return;
 		}

@@ -78,7 +78,7 @@ final class SignupsPage {
 			wp_die( esc_html__( 'You do not have permission to manage signups.', 'pasat' ) );
 		}
 
-		Nonces::verify( 'signup' );
+		check_admin_referer( Nonces::action( 'signup' ), '_pasat_nonce' );
 		$repo   = new SignupsRepository();
 		$audit  = new AuditLogRepository();
 		$action = sanitize_key( wp_unslash( $_POST['pasat_action'] ?? '' ) );

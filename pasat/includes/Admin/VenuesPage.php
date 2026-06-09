@@ -17,8 +17,8 @@ final class VenuesPage {
 
 		self::handle_post();
 		$repo   = new VenuesRepository();
-		$action = sanitize_key( $_GET['action'] ?? '' );
-		$id     = absint( $_GET['id'] ?? 0 );
+		$action = sanitize_key( wp_unslash( $_GET['action'] ?? '' ) );
+		$id     = absint( wp_unslash( $_GET['id'] ?? 0 ) );
 
 		echo '<div class="wrap pasat-admin"><h1>' . esc_html__( 'PASAT Venues', 'pasat' ) . ' <a class="page-title-action" href="' . esc_url( admin_url( 'admin.php?page=pasat-venues&action=new' ) ) . '">' . esc_html__( 'Add New', 'pasat' ) . '</a></h1>';
 		self::notice();
@@ -36,7 +36,7 @@ final class VenuesPage {
 			return;
 		}
 
-		Nonces::verify( 'venue' );
+		check_admin_referer( Nonces::action( 'venue' ), '_pasat_nonce' );
 		$repo   = new VenuesRepository();
 		$audit  = new AuditLogRepository();
 		$action = sanitize_key( wp_unslash( $_POST['pasat_action'] ?? '' ) );

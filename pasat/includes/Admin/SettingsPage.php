@@ -114,7 +114,7 @@ final class SettingsPage {
 			return;
 		}
 
-		Nonces::verify( 'settings_mail_test' );
+		check_admin_referer( Nonces::action( 'settings_mail_test' ), '_pasat_nonce' );
 		if ( 'send_test_email' !== sanitize_key( wp_unslash( $_POST['pasat_action'] ?? '' ) ) ) {
 			return;
 		}
