@@ -45,9 +45,9 @@
 
 ## Current Completion Estimate
 
-Estimated completion against the requested WordPress-native MVP: **99.99%**.
+Estimated completion against the requested WordPress-native MVP: **99.995%**.
 
-Estimated remaining gap: **0.01%**.
+Estimated remaining gap: **0.005%**.
 
 The remaining gap is outside the plugin code in this container: authenticated GitHub publishing, real SMTP receipt verification on the production site, target-theme browser/mobile review, final privacy/legal signoff, and production-grade legacy import parsing if migration is required.
 
@@ -74,7 +74,7 @@ The remaining gap is outside the plugin code in this container: authenticated Gi
 ## Validation
 
 - `git diff --check` passed.
-- `php -l` passed for all plugin PHP files using a PHP 8.3 Docker CLI image.
+- `php -l` passed for all plugin PHP files using PHP 8.3 and PHP 8.1 Docker CLI images.
 - Disposable WordPress activation test passed on WordPress 7.0 with MariaDB: plugin activated, schema version was `0.1.0`, all six custom PASAT tables were created, representative public/admin REST routes registered, the activity signup advisory lock returned `lock:ok`, and the required public shortcodes registered.
 - Disposable end-to-end signup test passed: a capacity-one published activity accepted the first signup as confirmed, rejected a duplicate e-mail signup, waitlisted the second participant, extracted the cancellation token from captured `wp_mail()` content, cancelled the confirmed signup through the public cancellation flow, promoted the waitlisted participant, and exported participant signup data through the WordPress privacy exporter.
 - Disposable concurrent signup test passed: eight parallel public signups against a capacity-one activity produced exactly `confirmed:1` and `waitlisted:7`.
@@ -88,6 +88,7 @@ The remaining gap is outside the plugin code in this container: authenticated Gi
 - Forbidden runtime dependency/branding terms were searched; matches are limited to documentation and the migration placeholder naming required by the project brief.
 - `zip -r pasat-0.1.0.zip pasat` produced the expected installable plugin archive layout, then the generated archive was removed from the source tree.
 - Disposable ZIP install smoke test passed: a generated PASAT ZIP installed through `wp plugin install`, activated successfully, created the six custom tables, stored schema version `0.1.0`, and registered the required public shortcodes.
+- Disposable PHP 8.1 ZIP install smoke test passed: the packaged plugin installed and activated under `wordpress:cli-php8.1`, created the six custom tables, stored schema version `0.1.0`, and registered the required public shortcodes.
 - Disposable packaged uninstall smoke test passed: after ZIP install and activation, `wp plugin uninstall pasat --deactivate` removed PASAT custom tables, plugin options, and the scheduled retention cleanup event.
 - File structure, plugin header, admin menu registration, shortcode registration, REST route registration, activation schema, and direct-access guards were reviewed from source.
 
