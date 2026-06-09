@@ -316,6 +316,8 @@ tools/smoke-zip-install.sh
 
 This development-only script builds the ZIP, starts disposable WordPress CLI and MariaDB containers, installs and activates the ZIP, verifies PASAT table creation, and checks required shortcodes. Docker is not a PASAT runtime prerequisite.
 
+The repository also includes GitHub Actions CI in `.github/workflows/pasat-ci.yml`. Once GitHub publishing credentials are available, pushes and pull requests run the release preflight on PHP 8.1 and PHP 8.3, upload short-lived release ZIP artifacts, and run the Docker ZIP-install smoke test on `main` pushes or manual workflow dispatch.
+
 Build an installable plugin ZIP from the repository root:
 
 ```text
