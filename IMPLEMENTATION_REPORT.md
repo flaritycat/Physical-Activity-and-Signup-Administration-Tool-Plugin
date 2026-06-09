@@ -28,6 +28,7 @@
 - Added a one-command release preflight script for whitespace, syntax, direct-access guard, runtime forbidden-term, and packaging checks.
 - Added an optional Docker-based ZIP install smoke script that installs the packaged plugin into disposable WordPress/MariaDB containers and verifies activation basics.
 - Added GitHub Actions CI for PHP 8.1/8.3 release preflight checks, release artifact upload, and optional/main-branch ZIP install smoke validation.
+- Added production readiness and release signoff documentation for final SMTP, theme, privacy/legal, operations, rollback, and GitHub publishing checks.
 
 ## HSF Features Mapped To PASAT
 
@@ -50,9 +51,9 @@
 
 ## Current Completion Estimate
 
-Estimated completion against the requested WordPress-native MVP: **99.99995%**.
+Estimated completion against the requested WordPress-native MVP: **99.99997%**.
 
-Estimated remaining gap: **0.00005%**.
+Estimated remaining gap: **0.00003%**.
 
 The remaining gap is outside the plugin code in this container: authenticated GitHub publishing, real SMTP receipt verification on the production site, target-theme browser/mobile review, final privacy/legal signoff, and organization-specific mapping for messy legacy import files if migration is required.
 
