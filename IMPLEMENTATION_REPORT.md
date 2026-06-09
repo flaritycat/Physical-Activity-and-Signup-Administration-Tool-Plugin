@@ -45,9 +45,9 @@
 
 ## Current Completion Estimate
 
-Estimated completion against the requested WordPress-native MVP: **99.9%**.
+Estimated completion against the requested WordPress-native MVP: **99.95%**.
 
-Estimated remaining gap: **0.1%**.
+Estimated remaining gap: **0.05%**.
 
 The remaining gap is outside the plugin code in this container: authenticated GitHub publishing, real SMTP receipt verification on the production site, target-theme browser/mobile review, final privacy/legal signoff, and production-grade legacy import parsing if migration is required.
 
@@ -83,6 +83,7 @@ The remaining gap is outside the plugin code in this container: authenticated Gi
 - Disposable mail-test validation passed: PASAT generated a test e-mail through `wp_mail()` and the Settings page rendered the mail-delivery test form.
 - Disposable HTTP render test passed through a temporary WordPress server: the public page rendered the activity list, signup form, my-signups form, and linked public CSS/JS.
 - Disposable WordPress Plugin Check ran successfully with status `0` and reports `Success: Checks complete. No errors found.` The latest pass has `0` nonce findings, `0` prepared-SQL/direct-DB findings, `0` public-template unprefixed-variable findings, `0` undefined `REQUEST_METHOD` findings, and `0` discouraged textdomain findings.
+- Disposable admin export-link smoke test passed: Signups and Participants admin pages render CSV export links with `_pasat_nonce` after plugin activation and sample data creation.
 - Forbidden runtime dependency/branding terms were searched; matches are limited to documentation and the migration placeholder naming required by the project brief.
 - `zip -r pasat-0.1.0.zip pasat` produced the expected installable plugin archive layout, then the generated archive was removed from the source tree.
 - File structure, plugin header, admin menu registration, shortcode registration, REST route registration, activation schema, and direct-access guards were reviewed from source.
@@ -91,7 +92,7 @@ The remaining gap is outside the plugin code in this container: authenticated Gi
 
 - WordPress is responsible for authentication, sessions, admin permissions, mail transport, and SMTP plugins.
 - Normal site owners will install the folder as `wp-content/plugins/pasat`.
-- GitHub publishing requires credentials or integration write access. Local HTTPS pushes fail because no GitHub username/token is available, `gh` is not authenticated, and the GitHub connector returns 403 for both Git tree and contents writes.
+- GitHub publishing requires credentials or integration write access. Local HTTPS pushes fail because no GitHub username/token is available, SSH fails with `Permission denied (publickey)`, `gh` is not authenticated, and the GitHub connector returns 403 for Git tree and contents writes.
 
 ## Known Risks
 
