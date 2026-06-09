@@ -130,17 +130,17 @@ Use **PASAT > Venues** to create reusable locations with name, description, addr
 
 ### Activities
 
-Use **PASAT > Activities** to create and manage public activities. Activities support title, description, type, season year, schedule, venue, capacity, waitlist, signup windows, status, visibility, age limits, and warning acknowledgement text.
+Use **PASAT > Activities** to create and manage public activities. Activities support title, description, type, season year, schedule, venue, capacity, waitlist, signup windows, status, visibility, age limits, warning acknowledgement text, and host assignment when the current administrator has host-management permissions.
 
 Only published public activities with an open signup window appear in public signup flows.
 
 ### Signups
 
-Use **PASAT > Signups** to filter signups, search by participant or activity, cancel signups manually, confirm waitlisted signups, and export CSV data. CSV exports guard against spreadsheet formula injection.
+Use **PASAT > Signups** to filter signups, search by participant or activity, cancel signups manually, confirm waitlisted signups, and export filtered CSV data. CSV exports guard against spreadsheet formula injection and preserve host activity scope.
 
 ### Participants
 
-Use **PASAT > Participants** to search participant records, view related signups, export data when permitted, and anonymize records according to policy.
+Use **PASAT > Participants** to search participant records, view related signups, export filtered data when permitted, and anonymize or delete records according to policy.
 
 ### Hosts
 
@@ -243,6 +243,8 @@ Admin endpoints:
 - `POST /pasat/v1/admin/signups/{id}/cancel`
 
 Public endpoints expose activity data only. Participant data is restricted to users with PASAT capabilities.
+
+REST routes declare basic argument validation and sanitization, and privileged endpoints enforce WordPress capabilities plus assigned-activity scope where relevant.
 
 ## Privacy And Data Protection
 

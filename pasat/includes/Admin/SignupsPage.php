@@ -5,6 +5,7 @@ use PASAT\Database\ActivitiesRepository;
 use PASAT\Database\AuditLogRepository;
 use PASAT\Database\HostsRepository;
 use PASAT\Database\SignupsRepository;
+use PASAT\Capabilities;
 use PASAT\Email\Mailer;
 use PASAT\Helpers;
 use PASAT\Security\Nonces;
@@ -25,18 +26,11 @@ final class SignupsPage {
 		}
 
 		self::handle_post();
-		$activity_id = absint( $_GET['activity_id'] ?? 0 );
-		$status      = sanitize_key( $_GET['status'] ?? '' );
-		$search      = sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) );
 		$repo        = new SignupsRepository();
-		$host_ids    = current_user_can( 'pasat_manage_all_activities' ) ? null : ( new HostsRepository() )->activity_ids_for_user( get_current_user_id() );
-		$args        = array( 'activity_id' => $activity_id, 'status' => $status, 'search' => $search );
-		if ( null !== $host_ids ) {
-			$args['activity_ids'] = $host_ids;
-			if ( $activity_id && ! in_array( $activity_id, $host_ids, true ) ) {
-				$args['activity_ids'] = array();
-			}
-		}
+		$args        = self::current_query_args();
+		$activity_id = (int) $args['activity_id'];
+		$status      = (string) $args['status'];
+		$search      = (string) $args['search'];
 		$signups     = $repo->list( $args );
 		$activity_args = array( 'limit' => 500 );
 		if ( ! current_user_can( 'pasat_manage_all_activities' ) ) {
@@ -88,6 +82,9 @@ final class SignupsPage {
 		$audit  = new AuditLogRepository();
 		$action = sanitize_key( $_POST['pasat_action'] );
 		$id     = absint( $_POST['signup_id'] ?? 0 );
+		if ( ! self::can_manage_signup( $id, $repo ) ) {
+			wp_die( esc_html__( 'You do not have permission to manage this signup.', 'pasat' ) );
+		}
 
 		if ( 'cancel' === $action ) {
 			$before = $repo->get_with_details( $id );
@@ -121,6 +118,15 @@ final class SignupsPage {
 		exit;
 	}
 
+	private static function can_manage_signup( int $signup_id, SignupsRepository $repo ): bool {
+		if ( current_user_can( 'pasat_manage_all_activities' ) ) {
+			return true;
+		}
+
+		$signup = $repo->get_with_details( $signup_id );
+		return $signup && Capabilities::can_manage_activity( (int) $signup['activity_id'] );
+	}
+
 	private static function signup_actions( array $signup ): void {
 		if ( ! current_user_can( 'pasat_manage_signups' ) ) {
 			return;
@@ -149,7 +155,7 @@ final class SignupsPage {
 			wp_die( esc_html__( 'You do not have permission to export signup data.', 'pasat' ) );
 		}
 		$repo    = new SignupsRepository();
-		$signups = $repo->list( array() );
+		$signups = $repo->list( self::current_query_args() );
 		header( 'Content-Type: text/csv; charset=utf-8' );
 		header( 'Content-Disposition: attachment; filename=pasat-signups.csv' );
 		$out = fopen( 'php://output', 'w' );
@@ -169,6 +175,25 @@ final class SignupsPage {
 			);
 		}
 		exit;
+	}
+
+	private static function current_query_args(): array {
+		$activity_id = absint( $_GET['activity_id'] ?? 0 );
+		$args        = array(
+			'activity_id' => $activity_id,
+			'status'      => sanitize_key( $_GET['status'] ?? '' ),
+			'search'      => sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) ),
+		);
+
+		if ( ! current_user_can( 'pasat_manage_all_activities' ) ) {
+			$host_ids             = ( new HostsRepository() )->activity_ids_for_user( get_current_user_id() );
+			$args['activity_ids'] = $host_ids;
+			if ( $activity_id && ! in_array( $activity_id, $host_ids, true ) ) {
+				$args['activity_ids'] = array();
+			}
+		}
+
+		return $args;
 	}
 
 	private static function notice(): void {

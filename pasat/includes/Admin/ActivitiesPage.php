@@ -4,6 +4,7 @@ namespace PASAT\Admin;
 use PASAT\Capabilities;
 use PASAT\Database\ActivitiesRepository;
 use PASAT\Database\AuditLogRepository;
+use PASAT\Database\HostsRepository;
 use PASAT\Database\SignupsRepository;
 use PASAT\Database\VenuesRepository;
 use PASAT\Email\Mailer;
@@ -72,6 +73,7 @@ final class ActivitiesPage {
 		if ( 'save' === $action ) {
 			$before = $id ? $repo->get( $id ) : null;
 			$id = $repo->save( wp_unslash( $_POST ), $id );
+			self::maybe_save_hosts( $id );
 			self::maybe_notify_cancellation( $id, $before, sanitize_key( wp_unslash( $_POST['status'] ?? '' ) ) );
 			$audit->log( 'activity.save', 'activity', $id, 'Saved activity' );
 			wp_safe_redirect( admin_url( 'admin.php?page=pasat-activities&updated=1' ) );
@@ -100,6 +102,9 @@ final class ActivitiesPage {
 	private static function form( array $activity ): void {
 		$venues = ( new VenuesRepository() )->list();
 		$id     = absint( $activity['id'] ?? 0 );
+		$hosts_repo = new HostsRepository();
+		$current_host_ids = array_map( 'absint', $id ? wp_list_pluck( $hosts_repo->list_for_activity( $id ), 'user_id' ) : array() );
+		$users = current_user_can( 'pasat_manage_hosts' ) ? get_users( array( 'fields' => array( 'ID', 'display_name', 'user_email' ) ) ) : array();
 		?>
 		<form method="post" class="pasat-admin-form">
 			<?php Nonces::field( 'activity' ); ?>
@@ -121,10 +126,34 @@ final class ActivitiesPage {
 				<tr><th><label for="pasat-visibility"><?php esc_html_e( 'Visibility', 'pasat' ); ?></label></th><td><select id="pasat-visibility" name="public_visibility"><option value="public" <?php selected( $activity['public_visibility'] ?? 'public', 'public' ); ?>><?php esc_html_e( 'Public', 'pasat' ); ?></option><option value="unlisted" <?php selected( $activity['public_visibility'] ?? 'public', 'unlisted' ); ?>><?php esc_html_e( 'Unlisted', 'pasat' ); ?></option><option value="private" <?php selected( $activity['public_visibility'] ?? 'public', 'private' ); ?>><?php esc_html_e( 'Private', 'pasat' ); ?></option></select></td></tr>
 				<tr><th><?php esc_html_e( 'Age Limits', 'pasat' ); ?></th><td><input type="number" min="0" name="minimum_age" placeholder="<?php esc_attr_e( 'Minimum', 'pasat' ); ?>" value="<?php echo esc_attr( (string) ( $activity['minimum_age'] ?? '' ) ); ?>"> <input type="number" min="0" name="maximum_age" placeholder="<?php esc_attr_e( 'Maximum', 'pasat' ); ?>" value="<?php echo esc_attr( (string) ( $activity['maximum_age'] ?? '' ) ); ?>"></td></tr>
 				<tr><th><?php esc_html_e( 'Warning Acknowledgement', 'pasat' ); ?></th><td><label><input type="checkbox" name="requires_warning_ack" value="1" <?php checked( (int) ( $activity['requires_warning_ack'] ?? 0 ), 1 ); ?>> <?php esc_html_e( 'Require acknowledgement', 'pasat' ); ?></label><textarea class="large-text" name="warning_text" rows="3"><?php echo esc_textarea( $activity['warning_text'] ?? Helpers::setting( 'default_warning_text' ) ); ?></textarea></td></tr>
+				<?php if ( current_user_can( 'pasat_manage_hosts' ) ) : ?>
+					<tr>
+						<th><label for="pasat-host-users"><?php esc_html_e( 'Hosts', 'pasat' ); ?></label></th>
+						<td>
+							<input type="hidden" name="pasat_hosts_field_present" value="1">
+							<select id="pasat-host-users" name="host_user_ids[]" multiple size="6">
+								<?php foreach ( $users as $user ) : ?>
+									<option value="<?php echo esc_attr( (string) $user->ID ); ?>" <?php selected( in_array( (int) $user->ID, $current_host_ids, true ) ); ?>><?php echo esc_html( $user->display_name . ' (' . $user->user_email . ')' ); ?></option>
+								<?php endforeach; ?>
+							</select>
+							<p class="description"><?php esc_html_e( 'Selected users can manage this activity when they have the PASAT Activity Host role or equivalent assigned-activity capability.', 'pasat' ); ?></p>
+						</td>
+					</tr>
+				<?php endif; ?>
 			</table>
 			<?php submit_button( $id ? __( 'Save Activity', 'pasat' ) : __( 'Create Activity', 'pasat' ) ); ?>
 		</form>
 		<?php
+	}
+
+	private static function maybe_save_hosts( int $activity_id ): void {
+		if ( ! current_user_can( 'pasat_manage_hosts' ) || empty( $_POST['pasat_hosts_field_present'] ) ) {
+			return;
+		}
+
+		$user_ids = is_array( $_POST['host_user_ids'] ) ? wp_unslash( $_POST['host_user_ids'] ) : array();
+		( new HostsRepository() )->replace_for_activity( $activity_id, $user_ids );
+		( new AuditLogRepository() )->log( 'activity.hosts_replace', 'activity', $activity_id, 'Updated activity host assignments' );
 	}
 
 	private static function maybe_notify_cancellation( int $activity_id, ?array $before, string $new_status ): void {

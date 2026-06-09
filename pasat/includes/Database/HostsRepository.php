@@ -98,4 +98,13 @@ final class HostsRepository extends Repository {
 			array( '%d' )
 		);
 	}
+
+	public function replace_for_activity( int $activity_id, array $user_ids, string $role = 'host' ): void {
+		$user_ids = array_values( array_unique( array_filter( array_map( 'absint', $user_ids ) ) ) );
+		$this->wpdb->delete( $this->table, array( 'activity_id' => $activity_id ), array( '%d' ) );
+
+		foreach ( $user_ids as $user_id ) {
+			$this->assign( $activity_id, $user_id, $role );
+		}
+	}
 }

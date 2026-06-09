@@ -78,3 +78,18 @@ msgstr ""
 
 msgid "Signup is busy for this activity. Please try again in a moment."
 msgstr ""
+
+msgid "You do not have permission to manage this signup."
+msgstr ""
+
+msgid "Delete this participant and related signups?"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Hosts"
+msgstr ""
+
+msgid "Selected users can manage this activity when they have the PASAT Activity Host role or equivalent assigned-activity capability."
+msgstr ""

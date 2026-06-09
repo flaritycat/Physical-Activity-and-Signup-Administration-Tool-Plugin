@@ -4,6 +4,7 @@ namespace PASAT\Admin;
 use PASAT\Database\AuditLogRepository;
 use PASAT\Database\ParticipantsRepository;
 use PASAT\Helpers;
+use PASAT\Privacy\Eraser;
 use PASAT\Security\Nonces;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -63,6 +64,10 @@ final class ParticipantsPage {
 			( new ParticipantsRepository() )->anonymize( $id );
 			( new AuditLogRepository() )->log( 'participant.anonymize', 'participant', $id, 'Participant anonymized from admin' );
 		}
+		if ( $id && 'delete' === sanitize_key( $_POST['pasat_action'] ) ) {
+			Eraser::delete_participant( $id );
+			( new AuditLogRepository() )->log( 'participant.delete', 'participant', $id, 'Participant deleted from admin' );
+		}
 		wp_safe_redirect( admin_url( 'admin.php?page=pasat-participants&updated=1' ) );
 		exit;
 	}
@@ -77,6 +82,12 @@ final class ParticipantsPage {
 			<input type="hidden" name="participant_id" value="<?php echo esc_attr( (string) $id ); ?>">
 			<input type="hidden" name="pasat_action" value="anonymize">
 			<button class="button-link" type="submit"><?php esc_html_e( 'Anonymize', 'pasat' ); ?></button>
+		</form>
+		<form method="post" class="pasat-inline-form">
+			<?php Nonces::field( 'participant' ); ?>
+			<input type="hidden" name="participant_id" value="<?php echo esc_attr( (string) $id ); ?>">
+			<input type="hidden" name="pasat_action" value="delete">
+			<button class="button-link-delete" type="submit" onclick="return window.confirm('<?php echo esc_js( __( 'Delete this participant and related signups?', 'pasat' ) ); ?>');"><?php esc_html_e( 'Delete', 'pasat' ); ?></button>
 		</form>
 		<?php
 	}
@@ -122,7 +133,8 @@ final class ParticipantsPage {
 		if ( ! current_user_can( 'pasat_export_participants' ) ) {
 			wp_die( esc_html__( 'You do not have permission to export participant data.', 'pasat' ) );
 		}
-		$participants = ( new ParticipantsRepository() )->search( '', 1000 );
+		$query        = sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) );
+		$participants = ( new ParticipantsRepository() )->search( $query, 1000 );
 		header( 'Content-Type: text/csv; charset=utf-8' );
 		header( 'Content-Disposition: attachment; filename=pasat-participants.csv' );
 		$out = fopen( 'php://output', 'w' );
