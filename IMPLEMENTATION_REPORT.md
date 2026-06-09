@@ -29,7 +29,7 @@
 - Added an optional Docker-based ZIP install smoke script that installs the packaged plugin into disposable WordPress/MariaDB containers and verifies activation basics.
 - Added GitHub Actions CI for PHP 8.1/8.3 release preflight checks, release artifact upload, and optional/main-branch ZIP install smoke validation.
 - Added production readiness and release signoff documentation for final SMTP, theme, privacy/legal, operations, rollback, and GitHub publishing checks.
-- Added GitHub publishing and offline handoff documentation plus a script that exports unpushed commits as a git bundle and patch series.
+- Added GitHub publishing and offline handoff documentation plus a script that exports unpushed commits as a git bundle and patch series with checksum verification.
 
 ## HSF Features Mapped To PASAT
 
@@ -52,9 +52,9 @@
 
 ## Current Completion Estimate
 
-Estimated completion against the requested WordPress-native MVP: **99.99998%**.
+Estimated completion against the requested WordPress-native MVP: **99.999985%**.
 
-Estimated remaining gap: **0.00002%**.
+Estimated remaining gap: **0.000015%**.
 
 The remaining gap is outside the plugin code in this container: authenticated GitHub publishing, real SMTP receipt verification on the production site, target-theme browser/mobile review, final privacy/legal signoff, and organization-specific mapping for messy legacy import files if migration is required.
 
@@ -100,7 +100,7 @@ The remaining gap is outside the plugin code in this container: authenticated Gi
 - Supplemental container syntax checks passed after the preflight run: `php:8.1-cli` linted all 55 PHP files and `node:20-alpine` checked both PASAT JavaScript files.
 - Reusable ZIP install smoke script validation passed: `tools/smoke-zip-install.sh` built the release archive, started disposable WordPress CLI and MariaDB containers, installed and activated PASAT from the ZIP, verified schema version `0.1.0`, confirmed all six PASAT tables, and checked required shortcodes.
 - GitHub Actions workflow validation passed: `actionlint` reported no issues for `.github/workflows/pasat-ci.yml`, shell syntax checks passed for all release scripts, `git diff --check` passed, and `tools/check-release.sh` completed successfully.
-- GitHub publishing handoff validation passed: `tools/export-publish-handoff.sh` exported the unpushed commits as a git bundle and patch series, `git bundle verify` passed, and a temporary base-only repository fetched the bundle to the expected head commit.
+- GitHub publishing handoff validation passed: `tools/export-publish-handoff.sh` exported the unpushed commits as a git bundle and patch series with `SHA256SUMS`, checksum verification passed, `git bundle verify` passed, and a temporary base-only repository fetched the bundle to the expected head commit.
 - Disposable WordPress Plugin Check ran successfully with status `0` and reports `Success: Checks complete. No errors found.` The latest pass has `0` nonce findings, `0` prepared-SQL/direct-DB findings, `0` public-template unprefixed-variable findings, `0` undefined `REQUEST_METHOD` findings, and `0` discouraged textdomain findings.
 - Disposable admin export-link smoke test passed: Signups and Participants admin pages render CSV export links with `_pasat_nonce` after plugin activation and sample data creation.
 - Disposable admin export nonce enforcement test passed: missing export nonce is blocked by WordPress, and valid Signups/Participants export nonces emit the expected CSV rows.

@@ -40,8 +40,17 @@ The script writes ignored files under `dist/publish-handoff-<sha>/`:
 - a git bundle containing the unpushed commits
 - a numbered patch series
 - a manifest with commit list and apply commands
+- `SHA256SUMS` for transfer integrity checks
 
 Copy that handoff directory to a machine with GitHub write access.
+
+Before applying the handoff, verify it:
+
+```text
+cd /path/to/publish-handoff-<sha>
+sha256sum -c SHA256SUMS || shasum -a 256 -c SHA256SUMS
+git bundle verify pasat-<base>-to-<head>.bundle
+```
 
 ## Apply Bundle On An Authenticated Machine
 

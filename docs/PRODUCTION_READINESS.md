@@ -17,6 +17,7 @@ Use this checklist before putting **Physical Activity Signup and Administration 
 - Confirm `gh auth status` is authenticated or SSH/HTTPS credentials are configured.
 - Push the local branch to `flaritycat/Physical-Activity-and-Signup-Administration-Tool-Plugin`.
 - If direct push is not available, run `tools/export-publish-handoff.sh` and publish from an authenticated machine using `docs/GITHUB_PUBLISHING.md`.
+- Verify handoff checksums with `sha256sum -c SHA256SUMS` after transfer.
 - Confirm GitHub Actions completes successfully after the push.
 - Keep the release ZIP/checksum from CI artifacts or a local trusted build.
 

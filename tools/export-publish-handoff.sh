@@ -40,6 +40,7 @@ require_command git
 	PATCH_DIR="${HANDOFF_DIR}/patches"
 	BUNDLE_PATH="${HANDOFF_DIR}/pasat-${BASE_SHA}-to-${HEAD_SHA}.bundle"
 	MANIFEST_PATH="${HANDOFF_DIR}/MANIFEST.md"
+	CHECKSUM_PATH="${HANDOFF_DIR}/SHA256SUMS"
 
 	rm -rf "${HANDOFF_DIR}"
 	mkdir -p "${PATCH_DIR}"
@@ -56,6 +57,7 @@ require_command git
 		echo "- Commit count: ${COMMIT_COUNT}"
 		echo "- Bundle: \`$(basename "${BUNDLE_PATH}")\`"
 		echo "- Patch directory: \`patches/\`"
+		echo "- Checksum file: \`SHA256SUMS\`"
 		echo
 		echo "## Commit List"
 		echo
@@ -81,10 +83,37 @@ require_command git
 		echo "tools/check-release.sh"
 		echo "git push origin main"
 		echo "\`\`\`"
+		echo
+		echo "## Verify Handoff Integrity"
+		echo
+		echo "\`\`\`text"
+		echo "cd /path/to/publish-handoff-${HEAD_SHA}"
+		echo "sha256sum -c SHA256SUMS || shasum -a 256 -c SHA256SUMS"
+		echo "git bundle verify $(basename "${BUNDLE_PATH}")"
+		echo "\`\`\`"
 	} > "${MANIFEST_PATH}"
+
+	(
+		cd "${HANDOFF_DIR}"
+		if command -v sha256sum >/dev/null 2>&1; then
+			{
+				sha256sum "$(basename "${BUNDLE_PATH}")" MANIFEST.md
+				find patches -type f -name '*.patch' -print0 | sort -z | xargs -0 sha256sum
+			} > "${CHECKSUM_PATH}"
+		elif command -v shasum >/dev/null 2>&1; then
+			{
+				shasum -a 256 "$(basename "${BUNDLE_PATH}")" MANIFEST.md
+				find patches -type f -name '*.patch' -print0 | sort -z | xargs -0 shasum -a 256
+			} > "${CHECKSUM_PATH}"
+		else
+			echo "Install sha256sum or shasum to generate handoff checksums." >&2
+			exit 1
+		fi
+	)
 
 	echo "Created ${HANDOFF_DIR}"
 	echo "Bundle: ${BUNDLE_PATH}"
 	echo "Patches: ${PATCH_DIR}"
 	echo "Manifest: ${MANIFEST_PATH}"
+	echo "Checksums: ${CHECKSUM_PATH}"
 )
