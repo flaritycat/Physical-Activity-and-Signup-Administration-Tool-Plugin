@@ -252,6 +252,8 @@ PASAT stores participant names, e-mail addresses, optional phone numbers, option
 
 The plugin integrates with WordPress privacy exporters and erasers, and registers the WP-Cron event `pasat_daily_retention_cleanup`.
 
+PASAT also adds suggested text to the WordPress Privacy Policy Guide so site owners can adapt public privacy disclosures for activity signups, e-mail notifications, retention, and erasure behavior.
+
 Retention cleanup anonymizes or deletes participant data according to the configured retention period and erasure mode.
 
 ## Database Tables

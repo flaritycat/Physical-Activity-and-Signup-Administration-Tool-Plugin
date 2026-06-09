@@ -9,13 +9,14 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-09T18:27:26+00:00\n"
+"POT-Creation-Date: 2026-06-09T18:33:53+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pasat\n"
 
 #. Plugin Name of the plugin
 #: pasat.php
+#: includes/Privacy/Policy.php:17
 msgid "Physical Activity Signup and Administration Tool"
 msgstr ""
 
@@ -1123,6 +1124,46 @@ msgstr ""
 
 #: includes/Privacy/Exporter.php:54
 msgid "Cancelled at"
+msgstr ""
+
+#: includes/Privacy/Policy.php:27
+msgid "deleted"
+msgstr ""
+
+#: includes/Privacy/Policy.php:28
+msgid "anonymized"
+msgstr ""
+
+#: includes/Privacy/Policy.php:30
+msgid "Activity Signups"
+msgstr ""
+
+#. translators: %s is the organization name configured in PASAT settings.
+#: includes/Privacy/Policy.php:34
+#, php-format
+msgid "When you sign up for an activity, %s collects the information needed to administer that signup."
+msgstr ""
+
+#: includes/Privacy/Policy.php:38
+msgid "This may include your first name, last name, optional nickname, e-mail address, optional phone number, optional age, consent state, signup status, activity details, cancellation state, and waitlist status."
+msgstr ""
+
+#: includes/Privacy/Policy.php:39
+msgid "PASAT stores hashed request metadata for abuse prevention and audit purposes instead of storing raw IP addresses or raw user-agent strings."
+msgstr ""
+
+#: includes/Privacy/Policy.php:40
+msgid "PASAT uses WordPress mail to send signup confirmations, cancellation confirmations, waitlist promotion notices, activity cancellation notices, and private signup lookup links."
+msgstr ""
+
+#. translators: 1: retention period in days, 2: configured erasure mode.
+#: includes/Privacy/Policy.php:44
+#, php-format
+msgid "Signup records are retained for about %1$d days after they are no longer needed, then participant data is %2$s according to this site's PASAT privacy settings."
+msgstr ""
+
+#: includes/Privacy/Policy.php:49
+msgid "PASAT integrates with the WordPress personal data export and erasure tools, so site administrators can process verified privacy requests for participant signup data."
 msgstr ""
 
 #: includes/REST/AdminActivitiesController.php:36

@@ -7,6 +7,7 @@ use PASAT\Frontend\Assets as FrontendAssets;
 use PASAT\Frontend\Shortcodes;
 use PASAT\Privacy\Eraser;
 use PASAT\Privacy\Exporter;
+use PASAT\Privacy\Policy;
 use PASAT\Privacy\Retention;
 use PASAT\REST\Routes;
 
@@ -32,6 +33,7 @@ final class Plugin {
 		add_action( 'admin_enqueue_scripts', array( AdminMenu::class, 'enqueue_assets' ) );
 		add_action( 'admin_menu', array( AdminMenu::class, 'register' ) );
 		add_action( 'admin_init', array( SettingsPage::class, 'register_settings' ) );
+		add_action( 'admin_init', array( Policy::class, 'register' ) );
 		add_action( 'rest_api_init', array( Routes::class, 'register' ) );
 		add_action( 'admin_post_pasat_cancel_signup', array( Shortcodes::class, 'handle_cancellation_link' ) );
 		add_action( 'admin_post_nopriv_pasat_cancel_signup', array( Shortcodes::class, 'handle_cancellation_link' ) );
