@@ -35,8 +35,8 @@
 			notice.classList.toggle('pasat-notice--success', result.ok);
 			notice.classList.toggle('pasat-notice--error', !result.ok);
 			notice.textContent = result.ok
-				? 'Signup received. Please check your e-mail.'
-				: (result.body && result.body.message ? result.body.message : 'Signup failed.');
+				? window.PASAT_PUBLIC.signupSuccess
+				: (result.body && result.body.message ? result.body.message : window.PASAT_PUBLIC.signupFailed);
 			if (result.ok) {
 				form.reset();
 			}

@@ -7,8 +7,8 @@
 - Added custom tables for activities, venues, participants, signups, activity hosts, and audit logs.
 - Added repositories for all required tables.
 - Added wp-admin PASAT menu with Dashboard, Activities, Venues, Signups, Participants, Hosts, Settings, and Privacy pages.
-- Added public shortcodes, REST routes, public signup validation, capacity handling, waitlist handling, cancellation links, hashed token storage, and waitlist promotion.
-- Added `wp_mail()` based confirmation, cancellation, and waitlist promotion templates.
+- Added public shortcodes, REST routes, public signup validation, capacity handling, waitlist handling, cancellation links, hashed token storage, verified e-mail signup lookup, and waitlist promotion.
+- Added `wp_mail()` based confirmation, cancellation, waitlist promotion, lookup link, and activity cancellation messages.
 - Added WordPress privacy exporter, eraser, and WP-Cron retention cleanup.
 - Added minimal public/admin CSS and JS.
 - Added migration placeholder class for future structured import.
@@ -29,7 +29,7 @@
 - No group/team signup in the MVP.
 - No winner/history administration in the MVP.
 - No bundled map provider or geocoding.
-- `[pasat_my_signups]` is a privacy-preserving placeholder until verified e-mail lookup is implemented.
+- `[pasat_my_signups]` uses a time-limited e-mail lookup link instead of account-based participant portals.
 - Importer documents the intended path but does not yet parse production exports.
 
 ## Manual Install/Test
@@ -50,11 +50,15 @@
 8. Confirm the signup appears in **PASAT > Signups**.
 9. Use the cancellation link from the e-mail and confirm the signup is cancelled.
 10. Fill an activity, add a waitlisted signup, cancel a confirmed signup, and confirm the earliest waitlisted signup is promoted.
+11. Add `[pasat_my_signups]`, request a lookup link, and confirm only verified e-mail signups are displayed.
 
 ## Validation
 
-- `git diff --check` passed for implementation slices.
-- `php -l` could not be run because the container does not have the `php` executable installed.
+- `git diff --check` passed.
+- `php -l` passed for all plugin PHP files using a PHP 8.3 Docker CLI image.
+- Disposable WordPress activation test passed on WordPress 7.0 with MariaDB: plugin activated, schema version was `0.1.0`, all six custom PASAT tables were created, and the required public shortcodes registered.
+- Forbidden runtime dependency/branding terms were searched; matches are limited to documentation and the migration placeholder naming required by the project brief.
+- `zip -r pasat-0.1.0.zip pasat` produced the expected installable plugin archive layout, then the generated archive was removed from the source tree.
 - File structure, plugin header, admin menu registration, shortcode registration, REST route registration, activation schema, and direct-access guards were reviewed from source.
 
 ## Assumptions
@@ -65,6 +69,6 @@
 
 ## Known Risks
 
-- Runtime testing inside WordPress was not available in this container.
+- Full browser testing inside the target production WordPress theme should still be completed before public release.
 - Some advanced permission combinations should be tested with real WordPress users.
 - E-mail failure behavior depends on the site's mail configuration and the strict delivery setting.

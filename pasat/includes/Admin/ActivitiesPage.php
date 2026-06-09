@@ -4,7 +4,9 @@ namespace PASAT\Admin;
 use PASAT\Capabilities;
 use PASAT\Database\ActivitiesRepository;
 use PASAT\Database\AuditLogRepository;
+use PASAT\Database\SignupsRepository;
 use PASAT\Database\VenuesRepository;
+use PASAT\Email\Mailer;
 use PASAT\Helpers;
 use PASAT\Security\Nonces;
 
@@ -57,16 +59,20 @@ final class ActivitiesPage {
 		}
 
 		if ( 'save' === $action ) {
+			$before = $id ? $repo->get( $id ) : null;
 			$id = $repo->save( wp_unslash( $_POST ), $id );
+			self::maybe_notify_cancellation( $id, $before, sanitize_key( wp_unslash( $_POST['status'] ?? '' ) ) );
 			$audit->log( 'activity.save', 'activity', $id, 'Saved activity' );
 			wp_safe_redirect( admin_url( 'admin.php?page=pasat-activities&updated=1' ) );
 			exit;
 		}
 
 		if ( in_array( $action, array( 'publish', 'cancel', 'archive', 'draft' ), true ) && $id ) {
-			$activity           = $repo->get( $id ) ?: array();
+			$before             = $repo->get( $id ) ?: array();
+			$activity           = $before;
 			$activity['status'] = 'publish' === $action ? 'published' : $action;
 			$repo->save( $activity, $id );
+			self::maybe_notify_cancellation( $id, $before, $activity['status'] );
 			$audit->log( 'activity.' . $action, 'activity', $id, 'Changed activity status' );
 			wp_safe_redirect( admin_url( 'admin.php?page=pasat-activities&updated=1' ) );
 			exit;
@@ -108,6 +114,27 @@ final class ActivitiesPage {
 			<?php submit_button( $id ? __( 'Save Activity', 'pasat' ) : __( 'Create Activity', 'pasat' ) ); ?>
 		</form>
 		<?php
+	}
+
+	private static function maybe_notify_cancellation( int $activity_id, ?array $before, string $new_status ): void {
+		if ( 'cancelled' !== $new_status || ( $before && 'cancelled' === ( $before['status'] ?? '' ) ) ) {
+			return;
+		}
+
+		$signups = new SignupsRepository();
+		$count   = 0;
+		foreach ( $signups->active_for_activity( $activity_id ) as $signup ) {
+			if ( ! empty( $signup['email'] ) && Mailer::send_activity_cancellation( $signup ) ) {
+				++$count;
+			}
+		}
+
+		( new AuditLogRepository() )->log(
+			'activity.cancellation_notice',
+			'activity',
+			$activity_id,
+			sprintf( 'Sent %d activity cancellation notices', $count )
+		);
 	}
 
 	private static function table(): void {

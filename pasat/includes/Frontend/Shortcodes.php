@@ -5,8 +5,11 @@ use PASAT\Database\ActivitiesRepository;
 use PASAT\Database\ParticipantsRepository;
 use PASAT\Database\SignupsRepository;
 use PASAT\Database\VenuesRepository;
+use PASAT\Email\Mailer;
 use PASAT\Helpers;
 use PASAT\REST\PublicSignupController;
+use PASAT\Security\RateLimiter;
+use PASAT\Security\Tokens;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -84,17 +87,55 @@ final class Shortcodes {
 
 	public static function my_signups(): string {
 		Assets::enqueue();
-		$items = array();
-		$notice = __( 'Enter your e-mail address to request a private signup lookup. This MVP does not display private signup data until e-mail verification is completed.', 'pasat' );
-		if ( 'POST' === $_SERVER['REQUEST_METHOD'] && isset( $_POST['pasat_my_signups'] ) ) {
-			$email = sanitize_email( wp_unslash( $_POST['email'] ?? '' ) );
-			if ( is_email( $email ) ) {
-				$items  = array();
-				$notice = __( 'If signups exist for that e-mail address, a secure lookup flow can be enabled in a future release. No private signup data has been exposed.', 'pasat' );
+		$items    = array();
+		$notice   = __( 'Enter your e-mail address to receive a private signup lookup link.', 'pasat' );
+		$error    = '';
+		$verified = false;
+		$email    = '';
+
+		if ( isset( $_GET['pasat_lookup_token'] ) ) {
+			$token = sanitize_text_field( wp_unslash( $_GET['pasat_lookup_token'] ) );
+			$email = self::email_from_lookup_token( $token );
+			if ( $email ) {
+				$verified = true;
+				$items    = ( new ParticipantsRepository() )->signups_for_email( $email );
+				$notice   = $items ? __( 'Your verified signups are listed below.', 'pasat' ) : __( 'No signups were found for this verified e-mail address.', 'pasat' );
+			} else {
+				$error = __( 'The signup lookup link is invalid or expired.', 'pasat' );
 			}
 		}
 
-		return Renderer::render( 'public/my-signups.php', array( 'items' => $items, 'notice' => $notice ) );
+		if ( 'POST' === $_SERVER['REQUEST_METHOD'] && isset( $_POST['pasat_my_signups'] ) ) {
+			if ( ! isset( $_POST['pasat_my_signups_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['pasat_my_signups_nonce'] ) ), 'pasat_my_signups' ) ) {
+				$error = __( 'The lookup form expired. Please try again.', 'pasat' );
+			} else {
+				$limited = RateLimiter::check( 'public_my_signups', 5, 300 );
+				if ( is_wp_error( $limited ) ) {
+					$error = $limited->get_error_message();
+				} else {
+					$email = sanitize_email( wp_unslash( $_POST['email'] ?? '' ) );
+					if ( is_email( $email ) ) {
+						$token = wp_generate_password( 48, false, false );
+						set_transient( self::lookup_transient_key( $token ), strtolower( $email ), 30 * MINUTE_IN_SECONDS );
+						Mailer::send_lookup_link( $email, self::lookup_url( $token ) );
+						$notice = __( 'If that e-mail address can receive mail, a private signup lookup link has been sent.', 'pasat' );
+					} else {
+						$error = __( 'Please enter a valid e-mail address.', 'pasat' );
+					}
+				}
+			}
+		}
+
+		return Renderer::render(
+			'public/my-signups.php',
+			array(
+				'items'    => $items,
+				'notice'   => $notice,
+				'error'    => $error,
+				'verified' => $verified,
+				'email'    => $email,
+			)
+		);
 	}
 
 	public static function venue_map(): string {
@@ -123,5 +164,25 @@ final class Shortcodes {
 
 		wp_safe_redirect( add_query_arg( $key, $value, $url ) );
 		exit;
+	}
+
+	private static function lookup_url( string $token ): string {
+		$page_id = absint( Helpers::setting( 'public_page_id', 0 ) );
+		$url     = $page_id ? get_permalink( $page_id ) : home_url( '/' );
+
+		return add_query_arg( 'pasat_lookup_token', rawurlencode( $token ), $url );
+	}
+
+	private static function lookup_transient_key( string $token ): string {
+		return 'pasat_lookup_' . Tokens::hash( $token );
+	}
+
+	private static function email_from_lookup_token( string $token ): string {
+		if ( '' === $token ) {
+			return '';
+		}
+
+		$email = get_transient( self::lookup_transient_key( $token ) );
+		return is_string( $email ) && is_email( $email ) ? $email : '';
 	}
 }

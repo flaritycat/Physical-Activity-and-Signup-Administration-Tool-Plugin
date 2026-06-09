@@ -170,7 +170,7 @@ Locks the signup form to one activity.
 [pasat_my_signups]
 ```
 
-Provides a privacy-preserving placeholder for a future verified e-mail lookup flow.
+Lets participants request a private, time-limited e-mail lookup link before viewing their own signups.
 
 ```text
 [pasat_venue_map]
@@ -198,7 +198,7 @@ When a confirmed signup is cancelled, PASAT promotes the earliest waitlisted sig
 
 PASAT uses `wp_mail()`.
 
-Configurable templates are available for signup confirmation, cancellation confirmation, and waitlist promotion.
+Configurable templates are available for signup confirmation, cancellation confirmation, waitlist promotion, and activity cancellation notices.
 
 Supported placeholders:
 
@@ -271,6 +271,10 @@ PASAT uses WordPress users, roles, capabilities, admin nonces, REST permission c
 
 PASAT does not implement a parallel authentication system.
 
+## My Signups Lookup
+
+`[pasat_my_signups]` avoids exposing participant data directly. A participant enters an e-mail address, PASAT sends a private lookup link if mail delivery is available, and the link displays only signups for that verified e-mail address. The public message does not reveal whether the address exists in the database.
+
 ## Migration Notes
 
 PASAT includes the placeholder importer class `PASAT\Migration\HsfImporter` for future structured JSON or CSV imports.
@@ -312,10 +316,7 @@ find pasat -name "*.php" -print0 | xargs -0 -n1 php -l
 - Group/team signup is not implemented in the MVP.
 - Winner/history administration is deferred.
 - The importer is a placeholder and does not yet parse production exports.
-- `[pasat_my_signups]` does not expose private signup data until a verified lookup flow is implemented.
 
 ## License
 
 The plugin header declares `GPL-2.0-or-later`.
-
-The repository currently includes a GPL license file. Verify the final license file and plugin header match your distribution policy before public release.

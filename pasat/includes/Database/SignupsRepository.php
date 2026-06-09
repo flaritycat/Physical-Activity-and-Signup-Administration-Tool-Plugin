@@ -177,6 +177,29 @@ final class SignupsRepository extends Repository {
 		return $this->wpdb->get_results( $this->prepare_or_raw( $sql, $params ), ARRAY_A ) ?: array();
 	}
 
+	public function active_for_activity( int $activity_id ): array {
+		$participants = Helpers::table( 'participants' );
+		$activities   = Helpers::table( 'activities' );
+		$venues       = Helpers::table( 'venues' );
+
+		return $this->wpdb->get_results(
+			$this->wpdb->prepare(
+				"SELECT s.*, p.first_name, p.last_name, p.email,
+					a.title AS activity_title, a.starts_at, a.ends_at,
+					v.name AS venue_name
+				FROM {$this->table} s
+				INNER JOIN {$participants} p ON p.id = s.participant_id
+				INNER JOIN {$activities} a ON a.id = s.activity_id
+				LEFT JOIN {$venues} v ON v.id = a.venue_id
+				WHERE s.activity_id = %d
+					AND s.status IN ('confirmed', 'waitlisted')
+				ORDER BY s.created_at ASC",
+				$activity_id
+			),
+			ARRAY_A
+		) ?: array();
+	}
+
 	public function cancel( int $signup_id, string $reason = '', bool $promote = true ): array {
 		$signup = $this->get( $signup_id );
 		if ( ! $signup ) {
@@ -247,6 +270,10 @@ final class SignupsRepository extends Repository {
 			return false;
 		}
 
+		if ( ! $this->can_confirm_waitlisted( $signup_id ) ) {
+			return false;
+		}
+
 		return $this->update(
 			$signup_id,
 			array(
@@ -256,6 +283,22 @@ final class SignupsRepository extends Repository {
 			),
 			array( '%s', '%d', '%s' )
 		);
+	}
+
+	public function can_confirm_waitlisted( int $signup_id ): bool {
+		$signup = $this->get( $signup_id );
+		if ( ! $signup || 'waitlisted' !== $signup['status'] ) {
+			return false;
+		}
+
+		$activities = new ActivitiesRepository();
+		$activity   = $activities->get( (int) $signup['activity_id'] );
+		if ( ! $activity ) {
+			return false;
+		}
+
+		$capacity = isset( $activity['capacity'] ) ? (int) $activity['capacity'] : 0;
+		return $capacity <= 0 || $this->confirmed_count( (int) $signup['activity_id'] ) < $capacity;
 	}
 
 	public function totals(): array {

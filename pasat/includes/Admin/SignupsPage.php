@@ -8,6 +8,7 @@ use PASAT\Database\SignupsRepository;
 use PASAT\Email\Mailer;
 use PASAT\Helpers;
 use PASAT\Security\Nonces;
+use PASAT\Security\Tokens;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -97,17 +98,21 @@ final class SignupsPage {
 			if ( ! empty( $result['promoted_signup_id'] ) ) {
 				$promoted = $repo->get_with_details( (int) $result['promoted_signup_id'] );
 				if ( $promoted ) {
-					Mailer::send_waitlist_promotion( $promoted );
+					$token = Tokens::generate_for_signup( (int) $promoted['id'] );
+					$repo->update_token_hash( (int) $promoted['id'], $token['hash'] );
+					Mailer::send_waitlist_promotion( $promoted, $token['token'] );
 				}
 			}
 			$audit->log( 'signup.cancel', 'signup', $id, 'Admin cancelled signup' );
 		}
 
 		if ( 'confirm' === $action ) {
-			$repo->confirm_waitlisted( $id );
+			$confirmed = $repo->confirm_waitlisted( $id );
 			$signup = $repo->get_with_details( $id );
-			if ( $signup ) {
-				Mailer::send_waitlist_promotion( $signup );
+			if ( $confirmed && $signup ) {
+				$token = Tokens::generate_for_signup( (int) $signup['id'] );
+				$repo->update_token_hash( (int) $signup['id'], $token['hash'] );
+				Mailer::send_waitlist_promotion( $signup, $token['token'] );
 			}
 			$audit->log( 'signup.confirm_waitlisted', 'signup', $id, 'Admin confirmed waitlisted signup' );
 		}

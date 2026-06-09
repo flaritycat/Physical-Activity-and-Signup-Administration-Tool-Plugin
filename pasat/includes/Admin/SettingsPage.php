@@ -80,6 +80,8 @@ final class SettingsPage {
 					<?php self::textarea_row( 'cancellation_body', __( 'Cancellation Body', 'pasat' ), $settings ); ?>
 					<?php self::text_row( 'waitlist_promotion_subject', __( 'Waitlist Promotion Subject', 'pasat' ), $settings ); ?>
 					<?php self::textarea_row( 'waitlist_promotion_body', __( 'Waitlist Promotion Body', 'pasat' ), $settings ); ?>
+					<?php self::text_row( 'activity_cancelled_subject', __( 'Activity Cancellation Subject', 'pasat' ), $settings ); ?>
+					<?php self::textarea_row( 'activity_cancelled_body', __( 'Activity Cancellation Body', 'pasat' ), $settings ); ?>
 				</table>
 				<?php submit_button(); ?>
 			</form>

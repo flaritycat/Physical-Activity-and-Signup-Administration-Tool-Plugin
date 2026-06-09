@@ -53,6 +53,39 @@ final class Mailer {
 		);
 	}
 
+	public static function send_activity_cancellation( array $signup ): bool {
+		$context  = Templates::context_from_signup( $signup );
+		$settings = Helpers::settings();
+
+		return self::send(
+			(string) $signup['email'],
+			Templates::replace( $settings['activity_cancelled_subject'], $context ),
+			Templates::replace( $settings['activity_cancelled_body'], $context )
+		);
+	}
+
+	public static function send_lookup_link( string $recipient_email, string $lookup_url ): bool {
+		$settings = Helpers::settings();
+		$context  = array(
+			'participant_name' => __( 'Participant', 'pasat' ),
+			'site_name'        => wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ),
+			'site_url'         => home_url( '/' ),
+			'organization_name' => $settings['organization_name'] ?? get_bloginfo( 'name' ),
+		);
+
+		$subject = Templates::replace( __( 'Your signup lookup link for {site_name}', 'pasat' ), $context );
+		$body    = Templates::replace(
+			sprintf(
+				/* translators: %s is a private signup lookup URL. */
+				__( "Use this private link to view your activity signups:\n\n%s\n\nThe link expires soon. If you did not request it, you can ignore this e-mail.\n\n{organization_name}", 'pasat' ),
+				$lookup_url
+			),
+			$context
+		);
+
+		return self::send( $recipient_email, $subject, $body );
+	}
+
 	private static function send( string $to, string $subject, string $body ): bool {
 		$headers = array();
 		$sender  = trim( (string) Helpers::setting( 'sender_name', '' ) );

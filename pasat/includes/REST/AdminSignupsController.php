@@ -4,6 +4,7 @@ namespace PASAT\REST;
 use PASAT\Database\HostsRepository;
 use PASAT\Database\SignupsRepository;
 use PASAT\Email\Mailer;
+use PASAT\Security\Tokens;
 use WP_REST_Request;
 use WP_REST_Response;
 
@@ -39,7 +40,16 @@ final class AdminSignupsController {
 		$id     = absint( $request['id'] );
 		$status = sanitize_key( $request->get_param( 'status' ) );
 		if ( 'confirmed' === $status ) {
-			( new SignupsRepository() )->confirm_waitlisted( $id );
+			$repo = new SignupsRepository();
+			if ( ! $repo->confirm_waitlisted( $id ) ) {
+				return new WP_REST_Response( array( 'confirmed' => false, 'reason' => __( 'Capacity is not available for this waitlisted signup.', 'pasat' ) ), 409 );
+			}
+			$signup = $repo->get_with_details( $id );
+			if ( $signup ) {
+				$token = Tokens::generate_for_signup( (int) $signup['id'] );
+				$repo->update_token_hash( (int) $signup['id'], $token['hash'] );
+				Mailer::send_waitlist_promotion( $signup, $token['token'] );
+			}
 		}
 		return new WP_REST_Response( ( new SignupsRepository() )->get_with_details( $id ) );
 	}
@@ -51,6 +61,14 @@ final class AdminSignupsController {
 		$result = $repo->cancel( $id, __( 'Cancelled by administrator.', 'pasat' ) );
 		if ( $signup ) {
 			Mailer::send_cancellation_confirmation( $signup );
+		}
+		if ( ! empty( $result['promoted_signup_id'] ) ) {
+			$promoted = $repo->get_with_details( (int) $result['promoted_signup_id'] );
+			if ( $promoted ) {
+				$token = Tokens::generate_for_signup( (int) $promoted['id'] );
+				$repo->update_token_hash( (int) $promoted['id'], $token['hash'] );
+				Mailer::send_waitlist_promotion( $promoted, $token['token'] );
+			}
 		}
 		return new WP_REST_Response( $result );
 	}

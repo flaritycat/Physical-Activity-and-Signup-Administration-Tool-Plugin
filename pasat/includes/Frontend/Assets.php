@@ -13,8 +13,10 @@ final class Assets {
 			'pasat-public',
 			'PASAT_PUBLIC',
 			array(
-				'restUrl' => esc_url_raw( rest_url( 'pasat/v1' ) ),
-				'nonce'   => wp_create_nonce( 'wp_rest' ),
+				'restUrl'       => esc_url_raw( rest_url( 'pasat/v1' ) ),
+				'nonce'         => wp_create_nonce( 'wp_rest' ),
+				'signupSuccess' => __( 'Signup received. Please check your e-mail.', 'pasat' ),
+				'signupFailed'  => __( 'Signup failed.', 'pasat' ),
 			)
 		);
 	}

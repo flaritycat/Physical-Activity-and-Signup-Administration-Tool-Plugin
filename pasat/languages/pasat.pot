@@ -18,3 +18,30 @@ msgstr ""
 
 msgid "Signup confirmation: {activity_title}"
 msgstr ""
+
+msgid "Signup received. Please check your e-mail."
+msgstr ""
+
+msgid "Signup failed."
+msgstr ""
+
+msgid "Your signup lookup link for {site_name}"
+msgstr ""
+
+msgid "Enter your e-mail address to receive a private signup lookup link."
+msgstr ""
+
+msgid "Request Lookup"
+msgstr ""
+
+msgid "Activity cancelled: {activity_title}"
+msgstr ""
+
+msgid "Activity Cancellation Subject"
+msgstr ""
+
+msgid "Activity Cancellation Body"
+msgstr ""
+
+msgid "Your verified signups are listed below."
+msgstr ""

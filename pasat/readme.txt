@@ -2,7 +2,7 @@
 Contributors: project-contributors
 Tags: activities, signup, events, waitlist, administration
 Requires at least: 6.0
-Tested up to: 6.5
+Tested up to: 7.0
 Requires PHP: 8.1
 Stable tag: 0.1.0
 License: GPL-2.0-or-later
@@ -44,7 +44,7 @@ No. PASAT sends through `wp_mail()`. Site owners can use any normal WordPress SM
 
 = Does PASAT expose participant data publicly? =
 
-No. Public endpoints return public activity data only. Participant data is restricted to users with PASAT capabilities.
+No. Public endpoints return public activity data only. Participant data is restricted to users with PASAT capabilities, and the public "my signups" flow requires a private e-mail lookup link.
 
 = Can hosts manage only their own activities? =
 

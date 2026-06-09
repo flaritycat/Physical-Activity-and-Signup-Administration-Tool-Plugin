@@ -119,6 +119,19 @@
 	color: #8a1f11;
 }
 
+.pasat-my-signups__table {
+	border-collapse: collapse;
+	margin: 0 0 1rem;
+	width: 100%;
+}
+
+.pasat-my-signups__table th,
+.pasat-my-signups__table td {
+	border-bottom: 1px solid rgba(0, 0, 0, 0.14);
+	padding: 0.55rem;
+	text-align: left;
+}
+
 @media (max-width: 680px) {
 	.pasat-card,
 	.pasat-grid {
