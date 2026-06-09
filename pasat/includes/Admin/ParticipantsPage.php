@@ -1,0 +1,96 @@
+<?php
+namespace PASAT\Admin;
+
+use PASAT\Database\AuditLogRepository;
+use PASAT\Database\ParticipantsRepository;
+use PASAT\Helpers;
+use PASAT\Security\Nonces;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+final class ParticipantsPage {
+	public static function render(): void {
+		if ( ! current_user_can( 'pasat_view_participants' ) ) {
+			wp_die( esc_html__( 'You do not have permission to view participants.', 'pasat' ) );
+		}
+
+		if ( isset( $_GET['pasat_export'] ) ) {
+			self::export_csv();
+		}
+
+		self::handle_post();
+		$query        = sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) );
+		$participants = ( new ParticipantsRepository() )->search( $query );
+		?>
+		<div class="wrap pasat-admin">
+			<h1><?php esc_html_e( 'PASAT Participants', 'pasat' ); ?></h1>
+			<p><?php esc_html_e( 'Participant records contain personal data. Export, anonymize, or delete only when permitted by your site policy.', 'pasat' ); ?></p>
+			<form method="get" class="pasat-filter-row"><input type="hidden" name="page" value="pasat-participants"><input type="search" name="s" value="<?php echo esc_attr( $query ); ?>"><?php submit_button( __( 'Search', 'pasat' ), 'secondary', '', false ); ?> <a class="button" href="<?php echo esc_url( add_query_arg( 'pasat_export', 'participants' ) ); ?>"><?php esc_html_e( 'Export CSV', 'pasat' ); ?></a></form>
+			<table class="widefat striped">
+				<thead><tr><th><?php esc_html_e( 'Name', 'pasat' ); ?></th><th><?php esc_html_e( 'E-mail', 'pasat' ); ?></th><th><?php esc_html_e( 'Phone', 'pasat' ); ?></th><th><?php esc_html_e( 'Age', 'pasat' ); ?></th><th><?php esc_html_e( 'Consent', 'pasat' ); ?></th><th><?php esc_html_e( 'Actions', 'pasat' ); ?></th></tr></thead>
+				<tbody>
+				<?php foreach ( $participants as $participant ) : ?>
+					<tr>
+						<td><?php echo esc_html( trim( $participant['first_name'] . ' ' . $participant['last_name'] ) ); ?></td>
+						<td><?php echo esc_html( $participant['email'] ); ?></td>
+						<td><?php echo esc_html( $participant['phone'] ?? '' ); ?></td>
+						<td><?php echo esc_html( (string) ( $participant['age'] ?? '' ) ); ?></td>
+						<td><?php echo $participant['consent_given'] ? esc_html__( 'Yes', 'pasat' ) : esc_html__( 'No', 'pasat' ); ?></td>
+						<td><?php self::participant_actions( (int) $participant['id'] ); ?></td>
+					</tr>
+				<?php endforeach; ?>
+				<?php if ( ! $participants ) : ?><tr><td colspan="6"><?php esc_html_e( 'No participants found.', 'pasat' ); ?></td></tr><?php endif; ?>
+				</tbody>
+			</table>
+		</div>
+		<?php
+	}
+
+	private static function handle_post(): void {
+		if ( 'POST' !== $_SERVER['REQUEST_METHOD'] || empty( $_POST['pasat_action'] ) ) {
+			return;
+		}
+		if ( ! current_user_can( 'pasat_export_participants' ) ) {
+			wp_die( esc_html__( 'You do not have permission to modify participant data.', 'pasat' ) );
+		}
+		Nonces::verify( 'participant' );
+		$id = absint( $_POST['participant_id'] ?? 0 );
+		if ( $id && 'anonymize' === sanitize_key( $_POST['pasat_action'] ) ) {
+			( new ParticipantsRepository() )->anonymize( $id );
+			( new AuditLogRepository() )->log( 'participant.anonymize', 'participant', $id, 'Participant anonymized from admin' );
+		}
+		wp_safe_redirect( admin_url( 'admin.php?page=pasat-participants&updated=1' ) );
+		exit;
+	}
+
+	private static function participant_actions( int $id ): void {
+		if ( ! current_user_can( 'pasat_export_participants' ) ) {
+			return;
+		}
+		?>
+		<form method="post" class="pasat-inline-form">
+			<?php Nonces::field( 'participant' ); ?>
+			<input type="hidden" name="participant_id" value="<?php echo esc_attr( (string) $id ); ?>">
+			<input type="hidden" name="pasat_action" value="anonymize">
+			<button class="button-link" type="submit"><?php esc_html_e( 'Anonymize', 'pasat' ); ?></button>
+		</form>
+		<?php
+	}
+
+	private static function export_csv(): void {
+		if ( ! current_user_can( 'pasat_export_participants' ) ) {
+			wp_die( esc_html__( 'You do not have permission to export participant data.', 'pasat' ) );
+		}
+		$participants = ( new ParticipantsRepository() )->search( '', 1000 );
+		header( 'Content-Type: text/csv; charset=utf-8' );
+		header( 'Content-Disposition: attachment; filename=pasat-participants.csv' );
+		$out = fopen( 'php://output', 'w' );
+		fputcsv( $out, array( 'id', 'first_name', 'last_name', 'email', 'phone', 'age', 'consent_given', 'created_at' ) );
+		foreach ( $participants as $participant ) {
+			fputcsv( $out, array( $participant['id'], Helpers::csv_cell( $participant['first_name'] ), Helpers::csv_cell( $participant['last_name'] ), Helpers::csv_cell( $participant['email'] ), Helpers::csv_cell( $participant['phone'] ), $participant['age'], $participant['consent_given'], $participant['created_at'] ) );
+		}
+		exit;
+	}
+}

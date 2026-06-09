@@ -34,6 +34,7 @@ final class Capabilities {
 			array(
 				'read'                        => true,
 				'pasat_manage_all_activities' => true,
+				'pasat_manage_assigned_activities' => true,
 				'pasat_manage_venues'         => true,
 				'pasat_view_signups'          => true,
 				'pasat_manage_signups'        => true,
@@ -41,6 +42,10 @@ final class Capabilities {
 				'pasat_export_participants'   => true,
 			)
 		);
+		$manager = get_role( 'pasat_activity_manager' );
+		if ( $manager ) {
+			$manager->add_cap( 'pasat_manage_assigned_activities' );
+		}
 
 		add_role(
 			'pasat_activity_host',

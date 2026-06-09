@@ -1,0 +1,49 @@
+.pasat-admin .pasat-admin-metrics {
+	display: grid;
+	gap: 12px;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	margin: 18px 0;
+	max-width: 760px;
+}
+
+.pasat-admin .pasat-admin-metrics > div {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 6px;
+	padding: 16px;
+}
+
+.pasat-admin .pasat-admin-metrics strong {
+	display: block;
+	font-size: 28px;
+	line-height: 1.1;
+}
+
+.pasat-admin .pasat-admin-metrics span {
+	color: #50575e;
+	display: block;
+	margin-top: 4px;
+}
+
+.pasat-inline-form {
+	display: inline;
+	margin-left: 8px;
+}
+
+.pasat-filter-row {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 12px 0;
+}
+
+.pasat-admin-form {
+	max-width: 1040px;
+}
+
+@media (max-width: 782px) {
+	.pasat-admin .pasat-admin-metrics {
+		grid-template-columns: 1fr;
+	}
+}

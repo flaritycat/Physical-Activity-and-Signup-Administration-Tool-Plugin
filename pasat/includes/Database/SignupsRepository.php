@@ -184,9 +184,10 @@ final class SignupsRepository extends Repository {
 				'status'              => 'cancelled',
 				'cancelled_at'        => Helpers::now(),
 				'cancellation_reason' => sanitize_textarea_field( $reason ),
+				'cancellation_token_hash' => null,
 				'updated_at'          => Helpers::now(),
 			),
-			array( '%s', '%s', '%s', '%s' )
+			array( '%s', '%s', '%s', '%s', '%s' )
 		);
 
 		$promoted_signup_id = 0;
@@ -228,6 +229,23 @@ final class SignupsRepository extends Repository {
 		);
 
 		return (int) $next['id'];
+	}
+
+	public function confirm_waitlisted( int $signup_id ): bool {
+		$signup = $this->get( $signup_id );
+		if ( ! $signup || 'waitlisted' !== $signup['status'] ) {
+			return false;
+		}
+
+		return $this->update(
+			$signup_id,
+			array(
+				'status'            => 'confirmed',
+				'waitlist_position' => null,
+				'updated_at'        => Helpers::now(),
+			),
+			array( '%s', '%d', '%s' )
+		);
 	}
 
 	public function totals(): array {

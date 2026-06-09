@@ -1,0 +1,131 @@
+.pasat-activity-list,
+.pasat-signup,
+.pasat-my-signups {
+	box-sizing: border-box;
+	max-width: 960px;
+}
+
+.pasat-card {
+	align-items: stretch;
+	border: 1px solid rgba(0, 0, 0, 0.14);
+	border-radius: 8px;
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: minmax(0, 1fr) auto;
+	margin: 0 0 1rem;
+	padding: 1rem;
+}
+
+.pasat-card__title {
+	margin: 0 0 0.35rem;
+}
+
+.pasat-card__meta {
+	margin: 0.15rem 0;
+}
+
+.pasat-card__description {
+	margin-top: 0.75rem;
+}
+
+.pasat-card__aside {
+	align-items: flex-end;
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	justify-content: space-between;
+	min-width: 140px;
+}
+
+.pasat-status {
+	font-weight: 600;
+}
+
+.pasat-button {
+	background: #165a72;
+	border: 0;
+	border-radius: 6px;
+	color: #fff;
+	cursor: pointer;
+	display: inline-block;
+	font: inherit;
+	padding: 0.65rem 0.9rem;
+	text-decoration: none;
+}
+
+.pasat-button:hover,
+.pasat-button:focus {
+	background: #0d4154;
+	color: #fff;
+}
+
+.pasat-form {
+	border: 1px solid rgba(0, 0, 0, 0.14);
+	border-radius: 8px;
+	display: grid;
+	gap: 1rem;
+	padding: 1rem;
+}
+
+.pasat-form label span {
+	display: block;
+	font-weight: 600;
+	margin-bottom: 0.3rem;
+}
+
+.pasat-form input,
+.pasat-form select,
+.pasat-form textarea {
+	box-sizing: border-box;
+	max-width: 100%;
+	width: 100%;
+}
+
+.pasat-grid {
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.pasat-check {
+	align-items: flex-start;
+	display: flex;
+	gap: 0.55rem;
+}
+
+.pasat-check input {
+	margin-top: 0.25rem;
+	width: auto;
+}
+
+.pasat-check span {
+	font-weight: 400;
+	margin: 0;
+}
+
+.pasat-notice {
+	border-radius: 6px;
+	margin: 0 0 1rem;
+	padding: 0.75rem 1rem;
+}
+
+.pasat-notice--success {
+	background: #ecf8ee;
+	color: #155724;
+}
+
+.pasat-notice--error {
+	background: #fdecec;
+	color: #8a1f11;
+}
+
+@media (max-width: 680px) {
+	.pasat-card,
+	.pasat-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.pasat-card__aside {
+		align-items: flex-start;
+	}
+}
