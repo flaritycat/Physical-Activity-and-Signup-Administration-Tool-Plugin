@@ -22,11 +22,21 @@ final class AdminActivitiesController {
 	}
 
 	public function index(): WP_REST_Response {
-		return new WP_REST_Response( ( new ActivitiesRepository() )->list( array( 'limit' => 500 ) ) );
+		$args = array( 'limit' => 500 );
+		if ( ! current_user_can( 'pasat_manage_all_activities' ) ) {
+			$args['assigned_user_id'] = get_current_user_id();
+		}
+
+		return new WP_REST_Response( ( new ActivitiesRepository() )->list( $args ) );
 	}
 
 	public function show( WP_REST_Request $request ): WP_REST_Response|WP_Error {
-		$item = ( new ActivitiesRepository() )->get_with_venue( absint( $request['id'] ) );
+		$id = absint( $request['id'] );
+		if ( ! Capabilities::can_manage_activity( $id ) ) {
+			return new WP_Error( 'pasat_forbidden', __( 'You do not have permission to view this activity.', 'pasat' ), array( 'status' => 403 ) );
+		}
+
+		$item = ( new ActivitiesRepository() )->get_with_venue( $id );
 		return $item ? new WP_REST_Response( $item ) : new WP_Error( 'pasat_not_found', __( 'Activity not found.', 'pasat' ), array( 'status' => 404 ) );
 	}
 

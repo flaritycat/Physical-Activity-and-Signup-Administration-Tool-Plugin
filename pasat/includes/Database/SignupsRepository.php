@@ -108,6 +108,27 @@ final class SignupsRepository extends Repository {
 		);
 	}
 
+	public function acquire_activity_lock( int $activity_id, int $timeout = 5 ): bool {
+		$result = $this->wpdb->get_var(
+			$this->wpdb->prepare(
+				'SELECT GET_LOCK(%s, %d)',
+				$this->activity_lock_name( $activity_id ),
+				max( 1, $timeout )
+			)
+		);
+
+		return '1' === (string) $result;
+	}
+
+	public function release_activity_lock( int $activity_id ): void {
+		$this->wpdb->get_var(
+			$this->wpdb->prepare(
+				'SELECT RELEASE_LOCK(%s)',
+				$this->activity_lock_name( $activity_id )
+			)
+		);
+	}
+
 	public function get_with_details( int $signup_id ): ?array {
 		$participants = Helpers::table( 'participants' );
 		$activities   = Helpers::table( 'activities' );
@@ -313,5 +334,9 @@ final class SignupsRepository extends Repository {
 
 	private function sanitize_status( string $status ): string {
 		return in_array( $status, self::STATUSES, true ) ? $status : 'confirmed';
+	}
+
+	private function activity_lock_name( int $activity_id ): string {
+		return 'pasat_' . md5( $this->wpdb->prefix . '|activity|' . $activity_id );
 	}
 }

@@ -7,6 +7,8 @@ $activities = $pasat['activities'] ?? array();
 $activity   = $pasat['activity'] ?? null;
 $settings   = $pasat['settings'] ?? PASAT\Helpers::settings();
 $selected   = $activity ? (int) $activity['id'] : absint( $_GET['pasat_activity_id'] ?? 0 );
+$warning_text = $activity && ! empty( $activity['warning_text'] ) ? $activity['warning_text'] : ( $settings['default_warning_text'] ?? '' );
+$warning_required = $activity && ! empty( $activity['requires_warning_ack'] );
 ?>
 <div id="pasat-signup" class="pasat-signup">
 	<?php if ( ! empty( $_GET['pasat_cancelled'] ) ) : ?>
@@ -48,7 +50,9 @@ $selected   = $activity ? (int) $activity['id'] : absint( $_GET['pasat_activity_
 		<?php if ( ! empty( $settings['require_consent'] ) ) : ?>
 			<label class="pasat-check"><input type="checkbox" name="consent_given" value="1" required> <span><?php echo esc_html( $settings['consent_text'] ); ?></span></label>
 		<?php endif; ?>
-		<label class="pasat-check"><input type="checkbox" name="warning_acknowledged" value="1"> <span><?php echo esc_html( $settings['default_warning_text'] ); ?></span></label>
+		<?php if ( '' !== trim( (string) $warning_text ) ) : ?>
+			<label class="pasat-check"><input type="checkbox" name="warning_acknowledged" value="1" <?php required( $warning_required ); ?>> <span><?php echo esc_html( $warning_text ); ?></span></label>
+		<?php endif; ?>
 		<button class="pasat-button" type="submit"><?php esc_html_e( 'Submit Signup', 'pasat' ); ?></button>
 	</form>
 </div>

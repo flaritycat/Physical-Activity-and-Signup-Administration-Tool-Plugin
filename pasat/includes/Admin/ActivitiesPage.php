@@ -25,13 +25,21 @@ final class ActivitiesPage {
 		$repo   = new ActivitiesRepository();
 		$action = sanitize_key( $_GET['action'] ?? '' );
 		$id     = absint( $_GET['id'] ?? 0 );
+		$can_create = current_user_can( 'pasat_manage_all_activities' );
 
 		echo '<div class="wrap pasat-admin">';
-		echo '<h1>' . esc_html__( 'PASAT Activities', 'pasat' ) . ' <a class="page-title-action" href="' . esc_url( admin_url( 'admin.php?page=pasat-activities&action=new' ) ) . '">' . esc_html__( 'Add New', 'pasat' ) . '</a></h1>';
+		echo '<h1>' . esc_html__( 'PASAT Activities', 'pasat' );
+		if ( $can_create ) {
+			echo ' <a class="page-title-action" href="' . esc_url( admin_url( 'admin.php?page=pasat-activities&action=new' ) ) . '">' . esc_html__( 'Add New', 'pasat' ) . '</a>';
+		}
+		echo '</h1>';
 		self::notice();
 
 		if ( in_array( $action, array( 'new', 'edit' ), true ) ) {
 			$activity = $id ? $repo->get( $id ) : null;
+			if ( ! $id && ! $can_create ) {
+				wp_die( esc_html__( 'You do not have permission to create activities.', 'pasat' ) );
+			}
 			if ( $id && ! Capabilities::can_manage_activity( $id ) ) {
 				wp_die( esc_html__( 'You do not have permission to edit this activity.', 'pasat' ) );
 			}
@@ -56,6 +64,9 @@ final class ActivitiesPage {
 
 		if ( $id && ! Capabilities::can_manage_activity( $id ) ) {
 			wp_die( esc_html__( 'You do not have permission to change this activity.', 'pasat' ) );
+		}
+		if ( ! $id && 'save' === $action && ! current_user_can( 'pasat_manage_all_activities' ) ) {
+			wp_die( esc_html__( 'You do not have permission to create activities.', 'pasat' ) );
 		}
 
 		if ( 'save' === $action ) {

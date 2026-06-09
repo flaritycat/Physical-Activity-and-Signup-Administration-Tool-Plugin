@@ -97,4 +97,23 @@ final class ParticipantsRepository extends Repository {
 			ARRAY_A
 		) ?: array();
 	}
+
+	public function signups_for_participant( int $participant_id ): array {
+		$signups    = Helpers::table( 'signups' );
+		$activities = Helpers::table( 'activities' );
+		$venues     = Helpers::table( 'venues' );
+
+		return $this->wpdb->get_results(
+			$this->wpdb->prepare(
+				"SELECT s.*, a.title AS activity_title, a.starts_at, v.name AS venue_name
+				FROM {$signups} s
+				INNER JOIN {$activities} a ON a.id = s.activity_id
+				LEFT JOIN {$venues} v ON v.id = a.venue_id
+				WHERE s.participant_id = %d
+				ORDER BY a.starts_at DESC, s.created_at DESC",
+				$participant_id
+			),
+			ARRAY_A
+		) ?: array();
+	}
 }

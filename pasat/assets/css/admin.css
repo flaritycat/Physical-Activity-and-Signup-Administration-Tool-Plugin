@@ -42,6 +42,14 @@
 	max-width: 1040px;
 }
 
+.pasat-compact-list {
+	margin: 6px 0 0 18px;
+}
+
+.pasat-compact-list li {
+	margin-bottom: 4px;
+}
+
 @media (max-width: 782px) {
 	.pasat-admin .pasat-admin-metrics {
 		grid-template-columns: 1fr;

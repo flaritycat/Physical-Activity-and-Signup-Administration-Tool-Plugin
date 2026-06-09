@@ -45,3 +45,36 @@ msgstr ""
 
 msgid "Your verified signups are listed below."
 msgstr ""
+
+msgid "You do not have permission to view this activity."
+msgstr ""
+
+msgid "You do not have permission to create activities."
+msgstr ""
+
+msgid "Host assignments updated."
+msgstr ""
+
+msgid "Current Host Assignments"
+msgstr ""
+
+msgid "Deleted user"
+msgstr ""
+
+msgid "Remove"
+msgstr ""
+
+msgid "Related Signups"
+msgstr ""
+
+msgid "No signups"
+msgstr ""
+
+msgid "%d signup"
+msgstr ""
+
+msgid "%d signups"
+msgstr ""
+
+msgid "Signup is busy for this activity. Please try again in a moment."
+msgstr ""

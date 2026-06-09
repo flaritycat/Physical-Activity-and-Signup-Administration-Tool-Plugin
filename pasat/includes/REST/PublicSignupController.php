@@ -82,45 +82,53 @@ final class PublicSignupController {
 		}
 
 		$signups = new SignupsRepository();
-		if ( empty( $settings['allow_duplicate_email_per_activity'] ) && $signups->duplicate_active_by_email( $activity_id, $email ) ) {
-			return new WP_Error( 'pasat_duplicate_signup', __( 'This e-mail address already has an active signup for this activity.', 'pasat' ), array( 'status' => 409 ) );
+		if ( ! $signups->acquire_activity_lock( $activity_id ) ) {
+			return new WP_Error( 'pasat_signup_busy', __( 'Signup is busy for this activity. Please try again in a moment.', 'pasat' ), array( 'status' => 503 ) );
 		}
 
-		$capacity = $signups->capacity_snapshot( $activity );
-		if ( ! $capacity['is_full'] ) {
-			$status = 'confirmed';
-		} elseif ( ! empty( $activity['waitlist_enabled'] ) ) {
-			$status = 'waitlisted';
-		} else {
-			return new WP_Error( 'pasat_activity_full', __( 'This activity is full and the waitlist is not enabled.', 'pasat' ), array( 'status' => 409 ) );
+		try {
+			if ( empty( $settings['allow_duplicate_email_per_activity'] ) && $signups->duplicate_active_by_email( $activity_id, $email ) ) {
+				return new WP_Error( 'pasat_duplicate_signup', __( 'This e-mail address already has an active signup for this activity.', 'pasat' ), array( 'status' => 409 ) );
+			}
+
+			$capacity = $signups->capacity_snapshot( $activity );
+			if ( ! $capacity['is_full'] ) {
+				$status = 'confirmed';
+			} elseif ( ! empty( $activity['waitlist_enabled'] ) ) {
+				$status = 'waitlisted';
+			} else {
+				return new WP_Error( 'pasat_activity_full', __( 'This activity is full and the waitlist is not enabled.', 'pasat' ), array( 'status' => 409 ) );
+			}
+
+			$participants   = new ParticipantsRepository();
+			$participant_id = $participants->create_or_update_from_signup(
+				array(
+					'first_name'      => $first_name,
+					'last_name'       => $last_name,
+					'nickname'        => sanitize_text_field( $input['nickname'] ?? '' ),
+					'email'           => $email,
+					'phone'           => sanitize_text_field( $input['phone'] ?? '' ),
+					'age'             => $age,
+					'consent_given'   => ! empty( $input['consent_given'] ) ? 1 : 0,
+					'consent_version' => PASAT_VERSION,
+				)
+			);
+
+			$signup_id = $signups->create(
+				$activity_id,
+				$participant_id,
+				$status,
+				array(
+					'source'               => 'public',
+					'warning_acknowledged' => ! empty( $input['warning_acknowledged'] ),
+				)
+			);
+			$token = Tokens::generate_for_signup( $signup_id );
+			$signups->update_token_hash( $signup_id, $token['hash'] );
+			$signup = $signups->get_with_details( $signup_id );
+		} finally {
+			$signups->release_activity_lock( $activity_id );
 		}
-
-		$participants   = new ParticipantsRepository();
-		$participant_id = $participants->create_or_update_from_signup(
-			array(
-				'first_name'      => $first_name,
-				'last_name'       => $last_name,
-				'nickname'        => sanitize_text_field( $input['nickname'] ?? '' ),
-				'email'           => $email,
-				'phone'           => sanitize_text_field( $input['phone'] ?? '' ),
-				'age'             => $age,
-				'consent_given'   => ! empty( $input['consent_given'] ) ? 1 : 0,
-				'consent_version' => PASAT_VERSION,
-			)
-		);
-
-		$signup_id = $signups->create(
-			$activity_id,
-			$participant_id,
-			$status,
-			array(
-				'source'               => 'public',
-				'warning_acknowledged' => ! empty( $input['warning_acknowledged'] ),
-			)
-		);
-		$token = Tokens::generate_for_signup( $signup_id );
-		$signups->update_token_hash( $signup_id, $token['hash'] );
-		$signup = $signups->get_with_details( $signup_id );
 
 		$mail_sent = $signup ? Mailer::send_signup_confirmation( $signup, $token['token'] ) : false;
 		if ( ! $mail_sent && ! empty( $settings['pasat_strict_email_delivery'] ) ) {

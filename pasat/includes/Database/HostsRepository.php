@@ -48,6 +48,20 @@ final class HostsRepository extends Repository {
 		) ?: array();
 	}
 
+	public function list_assignments(): array {
+		$activities = Helpers::table( 'activities' );
+		$users      = $this->wpdb->users;
+
+		return $this->wpdb->get_results(
+			"SELECT h.*, a.title AS activity_title, u.display_name, u.user_email
+			FROM {$this->table} h
+			INNER JOIN {$activities} a ON a.id = h.activity_id
+			LEFT JOIN {$users} u ON u.ID = h.user_id
+			ORDER BY a.title ASC, u.display_name ASC",
+			ARRAY_A
+		) ?: array();
+	}
+
 	public function user_is_host_for_activity( int $user_id, int $activity_id ): bool {
 		return (int) $this->wpdb->get_var(
 			$this->wpdb->prepare(
@@ -74,6 +88,14 @@ final class HostsRepository extends Repository {
 			$this->table,
 			array( 'activity_id' => $activity_id, 'user_id' => $user_id ),
 			array( '%d', '%d' )
+		);
+	}
+
+	public function remove_by_id( int $id ): bool {
+		return false !== $this->wpdb->delete(
+			$this->table,
+			array( 'id' => $id ),
+			array( '%d' )
 		);
 	}
 }

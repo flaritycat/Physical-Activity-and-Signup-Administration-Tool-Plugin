@@ -12,6 +12,9 @@
 - Added WordPress privacy exporter, eraser, and WP-Cron retention cleanup.
 - Added minimal public/admin CSS and JS.
 - Added migration placeholder class for future structured import.
+- Added activity-level advisory locking around public signup capacity and duplicate checks.
+- Tightened host-scoped admin REST activity access.
+- Added current host assignment listing/removal and inline participant related-signup views.
 
 ## HSF Features Mapped To PASAT
 
@@ -31,6 +34,14 @@
 - No bundled map provider or geocoding.
 - `[pasat_my_signups]` uses a time-limited e-mail lookup link instead of account-based participant portals.
 - Importer documents the intended path but does not yet parse production exports.
+
+## Current Completion Estimate
+
+Estimated completion against the requested WordPress-native MVP: **94%**.
+
+Estimated remaining gap: **6%**.
+
+The main remaining gap is not missing core plugin code; it is release confidence and production hardening. Before calling this 100%, complete browser testing in the target WordPress theme, real SMTP/mail delivery testing, concurrent signup load testing, role/capability testing with real users, a full privacy/legal review, and production-grade legacy import parsing if migration is required.
 
 ## Manual Install/Test
 
@@ -56,7 +67,7 @@
 
 - `git diff --check` passed.
 - `php -l` passed for all plugin PHP files using a PHP 8.3 Docker CLI image.
-- Disposable WordPress activation test passed on WordPress 7.0 with MariaDB: plugin activated, schema version was `0.1.0`, all six custom PASAT tables were created, and the required public shortcodes registered.
+- Disposable WordPress activation test passed on WordPress 7.0 with MariaDB: plugin activated, schema version was `0.1.0`, all six custom PASAT tables were created, the activity signup advisory lock returned `lock:ok`, and the required public shortcodes registered.
 - Forbidden runtime dependency/branding terms were searched; matches are limited to documentation and the migration placeholder naming required by the project brief.
 - `zip -r pasat-0.1.0.zip pasat` produced the expected installable plugin archive layout, then the generated archive was removed from the source tree.
 - File structure, plugin header, admin menu registration, shortcode registration, REST route registration, activation schema, and direct-access guards were reviewed from source.

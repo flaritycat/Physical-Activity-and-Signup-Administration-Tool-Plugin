@@ -22,14 +22,15 @@ final class ParticipantsPage {
 
 		self::handle_post();
 		$query        = sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) );
-		$participants = ( new ParticipantsRepository() )->search( $query );
+		$repo         = new ParticipantsRepository();
+		$participants = $repo->search( $query );
 		?>
 		<div class="wrap pasat-admin">
 			<h1><?php esc_html_e( 'PASAT Participants', 'pasat' ); ?></h1>
 			<p><?php esc_html_e( 'Participant records contain personal data. Export, anonymize, or delete only when permitted by your site policy.', 'pasat' ); ?></p>
 			<form method="get" class="pasat-filter-row"><input type="hidden" name="page" value="pasat-participants"><input type="search" name="s" value="<?php echo esc_attr( $query ); ?>"><?php submit_button( __( 'Search', 'pasat' ), 'secondary', '', false ); ?> <a class="button" href="<?php echo esc_url( add_query_arg( 'pasat_export', 'participants' ) ); ?>"><?php esc_html_e( 'Export CSV', 'pasat' ); ?></a></form>
 			<table class="widefat striped">
-				<thead><tr><th><?php esc_html_e( 'Name', 'pasat' ); ?></th><th><?php esc_html_e( 'E-mail', 'pasat' ); ?></th><th><?php esc_html_e( 'Phone', 'pasat' ); ?></th><th><?php esc_html_e( 'Age', 'pasat' ); ?></th><th><?php esc_html_e( 'Consent', 'pasat' ); ?></th><th><?php esc_html_e( 'Actions', 'pasat' ); ?></th></tr></thead>
+				<thead><tr><th><?php esc_html_e( 'Name', 'pasat' ); ?></th><th><?php esc_html_e( 'E-mail', 'pasat' ); ?></th><th><?php esc_html_e( 'Phone', 'pasat' ); ?></th><th><?php esc_html_e( 'Age', 'pasat' ); ?></th><th><?php esc_html_e( 'Consent', 'pasat' ); ?></th><th><?php esc_html_e( 'Related Signups', 'pasat' ); ?></th><th><?php esc_html_e( 'Actions', 'pasat' ); ?></th></tr></thead>
 				<tbody>
 				<?php foreach ( $participants as $participant ) : ?>
 					<tr>
@@ -38,10 +39,11 @@ final class ParticipantsPage {
 						<td><?php echo esc_html( $participant['phone'] ?? '' ); ?></td>
 						<td><?php echo esc_html( (string) ( $participant['age'] ?? '' ) ); ?></td>
 						<td><?php echo $participant['consent_given'] ? esc_html__( 'Yes', 'pasat' ) : esc_html__( 'No', 'pasat' ); ?></td>
+						<td><?php self::related_signups( (int) $participant['id'], $repo ); ?></td>
 						<td><?php self::participant_actions( (int) $participant['id'] ); ?></td>
 					</tr>
 				<?php endforeach; ?>
-				<?php if ( ! $participants ) : ?><tr><td colspan="6"><?php esc_html_e( 'No participants found.', 'pasat' ); ?></td></tr><?php endif; ?>
+				<?php if ( ! $participants ) : ?><tr><td colspan="7"><?php esc_html_e( 'No participants found.', 'pasat' ); ?></td></tr><?php endif; ?>
 				</tbody>
 			</table>
 		</div>
@@ -76,6 +78,43 @@ final class ParticipantsPage {
 			<input type="hidden" name="pasat_action" value="anonymize">
 			<button class="button-link" type="submit"><?php esc_html_e( 'Anonymize', 'pasat' ); ?></button>
 		</form>
+		<?php
+	}
+
+	private static function related_signups( int $participant_id, ParticipantsRepository $repo ): void {
+		$signups = $repo->signups_for_participant( $participant_id );
+		if ( ! $signups ) {
+			esc_html_e( 'No signups', 'pasat' );
+			return;
+		}
+		?>
+		<details>
+			<summary>
+				<?php
+				printf(
+					/* translators: %d is the number of related signups. */
+					esc_html( _n( '%d signup', '%d signups', count( $signups ), 'pasat' ) ),
+					count( $signups )
+				);
+				?>
+			</summary>
+			<ul class="pasat-compact-list">
+				<?php foreach ( $signups as $signup ) : ?>
+					<li>
+						<?php
+						echo esc_html(
+							sprintf(
+								'%s - %s - %s',
+								$signup['activity_title'] ?? '',
+								$signup['status'] ?? '',
+								Helpers::local_datetime( $signup['starts_at'] ?? '' )
+							)
+						);
+						?>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</details>
 		<?php
 	}
 

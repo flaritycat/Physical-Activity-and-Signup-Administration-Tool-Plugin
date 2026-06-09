@@ -140,11 +140,11 @@ Use **PASAT > Signups** to filter signups, search by participant or activity, ca
 
 ### Participants
 
-Use **PASAT > Participants** to search participant records, export data when permitted, and anonymize records according to policy.
+Use **PASAT > Participants** to search participant records, view related signups, export data when permitted, and anonymize records according to policy.
 
 ### Hosts
 
-Use **PASAT > Hosts** to assign WordPress users as activity hosts, instructors, or organizers. Administrators can manage all PASAT data. Hosts are scoped to assigned activities unless they also have broader PASAT capabilities.
+Use **PASAT > Hosts** to assign and remove WordPress users as activity hosts, instructors, or organizers. Administrators can manage all PASAT data. Hosts are scoped to assigned activities unless they also have broader PASAT capabilities.
 
 ## Public Shortcodes
 
@@ -190,7 +190,7 @@ The public signup form collects first name, last name, optional nickname, e-mail
 
 Server-side validation checks required fields, e-mail validity, activity status, signup window, age restrictions, consent, warning acknowledgement, duplicate active signups, capacity, and waitlist settings.
 
-After a successful signup, PASAT creates or updates the participant by e-mail, creates a confirmed or waitlisted signup, generates a secure cancellation token, stores only the token hash, and sends a confirmation e-mail.
+After a successful signup, PASAT creates or updates the participant by e-mail, creates a confirmed or waitlisted signup, generates a secure cancellation token, stores only the token hash, and sends a confirmation e-mail. The duplicate and capacity checks run under an activity-level database advisory lock to reduce oversubscription during signup bursts.
 
 When a confirmed signup is cancelled, PASAT promotes the earliest waitlisted signup if capacity allows.
 
@@ -316,6 +316,7 @@ find pasat -name "*.php" -print0 | xargs -0 -n1 php -l
 - Group/team signup is not implemented in the MVP.
 - Winner/history administration is deferred.
 - The importer is a placeholder and does not yet parse production exports.
+- Full production readiness still requires browser testing in the target WordPress theme, real mail delivery testing, and organization-specific privacy/legal review.
 
 ## License
 
