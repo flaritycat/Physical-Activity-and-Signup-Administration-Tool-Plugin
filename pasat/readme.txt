@@ -66,3 +66,5 @@ The MVP includes an importer placeholder for future JSON or CSV migration. Passw
 Initial WordPress-native MVP with custom tables, admin pages, shortcodes, public signup, waitlist handling, cancellation links, REST endpoints, e-mail notifications, and privacy hooks.
 
 Includes verified e-mail lookup for participant signups, activity cancellation notices, host assignment management, participant related-signup views, filtered/scoped CSV exports, participant deletion, REST argument validation, and activity-level signup locking for capacity checks.
+
+Validated with disposable WordPress activation, signup/waitlist/cancellation promotion, privacy export, package integrity, and concurrent capacity tests.

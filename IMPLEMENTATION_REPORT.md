@@ -40,11 +40,11 @@
 
 ## Current Completion Estimate
 
-Estimated completion against the requested WordPress-native MVP: **96%**.
+Estimated completion against the requested WordPress-native MVP: **98%**.
 
-Estimated remaining gap: **4%**.
+Estimated remaining gap: **2%**.
 
-The main remaining gap is not missing core plugin code; it is release confidence and production hardening. Before calling this 100%, complete browser testing in the target WordPress theme, real SMTP/mail delivery testing, concurrent signup load testing, role/capability testing with real users, a full privacy/legal review, authenticated GitHub publishing, and production-grade legacy import parsing if migration is required.
+The main remaining gap is not missing core plugin code; it is release confidence in the real deployment environment. Before calling this 100%, complete browser testing in the target WordPress theme, real SMTP/mail delivery testing, role/capability testing with real users, a full privacy/legal review, authenticated GitHub publishing, and production-grade legacy import parsing if migration is required.
 
 ## Manual Install/Test
 
@@ -71,6 +71,8 @@ The main remaining gap is not missing core plugin code; it is release confidence
 - `git diff --check` passed.
 - `php -l` passed for all plugin PHP files using a PHP 8.3 Docker CLI image.
 - Disposable WordPress activation test passed on WordPress 7.0 with MariaDB: plugin activated, schema version was `0.1.0`, all six custom PASAT tables were created, representative public/admin REST routes registered, the activity signup advisory lock returned `lock:ok`, and the required public shortcodes registered.
+- Disposable end-to-end signup test passed: a capacity-one published activity accepted the first signup as confirmed, rejected a duplicate e-mail signup, waitlisted the second participant, extracted the cancellation token from captured `wp_mail()` content, cancelled the confirmed signup through the public cancellation flow, promoted the waitlisted participant, and exported participant signup data through the WordPress privacy exporter.
+- Disposable concurrent signup test passed: eight parallel public signups against a capacity-one activity produced exactly `confirmed:1` and `waitlisted:7`.
 - Forbidden runtime dependency/branding terms were searched; matches are limited to documentation and the migration placeholder naming required by the project brief.
 - `zip -r pasat-0.1.0.zip pasat` produced the expected installable plugin archive layout, then the generated archive was removed from the source tree.
 - File structure, plugin header, admin menu registration, shortcode registration, REST route registration, activation schema, and direct-access guards were reviewed from source.
