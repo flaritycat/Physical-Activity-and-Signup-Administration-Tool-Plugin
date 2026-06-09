@@ -75,14 +75,18 @@ final class HostsPage {
 	}
 
 	private static function handle_post(): void {
-		if ( 'POST' !== $_SERVER['REQUEST_METHOD'] || empty( $_POST['pasat_action'] ) ) {
+		$request_method = isset( $_SERVER['REQUEST_METHOD'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) : '';
+		if ( 'POST' !== $request_method ) {
 			return;
 		}
 		Nonces::verify( 'host' );
 		$activity_id = absint( $_POST['activity_id'] ?? 0 );
 		$user_id     = absint( $_POST['user_id'] ?? 0 );
 		$role        = sanitize_text_field( wp_unslash( $_POST['host_role'] ?? 'host' ) );
-		$action      = sanitize_key( $_POST['pasat_action'] );
+		$action      = sanitize_key( wp_unslash( $_POST['pasat_action'] ?? '' ) );
+		if ( '' === $action ) {
+			return;
+		}
 		if ( 'assign' === $action && $activity_id && $user_id ) {
 			( new HostsRepository() )->assign( $activity_id, $user_id, $role );
 			( new AuditLogRepository() )->log( 'host.assign', 'activity', $activity_id, 'Assigned activity host' );

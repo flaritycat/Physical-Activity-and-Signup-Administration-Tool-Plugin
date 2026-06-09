@@ -5,13 +5,13 @@
  * @package PASAT
  */
 
-if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+if ( ! defined( 'ABSPATH' ) || ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
 global $wpdb;
 
-$tables = array(
+$pasat_tables = array(
 	$wpdb->prefix . 'pasat_audit_log',
 	$wpdb->prefix . 'pasat_activity_hosts',
 	$wpdb->prefix . 'pasat_signups',
@@ -20,8 +20,8 @@ $tables = array(
 	$wpdb->prefix . 'pasat_venues',
 );
 
-foreach ( $tables as $table ) {
-	$wpdb->query( "DROP TABLE IF EXISTS {$table}" );
+foreach ( $pasat_tables as $pasat_table ) {
+	$wpdb->query( "DROP TABLE IF EXISTS {$pasat_table}" );
 }
 
 delete_option( 'pasat_settings' );

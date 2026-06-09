@@ -23,8 +23,28 @@ final class PrivacyPage {
 			<h1><?php esc_html_e( 'PASAT Privacy', 'pasat' ); ?></h1>
 			<p><?php esc_html_e( 'PASAT integrates with WordPress personal data export and erasure tools. It also runs a daily retention cleanup using WP-Cron.', 'pasat' ); ?></p>
 			<ul>
-				<li><?php echo esc_html( sprintf( __( 'Retention period: %d days', 'pasat' ), (int) $settings['retention_period_days'] ) ); ?></li>
-				<li><?php echo esc_html( sprintf( __( 'Erasure mode: %s', 'pasat' ), $settings['erasure_mode'] ) ); ?></li>
+				<li>
+					<?php
+					echo esc_html(
+						sprintf(
+							/* translators: %d is the configured retention period in days. */
+							__( 'Retention period: %d days', 'pasat' ),
+							(int) $settings['retention_period_days']
+						)
+					);
+					?>
+				</li>
+				<li>
+					<?php
+					echo esc_html(
+						sprintf(
+							/* translators: %s is the configured participant erasure mode. */
+							__( 'Erasure mode: %s', 'pasat' ),
+							$settings['erasure_mode']
+						)
+					);
+					?>
+				</li>
 			</ul>
 			<form method="post">
 				<?php Nonces::field( 'privacy' ); ?>
@@ -41,10 +61,14 @@ final class PrivacyPage {
 	}
 
 	private static function handle_post(): void {
-		if ( 'POST' !== $_SERVER['REQUEST_METHOD'] || empty( $_POST['pasat_action'] ) ) {
+		$request_method = isset( $_SERVER['REQUEST_METHOD'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) : '';
+		if ( 'POST' !== $request_method ) {
 			return;
 		}
 		Nonces::verify( 'privacy' );
+		if ( 'run_retention' !== sanitize_key( wp_unslash( $_POST['pasat_action'] ?? '' ) ) ) {
+			return;
+		}
 		Retention::run_cleanup();
 		wp_safe_redirect( admin_url( 'admin.php?page=pasat-privacy&updated=1' ) );
 		exit;

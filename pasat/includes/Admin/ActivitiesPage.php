@@ -53,14 +53,18 @@ final class ActivitiesPage {
 	}
 
 	private static function handle_post(): void {
-		if ( 'POST' !== $_SERVER['REQUEST_METHOD'] || empty( $_POST['pasat_action'] ) ) {
+		$request_method = isset( $_SERVER['REQUEST_METHOD'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) : '';
+		if ( 'POST' !== $request_method ) {
 			return;
 		}
 
 		Nonces::verify( 'activity' );
 		$repo   = new ActivitiesRepository();
 		$audit  = new AuditLogRepository();
-		$action = sanitize_key( $_POST['pasat_action'] );
+		$action = sanitize_key( wp_unslash( $_POST['pasat_action'] ?? '' ) );
+		if ( '' === $action ) {
+			return;
+		}
 		$id     = absint( $_POST['activity_id'] ?? 0 );
 
 		if ( $id && ! Capabilities::can_manage_activity( $id ) ) {
@@ -147,11 +151,11 @@ final class ActivitiesPage {
 	}
 
 	private static function maybe_save_hosts( int $activity_id ): void {
-		if ( ! current_user_can( 'pasat_manage_hosts' ) || empty( $_POST['pasat_hosts_field_present'] ) ) {
+		if ( ! current_user_can( 'pasat_manage_hosts' ) || ! isset( $_POST['pasat_hosts_field_present'] ) ) {
 			return;
 		}
 
-		$user_ids = is_array( $_POST['host_user_ids'] ) ? wp_unslash( $_POST['host_user_ids'] ) : array();
+		$user_ids = isset( $_POST['host_user_ids'] ) && is_array( $_POST['host_user_ids'] ) ? array_map( 'absint', wp_unslash( $_POST['host_user_ids'] ) ) : array();
 		( new HostsRepository() )->replace_for_activity( $activity_id, $user_ids );
 		( new AuditLogRepository() )->log( 'activity.hosts_replace', 'activity', $activity_id, 'Updated activity host assignments' );
 	}

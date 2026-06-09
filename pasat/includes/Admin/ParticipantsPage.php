@@ -52,19 +52,21 @@ final class ParticipantsPage {
 	}
 
 	private static function handle_post(): void {
-		if ( 'POST' !== $_SERVER['REQUEST_METHOD'] || empty( $_POST['pasat_action'] ) ) {
+		$request_method = isset( $_SERVER['REQUEST_METHOD'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) : '';
+		if ( 'POST' !== $request_method ) {
 			return;
 		}
 		if ( ! current_user_can( 'pasat_export_participants' ) ) {
 			wp_die( esc_html__( 'You do not have permission to modify participant data.', 'pasat' ) );
 		}
 		Nonces::verify( 'participant' );
-		$id = absint( $_POST['participant_id'] ?? 0 );
-		if ( $id && 'anonymize' === sanitize_key( $_POST['pasat_action'] ) ) {
+		$id     = absint( $_POST['participant_id'] ?? 0 );
+		$action = sanitize_key( wp_unslash( $_POST['pasat_action'] ?? '' ) );
+		if ( $id && 'anonymize' === $action ) {
 			( new ParticipantsRepository() )->anonymize( $id );
 			( new AuditLogRepository() )->log( 'participant.anonymize', 'participant', $id, 'Participant anonymized from admin' );
 		}
-		if ( $id && 'delete' === sanitize_key( $_POST['pasat_action'] ) ) {
+		if ( $id && 'delete' === $action ) {
 			Eraser::delete_participant( $id );
 			( new AuditLogRepository() )->log( 'participant.delete', 'participant', $id, 'Participant deleted from admin' );
 		}

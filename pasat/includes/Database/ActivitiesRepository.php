@@ -65,7 +65,11 @@ final class ActivitiesRepository extends Repository {
 		}
 
 		unset( $activity['id'], $activity['created_at'], $activity['updated_at'] );
-		$activity['title']  = sprintf( __( '%s copy', 'pasat' ), $activity['title'] );
+		$activity['title']  = sprintf(
+			/* translators: %s is the source activity title. */
+			__( '%s copy', 'pasat' ),
+			$activity['title']
+		);
 		$activity['status'] = 'draft';
 
 		return $this->save( $activity );

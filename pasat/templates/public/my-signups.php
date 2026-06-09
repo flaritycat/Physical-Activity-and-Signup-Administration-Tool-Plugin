@@ -21,12 +21,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach ( $pasat['items'] ?? array() as $item ) : ?>
+				<?php foreach ( $pasat['items'] ?? array() as $pasat_item ) : ?>
 					<tr>
-						<td><?php echo esc_html( $item['activity_title'] ?? '' ); ?></td>
-						<td><?php echo esc_html( PASAT\Helpers::local_datetime( $item['starts_at'] ?? '' ) ); ?></td>
-						<td><?php echo esc_html( $item['venue_name'] ?? '' ); ?></td>
-						<td><?php echo esc_html( $item['status'] ?? '' ); ?></td>
+						<td><?php echo esc_html( $pasat_item['activity_title'] ?? '' ); ?></td>
+						<td><?php echo esc_html( PASAT\Helpers::local_datetime( $pasat_item['starts_at'] ?? '' ) ); ?></td>
+						<td><?php echo esc_html( $pasat_item['venue_name'] ?? '' ); ?></td>
+						<td><?php echo esc_html( $pasat_item['status'] ?? '' ); ?></td>
 					</tr>
 				<?php endforeach; ?>
 				<?php if ( empty( $pasat['items'] ) ) : ?>

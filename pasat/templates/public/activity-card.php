@@ -3,4 +3,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 ?>
-<?php echo PASAT\Frontend\Renderer::render( 'public/activity-list.php', $pasat ); ?>
+<?php echo wp_kses_post( PASAT\Frontend\Renderer::render( 'public/activity-list.php', $pasat ) ); ?>

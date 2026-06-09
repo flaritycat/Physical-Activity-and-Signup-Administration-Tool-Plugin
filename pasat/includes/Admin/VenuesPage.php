@@ -31,14 +31,18 @@ final class VenuesPage {
 	}
 
 	private static function handle_post(): void {
-		if ( 'POST' !== $_SERVER['REQUEST_METHOD'] || empty( $_POST['pasat_action'] ) ) {
+		$request_method = isset( $_SERVER['REQUEST_METHOD'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) : '';
+		if ( 'POST' !== $request_method ) {
 			return;
 		}
 
 		Nonces::verify( 'venue' );
 		$repo   = new VenuesRepository();
 		$audit  = new AuditLogRepository();
-		$action = sanitize_key( $_POST['pasat_action'] );
+		$action = sanitize_key( wp_unslash( $_POST['pasat_action'] ?? '' ) );
+		if ( '' === $action ) {
+			return;
+		}
 		$id     = absint( $_POST['venue_id'] ?? 0 );
 
 		if ( 'save' === $action ) {

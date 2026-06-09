@@ -63,7 +63,11 @@ final class ParticipantsRepository extends Repository {
 	public function anonymize( int $id ): bool {
 		$data = array(
 			'first_name'      => __( 'Anonymized', 'pasat' ),
-			'last_name'       => sprintf( __( 'Participant %d', 'pasat' ), $id ),
+			'last_name'       => sprintf(
+				/* translators: %d is the anonymized participant ID. */
+				__( 'Participant %d', 'pasat' ),
+				$id
+			),
 			'nickname'        => null,
 			'email'           => 'anonymous-' . $id . '@example.invalid',
 			'phone'           => null,

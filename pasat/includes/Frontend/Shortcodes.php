@@ -48,11 +48,13 @@ final class Shortcodes {
 	public static function activity_signup( array $atts = array() ): string {
 		Assets::enqueue();
 		$atts        = shortcode_atts( array( 'activity_id' => 0 ), $atts, 'pasat_activity_signup' );
-		$activity_id = absint( $atts['activity_id'] ?: ( $_GET['pasat_activity_id'] ?? 0 ) );
+		$query_id    = isset( $_GET['pasat_activity_id'] ) ? absint( wp_unslash( $_GET['pasat_activity_id'] ) ) : 0;
+		$activity_id = absint( $atts['activity_id'] ?: $query_id );
 		$message     = '';
 		$error       = '';
+		$request_method = isset( $_SERVER['REQUEST_METHOD'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) : '';
 
-		if ( 'POST' === $_SERVER['REQUEST_METHOD'] && isset( $_POST['pasat_public_signup'] ) ) {
+		if ( 'POST' === $request_method && isset( $_POST['pasat_public_signup'] ) ) {
 			if ( ! isset( $_POST['pasat_public_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['pasat_public_nonce'] ) ), 'pasat_public_signup' ) ) {
 				$error = __( 'The signup form expired. Please try again.', 'pasat' );
 			} else {
@@ -92,6 +94,7 @@ final class Shortcodes {
 		$error    = '';
 		$verified = false;
 		$email    = '';
+		$request_method = isset( $_SERVER['REQUEST_METHOD'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) : '';
 
 		if ( isset( $_GET['pasat_lookup_token'] ) ) {
 			$token = sanitize_text_field( wp_unslash( $_GET['pasat_lookup_token'] ) );
@@ -105,7 +108,7 @@ final class Shortcodes {
 			}
 		}
 
-		if ( 'POST' === $_SERVER['REQUEST_METHOD'] && isset( $_POST['pasat_my_signups'] ) ) {
+		if ( 'POST' === $request_method && isset( $_POST['pasat_my_signups'] ) ) {
 			if ( ! isset( $_POST['pasat_my_signups_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['pasat_my_signups_nonce'] ) ), 'pasat_my_signups' ) ) {
 				$error = __( 'The lookup form expired. Please try again.', 'pasat' );
 			} else {

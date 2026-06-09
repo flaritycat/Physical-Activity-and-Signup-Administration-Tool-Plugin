@@ -109,11 +109,16 @@ final class SettingsPage {
 	}
 
 	private static function handle_post(): void {
-		if ( 'POST' !== $_SERVER['REQUEST_METHOD'] || 'send_test_email' !== sanitize_key( $_POST['pasat_action'] ?? '' ) ) {
+		$request_method = isset( $_SERVER['REQUEST_METHOD'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) : '';
+		if ( 'POST' !== $request_method ) {
 			return;
 		}
 
 		Nonces::verify( 'settings_mail_test' );
+		if ( 'send_test_email' !== sanitize_key( wp_unslash( $_POST['pasat_action'] ?? '' ) ) ) {
+			return;
+		}
+
 		$email = sanitize_email( wp_unslash( $_POST['test_email'] ?? '' ) );
 		$sent  = is_email( $email ) && Mailer::send_test_email( $email );
 		if ( $sent ) {
@@ -131,7 +136,7 @@ final class SettingsPage {
 	}
 
 	private static function notices(): void {
-		$result = sanitize_key( $_GET['pasat_mail_test'] ?? '' );
+		$result = sanitize_key( wp_unslash( $_GET['pasat_mail_test'] ?? '' ) );
 		if ( 'success' === $result ) {
 			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'PASAT test e-mail was accepted by WordPress mail.', 'pasat' ) . '</p></div>';
 		}

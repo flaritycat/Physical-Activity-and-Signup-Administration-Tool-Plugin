@@ -20,6 +20,7 @@
 - Added REST route argument sanitization and validation definitions.
 - Fixed shortcode rendering under direct WordPress render contexts and made frontend asset enqueueing self-register when needed.
 - Added a PASAT Settings mail-delivery test that sends through `wp_mail()` and records the last successful test for dashboard visibility.
+- Ran WordPress Plugin Check and cleaned material template escaping, translator-comment, request-method validation, and public-template local-variable findings.
 
 ## HSF Features Mapped To PASAT
 
@@ -42,9 +43,9 @@
 
 ## Current Completion Estimate
 
-Estimated completion against the requested WordPress-native MVP: **99.5%**.
+Estimated completion against the requested WordPress-native MVP: **99.7%**.
 
-Estimated remaining gap: **0.5%**.
+Estimated remaining gap: **0.3%**.
 
 The remaining gap is outside the plugin code in this container: authenticated GitHub publishing, real SMTP receipt verification on the production site, target-theme browser/mobile review, final privacy/legal signoff, and production-grade legacy import parsing if migration is required.
 
@@ -79,6 +80,7 @@ The remaining gap is outside the plugin code in this container: authenticated Gi
 - Disposable shortcode render test passed: `[pasat_activity_list]`, `[pasat_activity_signup]`, and `[pasat_my_signups]` rendered expected markup through WordPress, and public CSS/JS handles were enqueued.
 - Disposable mail-test validation passed: PASAT generated a test e-mail through `wp_mail()` and the Settings page rendered the mail-delivery test form.
 - Disposable HTTP render test passed through a temporary WordPress server: the public page rendered the activity list, signup form, my-signups form, and linked public CSS/JS.
+- Disposable WordPress Plugin Check ran successfully with status `0`. The latest pass has `0` translator-comment findings, `0` public-template unprefixed-variable findings, and `0` undefined `REQUEST_METHOD` findings. Remaining findings are reviewed static-analysis limitations around PASAT custom table identifiers, the internal nonce wrapper, expected uninstall schema changes, and WordPress.org's discouraged `load_plugin_textdomain()` warning.
 - Forbidden runtime dependency/branding terms were searched; matches are limited to documentation and the migration placeholder naming required by the project brief.
 - `zip -r pasat-0.1.0.zip pasat` produced the expected installable plugin archive layout, then the generated archive was removed from the source tree.
 - File structure, plugin header, admin menu registration, shortcode registration, REST route registration, activation schema, and direct-access guards were reviewed from source.
@@ -93,3 +95,4 @@ The remaining gap is outside the plugin code in this container: authenticated Gi
 
 - Full browser testing inside the target production WordPress theme should still be completed before public release.
 - E-mail receipt still depends on the production site's mail configuration and SMTP plugin/provider.
+- WordPress Plugin Check still reports custom-table SQL and nonce-wrapper warnings that have been reviewed against the source, but a future WordPress.org submission may benefit from inline PHPCS annotations or a repository-layer refactor to reduce scanner noise.
