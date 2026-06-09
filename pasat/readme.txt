@@ -18,11 +18,15 @@ PASAT is WordPress-native. It uses WordPress users, roles, capabilities, nonces,
 
 == Installation ==
 
-1. Upload the `pasat` folder to `/wp-content/plugins/`.
-2. Activate the plugin through the WordPress Plugins screen.
-3. Create a page containing `[pasat_activity_list]` and `[pasat_activity_signup]`.
-4. Select that page under PASAT > Settings.
-5. Create venues and activities under the PASAT admin menu.
+1. Upload the `pasat` folder to `/wp-content/plugins/pasat/`.
+2. Activate **Physical Activity Signup and Administration Tool** through the WordPress Plugins screen.
+3. Create a WordPress page for public signups.
+4. Add `[pasat_activity_list]` and `[pasat_activity_signup]` to that page.
+5. Select that page under PASAT > Settings.
+6. Configure organization name, labels, consent text, retention, and e-mail templates.
+7. Create at least one venue under PASAT > Venues.
+8. Create a published activity under PASAT > Activities.
+9. Visit the public page and submit a test signup.
 
 == Frequently Asked Questions ==
 

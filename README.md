@@ -1,109 +1,272 @@
 # Physical Activity Signup and Administration Tool
 
-Physical Activity Signup and Administration Tool, short name PASAT, is a WordPress-native plugin for managing public signup and administration for physical activities, classes, sessions, workshops, and similar scheduled activities.
+**Physical Activity Signup and Administration Tool** is a WordPress-native plugin for managing public signup and administration for physical activities, classes, sessions, workshops, and events.
 
-This repository was created by inspecting the existing standalone `HSF` application and porting the relevant domain workflows into a normal WordPress plugin. PASAT does not wrap or run the old Python/FastAPI application. It uses WordPress users, roles, capabilities, nonces, REST routes, WP-Cron, custom database tables, and `wp_mail()`.
+Short name: **PASAT**
+
+Plugin slug: `pasat`
+
+Text domain: `pasat`
+
+Main plugin file: `pasat/pasat.php`
+
+## What PASAT Does
+
+PASAT lets a WordPress site owner:
+
+- publish a public activity list
+- collect participant signups
+- enforce capacity limits
+- place overflow signups on a waitlist
+- send confirmation and cancellation e-mails through WordPress
+- provide secure cancellation links
+- promote waitlisted participants when a confirmed spot opens
+- manage activities, venues, participants, signups, and hosts in wp-admin
+- integrate with WordPress privacy export, erasure, and retention tools
+
+The plugin was designed after reviewing the previous standalone `HSF` application, but PASAT is a native WordPress rewrite. It does not require Python, FastAPI, Uvicorn, Docker, PostgreSQL, SQLAlchemy, JWT authentication, or any external application server at runtime.
+
+## Requirements
+
+- WordPress 6.0 or newer
+- PHP 8.1 or newer
+- A working WordPress mail setup for signup e-mails
+- Administrator access for activation and setup
+
+PASAT does not bundle SMTP settings. Use an established WordPress SMTP plugin if your site needs authenticated SMTP delivery.
 
 ## Installation
 
-1. Copy `pasat/` into `wp-content/plugins/pasat`.
-2. In wp-admin, activate **Physical Activity Signup and Administration Tool**.
-3. Create a public WordPress page and add:
+1. Copy the `pasat` folder into your WordPress plugin directory:
+
+   ```text
+   wp-content/plugins/pasat
+   ```
+
+2. In wp-admin, go to **Plugins**.
+3. Activate **Physical Activity Signup and Administration Tool**.
+4. On activation, PASAT creates its custom database tables, default settings, roles, capabilities, and retention cron event.
+
+After installation, this file should exist:
+
+```text
+wp-content/plugins/pasat/pasat.php
+```
+
+## First-Time Setup
+
+1. Go to **Pages > Add New**.
+2. Create a public page for the signup tool, for example **Activities**.
+3. Add these shortcodes to the page:
 
    ```text
    [pasat_activity_list]
    [pasat_activity_signup]
    ```
 
-4. Go to **PASAT > Settings** and select that page as the public PASAT page.
-5. Create venues and activities under the PASAT admin menu.
+4. Publish the page.
+5. Go to **PASAT > Settings**.
+6. Select the page under **Public Page**.
+7. Set the organization name, labels, default capacity, consent text, retention period, and e-mail templates.
+8. Go to **PASAT > Venues** and create at least one venue/location.
+9. Go to **PASAT > Activities** and create a published activity with signup dates and capacity.
+10. Visit the public page and submit a test signup.
+11. Confirm the signup appears under **PASAT > Signups**.
 
-## Shortcodes
+## Admin Workflow
 
-- `[pasat_activity_list]` displays published upcoming activities.
-- `[pasat_activity_signup]` displays the signup form.
-- `[pasat_activity_signup activity_id="123"]` locks the form to one activity.
-- `[pasat_my_signups]` provides a privacy-preserving placeholder for a future verified lookup flow.
-- `[pasat_venue_map]` outputs venue coordinate data for theme/script integration.
-- `[pasat_activity_board]` displays a simple read-only activity board.
+### Venues
 
-## Admin Menus
+Use **PASAT > Venues** to create reusable locations with name, description, address, type, capacity, latitude, and longitude. Venues can be deleted only when they are not used by an activity.
 
-PASAT adds a wp-admin menu with:
+### Activities
 
-- Dashboard
-- Activities
-- Venues
-- Signups
-- Participants
-- Hosts
-- Settings
-- Privacy
+Use **PASAT > Activities** to create and manage public activities. Activities support title, description, type, season year, schedule, venue, capacity, waitlist, signup windows, status, visibility, age limits, and warning acknowledgement text.
 
-Administrators receive all PASAT capabilities on activation. The plugin also creates `pasat_activity_manager` and `pasat_activity_host` roles.
+Only published public activities with an open signup window appear in public signup flows.
 
-## Core Features
+### Signups
 
-- Activity CRUD with status, time window, capacity, waitlist, venue, age limits, and warning acknowledgement.
-- Venue/location CRUD with address, type, capacity, and coordinates.
-- Public signup form with server-side validation.
-- Duplicate active signup prevention by normalized e-mail per activity.
-- Capacity and waitlist handling.
-- Secure cancellation links using random tokens with only hashes stored in the database.
-- Waitlist promotion when a confirmed participant cancels.
-- WordPress e-mail delivery through `wp_mail()`.
-- Admin signup filters, cancellation, waitlist confirmation, and CSV export.
-- Participant search, CSV export, and anonymization.
-- Host assignment using WordPress users.
-- REST namespace `pasat/v1`.
+Use **PASAT > Signups** to filter signups, search by participant or activity, cancel signups manually, confirm waitlisted signups, and export CSV data. CSV exports guard against spreadsheet formula injection.
 
-## Privacy Behavior
+### Participants
+
+Use **PASAT > Participants** to search participant records, export data when permitted, and anonymize records according to policy.
+
+### Hosts
+
+Use **PASAT > Hosts** to assign WordPress users as activity hosts, instructors, or organizers. Administrators can manage all PASAT data. Hosts are scoped to assigned activities unless they also have broader PASAT capabilities.
+
+## Public Shortcodes
+
+```text
+[pasat_activity_list]
+```
+
+Displays public, published, upcoming activities with time, venue, capacity status, and a signup link.
+
+```text
+[pasat_activity_signup]
+```
+
+Displays a public signup form for available activities.
+
+```text
+[pasat_activity_signup activity_id="123"]
+```
+
+Locks the signup form to one activity.
+
+```text
+[pasat_my_signups]
+```
+
+Provides a privacy-preserving placeholder for a future verified e-mail lookup flow.
+
+```text
+[pasat_venue_map]
+```
+
+Outputs venue coordinate data for theme or script integration.
+
+```text
+[pasat_activity_board]
+```
+
+Displays a simple read-only board of upcoming activities.
+
+## Public Signup Behavior
+
+The public signup form collects first name, last name, optional nickname, e-mail, optional phone, optional age, consent, warning acknowledgement, and selected activity.
+
+Server-side validation checks required fields, e-mail validity, activity status, signup window, age restrictions, consent, warning acknowledgement, duplicate active signups, capacity, and waitlist settings.
+
+After a successful signup, PASAT creates or updates the participant by e-mail, creates a confirmed or waitlisted signup, generates a secure cancellation token, stores only the token hash, and sends a confirmation e-mail.
+
+When a confirmed signup is cancelled, PASAT promotes the earliest waitlisted signup if capacity allows.
+
+## E-mail
+
+PASAT uses `wp_mail()`.
+
+Configurable templates are available for signup confirmation, cancellation confirmation, and waitlist promotion.
+
+Supported placeholders:
+
+- `{organization_name}`
+- `{activity_title}`
+- `{activity_date}`
+- `{activity_time}`
+- `{venue_name}`
+- `{participant_name}`
+- `{signup_status}`
+- `{cancellation_url}`
+- `{site_name}`
+- `{site_url}`
+
+If strict e-mail delivery is enabled and `wp_mail()` fails, PASAT rejects the signup.
+
+## REST API
+
+PASAT registers REST routes under `pasat/v1`.
+
+Public endpoints:
+
+- `GET /pasat/v1/activities`
+- `GET /pasat/v1/activities/{id}`
+- `POST /pasat/v1/signups`
+- `POST /pasat/v1/signups/cancel`
+
+Admin endpoints:
+
+- `GET /pasat/v1/admin/activities`
+- `POST /pasat/v1/admin/activities`
+- `GET /pasat/v1/admin/activities/{id}`
+- `PUT/PATCH /pasat/v1/admin/activities/{id}`
+- `DELETE /pasat/v1/admin/activities/{id}`
+- `GET /pasat/v1/admin/venues`
+- `POST /pasat/v1/admin/venues`
+- `GET /pasat/v1/admin/venues/{id}`
+- `PUT/PATCH /pasat/v1/admin/venues/{id}`
+- `DELETE /pasat/v1/admin/venues/{id}`
+- `GET /pasat/v1/admin/signups`
+- `PUT/PATCH /pasat/v1/admin/signups/{id}`
+- `POST /pasat/v1/admin/signups/{id}/cancel`
+
+Public endpoints expose activity data only. Participant data is restricted to users with PASAT capabilities.
+
+## Privacy And Data Protection
 
 PASAT stores participant names, e-mail addresses, optional phone numbers, optional ages, consent state, signup state, and hashed request metadata. It does not store raw IP addresses or raw user-agent strings.
 
-The plugin integrates with:
+The plugin integrates with WordPress privacy exporters and erasers, and registers the WP-Cron event `pasat_daily_retention_cleanup`.
 
-- `wp_privacy_personal_data_exporters`
-- `wp_privacy_personal_data_erasers`
-- WP-Cron event `pasat_daily_retention_cleanup`
-
-Retention cleanup anonymizes or deletes participant data according to the configured mode once the retention period has elapsed and no active future signup still needs the participant data.
-
-Public REST endpoints never expose private participant fields. Minor participant names are not intended for public display.
+Retention cleanup anonymizes or deletes participant data according to the configured retention period and erasure mode.
 
 ## Database Tables
 
-PASAT creates custom tables using the WordPress table prefix:
+PASAT creates custom tables using the active WordPress database prefix:
 
-- `pasat_activities`
-- `pasat_venues`
-- `pasat_participants`
-- `pasat_signups`
-- `pasat_activity_hosts`
-- `pasat_audit_log`
+- `{prefix}pasat_activities`
+- `{prefix}pasat_venues`
+- `{prefix}pasat_participants`
+- `{prefix}pasat_signups`
+- `{prefix}pasat_activity_hosts`
+- `{prefix}pasat_audit_log`
 
 The schema version is stored in `pasat_db_version`.
 
+## Security Notes
+
+PASAT uses WordPress users, roles, capabilities, admin nonces, REST permission callbacks, server-side validation, escaped output, prepared SQL for user-controlled values, hashed cancellation tokens, hashed request metadata, and basic public rate limiting.
+
+PASAT does not implement a parallel authentication system.
+
 ## Migration Notes
 
-The old HSF app used a standalone stack with Python, FastAPI, SQLAlchemy, PostgreSQL, Docker, JWT auth, and custom SMTP configuration. PASAT intentionally replaces those runtime dependencies with WordPress-native equivalents.
+PASAT includes the placeholder importer class `PASAT\Migration\HsfImporter` for future structured JSON or CSV imports.
 
-The placeholder importer class `PASAT\Migration\HsfImporter` is ready to be extended for structured JSON or CSV exports for venues, activities/events, participants/people, signups, hosts, and optional winner/history data. Old passwords and external auth records should not be migrated directly. Hosts and admins should be mapped to WordPress users and PASAT capabilities.
+Do not migrate legacy passwords or external authentication records directly. Map hosts and administrators to WordPress users and PASAT capabilities.
+
+## Development
+
+No Composer install is required.
+
+Useful local checks:
+
+```text
+php -l pasat/pasat.php
+git diff --check
+find pasat -name "*.php" -print0 | xargs -0 -n1 php -l
+```
+
+## Manual Test Checklist
+
+1. Activate the plugin.
+2. Confirm PASAT tables are created.
+3. Confirm the PASAT admin menu appears.
+4. Create a venue.
+5. Create a published activity with capacity `1` and waitlist enabled.
+6. Add the public shortcodes to a page.
+7. Submit the first signup and confirm it is `confirmed`.
+8. Submit a second signup and confirm it is `waitlisted`.
+9. Cancel the first signup using its cancellation link.
+10. Confirm the waitlisted signup is promoted.
+11. Export signups CSV from wp-admin.
+12. Run a WordPress personal data export for a participant e-mail.
+13. Run retention cleanup from **PASAT > Privacy**.
 
 ## Known Limitations
 
-- The first pass focuses on a stable MVP rather than every advanced standalone-app feature.
-- The display board is a simple read-only listing, not a realtime service.
-- Venue maps expose coordinate data but do not bundle a map provider.
-- Group/team signup and winner history are deferred.
-- `[pasat_my_signups]` avoids exposing private data until a verified e-mail lookup flow is implemented.
-- PHP syntax checks could not be run in the current development container because `php` is not installed.
+- The activity board is a simple read-only display, not a realtime service.
+- The venue map shortcode exposes coordinate data but does not bundle a map provider.
+- Group/team signup is not implemented in the MVP.
+- Winner/history administration is deferred.
+- The importer is a placeholder and does not yet parse production exports.
+- `[pasat_my_signups]` does not expose private signup data until a verified lookup flow is implemented.
 
-## Development Notes
+## License
 
-- Target WordPress: 6.0+
-- Target PHP: 8.1+
-- Text domain: `pasat`
-- Namespace: `PASAT`
-- Main plugin file: `pasat/pasat.php`
-- No Composer dependency is required.
+The plugin header declares `GPL-2.0-or-later`.
+
+The repository currently includes a GPL license file. Verify the final license file and plugin header match your distribution policy before public release.
