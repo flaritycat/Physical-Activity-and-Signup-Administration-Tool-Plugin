@@ -300,10 +300,13 @@ No Composer install is required.
 Useful local checks:
 
 ```text
+tools/check-release.sh
 php -l pasat/pasat.php
 git diff --check
 find pasat -name "*.php" -print0 | xargs -0 -n1 php -l
 ```
+
+`tools/check-release.sh` is the preferred preflight. It runs whitespace checks, PHP lint when PHP is available, JavaScript syntax checks when Node is available, direct-access guard checks, runtime legacy/dependency term checks, and the release ZIP build.
 
 Build an installable plugin ZIP from the repository root:
 

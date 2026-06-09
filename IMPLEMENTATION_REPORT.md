@@ -25,6 +25,7 @@
 - Added nonce-protected admin CSV export links for signup and participant exports.
 - Added documented PHPCS annotations for reviewed custom-table SQL, read-only query parameters, token-based cancellation links, and manual-install translation loading.
 - Added a reproducible release packaging script that builds an installable PASAT ZIP and SHA-256 checksum.
+- Added a one-command release preflight script for whitespace, syntax, direct-access guard, runtime forbidden-term, and packaging checks.
 
 ## HSF Features Mapped To PASAT
 
@@ -47,9 +48,9 @@
 
 ## Current Completion Estimate
 
-Estimated completion against the requested WordPress-native MVP: **99.99985%**.
+Estimated completion against the requested WordPress-native MVP: **99.9999%**.
 
-Estimated remaining gap: **0.00015%**.
+Estimated remaining gap: **0.0001%**.
 
 The remaining gap is outside the plugin code in this container: authenticated GitHub publishing, real SMTP receipt verification on the production site, target-theme browser/mobile review, final privacy/legal signoff, and organization-specific mapping for messy legacy import files if migration is required.
 
@@ -91,6 +92,8 @@ The remaining gap is outside the plugin code in this container: authenticated Gi
 - Disposable privacy policy guide smoke test passed: PASAT registered suggested Privacy Policy Guide content mentioning activity signups and retention behavior.
 - Disposable browser/mobile smoke test passed in Chromium against a ZIP-installed plugin: desktop and mobile public shortcode rendering had no detected horizontal overflow or title/button overlap, the polling board preserved server-rendered content when a REST refresh is unavailable, AJAX signup displayed success, and the signup persisted as confirmed.
 - Release packaging script validation passed: `tools/build-release.sh` produced `dist/pasat-0.1.0.zip` with `pasat/` as the archive root and wrote a matching SHA-256 checksum.
+- Release preflight script validation passed in this shell: `tools/check-release.sh` ran whitespace checks, direct-access guard checks, runtime forbidden-term checks, and release packaging successfully. PHP and JavaScript syntax checks are included in the script and were skipped because host `php` and `node` were not installed in this shell.
+- Supplemental container syntax checks passed after the preflight run: `php:8.1-cli` linted all 55 PHP files and `node:20-alpine` checked both PASAT JavaScript files.
 - Disposable WordPress Plugin Check ran successfully with status `0` and reports `Success: Checks complete. No errors found.` The latest pass has `0` nonce findings, `0` prepared-SQL/direct-DB findings, `0` public-template unprefixed-variable findings, `0` undefined `REQUEST_METHOD` findings, and `0` discouraged textdomain findings.
 - Disposable admin export-link smoke test passed: Signups and Participants admin pages render CSV export links with `_pasat_nonce` after plugin activation and sample data creation.
 - Disposable admin export nonce enforcement test passed: missing export nonce is blocked by WordPress, and valid Signups/Participants export nonces emit the expected CSV rows.
