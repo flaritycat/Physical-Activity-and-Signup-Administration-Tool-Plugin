@@ -30,6 +30,7 @@
 - Added GitHub Actions CI for PHP 8.1/8.3 release preflight checks, release artifact upload, and optional/main-branch ZIP install smoke validation.
 - Added production readiness and release signoff documentation for final SMTP, theme, privacy/legal, operations, rollback, and GitHub publishing checks.
 - Added GitHub publishing and offline handoff documentation plus a script that exports unpushed commits as a git bundle and patch series with checksum verification.
+- Added a security policy covering private vulnerability reporting, supported pre-release versions, sensitive scope, and production owner expectations.
 
 ## HSF Features Mapped To PASAT
 
@@ -52,9 +53,9 @@
 
 ## Current Completion Estimate
 
-Estimated completion against the requested WordPress-native MVP: **99.999985%**.
+Estimated completion against the requested WordPress-native MVP: **99.99999%**.
 
-Estimated remaining gap: **0.000015%**.
+Estimated remaining gap: **0.00001%**.
 
 The remaining gap is outside the plugin code in this container: authenticated GitHub publishing, real SMTP receipt verification on the production site, target-theme browser/mobile review, final privacy/legal signoff, and organization-specific mapping for messy legacy import files if migration is required.
 

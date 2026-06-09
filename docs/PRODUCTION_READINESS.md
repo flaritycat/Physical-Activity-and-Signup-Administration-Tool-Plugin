@@ -59,6 +59,7 @@ Use this checklist before putting **Physical Activity Signup and Administration 
 
 ## Privacy And Legal
 
+- Review `SECURITY.md` and confirm the deployment has a private vulnerability reporting path.
 - Review and adapt the PASAT Privacy Policy Guide text in WordPress.
 - Set the organization name.
 - Set consent text and consent version.

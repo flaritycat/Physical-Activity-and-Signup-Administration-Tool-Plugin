@@ -40,6 +40,7 @@ Reviewer:
 | Privacy eraser/anonymizer | Pending |  |
 | Retention cleanup | Pending |  |
 | Legal/privacy review | Pending |  |
+| Security reporting path | Pending |  |
 | GitHub publishing | Pending |  |
 
 ## Decisions

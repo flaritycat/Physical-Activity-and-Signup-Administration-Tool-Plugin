@@ -275,6 +275,8 @@ PASAT uses WordPress users, roles, capabilities, admin nonces, REST permission c
 
 PASAT does not implement a parallel authentication system.
 
+Security reporting and operational expectations are documented in `SECURITY.md`.
+
 ## My Signups Lookup
 
 `[pasat_my_signups]` avoids exposing participant data directly. A participant enters an e-mail address, PASAT sends a private lookup link if mail delivery is available, and the link displays only signups for that verified e-mail address. The public message does not reveal whether the address exists in the database.
