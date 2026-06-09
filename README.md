@@ -305,6 +305,14 @@ git diff --check
 find pasat -name "*.php" -print0 | xargs -0 -n1 php -l
 ```
 
+Build an installable plugin ZIP from the repository root:
+
+```text
+tools/build-release.sh
+```
+
+The release script requires the standard `zip` command and writes ignored artifacts to `dist/`, for example `dist/pasat-0.1.0.zip` and `dist/pasat-0.1.0.zip.sha256`. The ZIP root is `pasat/`, so it can be installed through **Plugins > Add New > Upload Plugin** or copied into `wp-content/plugins/pasat`.
+
 ## Manual Test Checklist
 
 1. Activate the plugin.
