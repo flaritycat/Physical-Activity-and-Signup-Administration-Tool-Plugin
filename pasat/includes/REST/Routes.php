@@ -54,6 +54,17 @@ final class Routes {
 			'search' => array(
 				'sanitize_callback' => 'sanitize_text_field',
 			),
+			'venue_id' => array(
+				'sanitize_callback' => 'absint',
+				'validate_callback' => static fn( mixed $value ): bool => null === $value || '' === $value || ( is_numeric( $value ) && (int) $value >= 0 ),
+			),
+			'activity_type' => array(
+				'sanitize_callback' => 'sanitize_text_field',
+			),
+			'host_id' => array(
+				'sanitize_callback' => 'absint',
+				'validate_callback' => static fn( mixed $value ): bool => null === $value || '' === $value || ( is_numeric( $value ) && (int) $value >= 0 ),
+			),
 		);
 	}
 

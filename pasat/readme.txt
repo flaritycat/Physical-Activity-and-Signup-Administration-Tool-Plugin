@@ -63,8 +63,8 @@ Yes. PASAT includes a Legacy Import form for structured JSON or CSV files coveri
 
 = 0.1.0 =
 
-Initial WordPress-native MVP with custom tables, admin pages, shortcodes, public signup, waitlist handling, cancellation links, REST endpoints, e-mail notifications, a polling activity board, a coordinate-based venue map view, privacy hooks, and Privacy Policy Guide content.
+Initial WordPress-native MVP with custom tables, admin pages, shortcodes, public signup, waitlist handling, cancellation links, REST endpoints, e-mail notifications, an enhanced polling activity board, a coordinate-based venue map view, privacy hooks, and Privacy Policy Guide content.
 
-Includes verified e-mail lookup for participant signups, activity cancellation notices, host assignment management, participant related-signup views, filtered/scoped CSV exports, participant deletion, REST argument validation, and activity-level signup locking for capacity checks.
+Includes verified e-mail lookup for participant signups, activity cancellation notices, host assignment management, participant related-signup views, filtered/scoped CSV exports, participant deletion, REST argument validation, activity board kiosk/QR/filter options, and activity-level signup locking for capacity checks.
 
 Validated with disposable WordPress activation, signup/waitlist/cancellation promotion, privacy export, real-user role/capability checks, shortcode rendering, HTTP rendering, mail-test generation, package integrity, and concurrent capacity tests.

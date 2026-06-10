@@ -104,6 +104,20 @@ final class ActivitiesRepository extends Repository {
 			$params[] = $like;
 		}
 
+		if ( ! empty( $args['venue_id'] ) ) {
+			$where[]  = 'a.venue_id = %d';
+			$params[] = absint( $args['venue_id'] );
+		}
+
+		if ( ! empty( $args['activity_type'] ) ) {
+			$where[]  = 'a.activity_type = %s';
+			$params[] = sanitize_text_field( (string) $args['activity_type'] );
+		}
+
+		if ( ! empty( $args['host_id'] ) && empty( $args['assigned_user_id'] ) ) {
+			$args['assigned_user_id'] = absint( $args['host_id'] );
+		}
+
 		$join_hosts = '';
 		if ( ! empty( $args['assigned_user_id'] ) ) {
 			$hosts      = Helpers::table( 'activity_hosts' );

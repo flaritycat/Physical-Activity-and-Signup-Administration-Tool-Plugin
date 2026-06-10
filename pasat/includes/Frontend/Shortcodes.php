@@ -153,10 +153,69 @@ final class Shortcodes {
 		return Renderer::render( 'public/venue-map.php', array( 'venues' => $venues ) );
 	}
 
-	public static function activity_board(): string {
+	public static function activity_board( array $atts = array() ): string {
 		Assets::enqueue();
-		$activities = ( new ActivitiesRepository() )->list( array( 'public' => true, 'upcoming' => true, 'limit' => 20 ) );
-		return Renderer::render( 'public/activity-list.php', array( 'activities' => $activities, 'signups' => new SignupsRepository(), 'board' => true ) );
+		$atts = shortcode_atts(
+			array(
+				'mode'          => '',
+				'show_qr'       => '0',
+				'venue_id'      => '0',
+				'activity_type' => '',
+				'host_id'       => '0',
+				'refresh'       => '60000',
+				'limit'         => '20',
+				'few_spots'     => '3',
+			),
+			$atts,
+			'pasat_activity_board'
+		);
+
+		$mode          = 'kiosk' === sanitize_key( (string) $atts['mode'] ) ? 'kiosk' : '';
+		$show_qr       = in_array( strtolower( (string) $atts['show_qr'] ), array( '1', 'true', 'yes', 'on' ), true );
+		$venue_id      = absint( $atts['venue_id'] );
+		$activity_type = sanitize_text_field( (string) $atts['activity_type'] );
+		$host_id       = absint( $atts['host_id'] );
+		$refresh       = max( 15000, absint( $atts['refresh'] ) ?: 60000 );
+		$limit         = max( 1, min( 100, absint( $atts['limit'] ) ?: 20 ) );
+		$few_spots     = max( 1, absint( $atts['few_spots'] ) ?: 3 );
+		$query         = array(
+			'public'   => true,
+			'upcoming' => true,
+			'limit'    => $limit,
+		);
+
+		if ( $venue_id > 0 ) {
+			$query['venue_id'] = $venue_id;
+		}
+
+		if ( '' !== $activity_type ) {
+			$query['activity_type'] = $activity_type;
+		}
+
+		if ( $host_id > 0 ) {
+			$query['host_id'] = $host_id;
+		}
+
+		$activities = ( new ActivitiesRepository() )->list( $query );
+
+		return Renderer::render(
+			'public/activity-list.php',
+			array(
+				'activities'    => $activities,
+				'signups'       => new SignupsRepository(),
+				'board'         => true,
+				'board_options' => array(
+					'mode'          => $mode,
+					'show_qr'       => $show_qr,
+					'venue_id'      => $venue_id,
+					'activity_type' => $activity_type,
+					'host_id'       => $host_id,
+					'refresh'       => $refresh,
+					'limit'         => $limit,
+					'few_spots'     => $few_spots,
+				),
+			)
+		);
 	}
 
 	public static function handle_cancellation_link(): void {

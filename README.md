@@ -184,7 +184,21 @@ Displays venues/locations that have latitude and longitude, including address, c
 [pasat_activity_board]
 ```
 
-Displays a simple read-only board of upcoming activities and refreshes public capacity status through PASAT's REST API when JavaScript is available.
+Displays a read-only board of upcoming activities and refreshes public capacity status through PASAT's REST API when JavaScript is available.
+
+Useful board options:
+
+```text
+[pasat_activity_board mode="kiosk"]
+[pasat_activity_board show_qr="1"]
+[pasat_activity_board venue_id="3"]
+[pasat_activity_board activity_type="yoga"]
+[pasat_activity_board host_id="12"]
+[pasat_activity_board refresh="15000"]
+[pasat_activity_board limit="10"]
+```
+
+The board supports kiosk styling, visible refresh/connection status, clearer status labels, change highlights, optional local QR signup codes, and venue/type/host filtering. The board remains polling-based rather than realtime; `refresh` is in milliseconds and is clamped to a minimum of 15 seconds.
 
 ## Public Signup Behavior
 
@@ -320,6 +334,14 @@ tools/smoke-zip-install.sh
 
 This development-only script builds the ZIP, starts disposable WordPress CLI and MariaDB containers, installs and activates the ZIP, verifies PASAT table creation, and checks required shortcodes. Docker is not a PASAT runtime prerequisite.
 
+Optional Activity Board smoke test for release maintainers with Docker:
+
+```text
+tools/smoke-activity-board.sh
+```
+
+This development-only script installs the packaged plugin into disposable WordPress/MariaDB containers, creates sample venues and activities, renders `[pasat_activity_board mode="kiosk" show_qr="1"]`, checks venue/type filtering, verifies QR signup markup, and confirms the public REST response exposes only public activity fields.
+
 The repository also includes GitHub Actions CI in `.github/workflows/pasat-ci.yml`. Once GitHub publishing credentials are available, pushes and pull requests run the release preflight on PHP 8.1 and PHP 8.3, upload short-lived release ZIP artifacts, and run the Docker ZIP-install smoke test on `main` pushes or manual workflow dispatch.
 
 Production release checks are documented in `docs/PRODUCTION_READINESS.md`, with a fillable signoff template in `docs/RELEASE_SIGNOFF_TEMPLATE.md`.
@@ -356,7 +378,7 @@ The release script requires the standard `zip` command and writes ignored artifa
 
 ## Known Limitations
 
-- The activity board is a simple read-only polling display, not a realtime service.
+- The activity board is a read-only polling display with kiosk/QR/filter options, not a realtime service.
 - The venue map shortcode displays coordinate-enabled venues and links to an external map, but does not bundle a full map provider.
 - Group/team signup is not implemented in the MVP.
 - Winner/history administration is deferred.

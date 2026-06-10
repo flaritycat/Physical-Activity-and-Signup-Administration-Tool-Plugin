@@ -93,6 +93,21 @@ final class Helpers {
 		return self::hash_identifier( $ua );
 	}
 
+	public static function public_signup_url( int $activity_id = 0 ): string {
+		$page_id = absint( self::setting( 'public_page_id', 0 ) );
+		$url     = $page_id ? get_permalink( $page_id ) : home_url( '/' );
+
+		if ( ! $url ) {
+			$url = home_url( '/' );
+		}
+
+		if ( $activity_id > 0 ) {
+			$url = add_query_arg( 'pasat_activity_id', $activity_id, $url ) . '#pasat-signup';
+		}
+
+		return $url;
+	}
+
 	public static function csv_cell( mixed $value ): string {
 		$value = (string) $value;
 		return preg_match( '/^[=\-+@]/', $value ) ? "'" . $value : $value;

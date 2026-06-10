@@ -14,6 +14,7 @@ Initial WordPress-native release candidate for **Physical Activity Signup and Ad
 - Admin pages for Dashboard, Activities, Venues, Signups, Participants, Hosts, Settings, Privacy, and Legacy Import.
 - Activity and venue management with capacity, waitlist, signup window, status, visibility, age-limit, warning acknowledgement, and host assignment support.
 - Public shortcodes for activity listing, signup, verified my-signups lookup, venue map/listing, and read-only activity board.
+- Activity Board kiosk mode, visible refresh/connection state, improved status labels, change highlights, optional local QR signup codes, and venue/type/host/refresh/limit filters.
 - Public signup validation, duplicate prevention, advisory locking around capacity checks, waitlist placement, secure cancellation links, and waitlist promotion.
 - E-mail notifications through `wp_mail()` for signup confirmation, cancellation, waitlist promotion, lookup links, activity cancellation notices, and mail-delivery testing.
 - REST API routes under `pasat/v1` with public activity endpoints and capability-protected admin endpoints.
@@ -30,7 +31,7 @@ Initial WordPress-native release candidate for **Physical Activity Signup and Ad
 - Public signup, duplicate rejection, waitlist placement, cancellation, and waitlist promotion.
 - Concurrent signup behavior for capacity-one activities.
 - Role and capability scoping for managers and assigned hosts.
-- Public shortcode rendering, HTTP no-JavaScript signup, activity board, and venue map.
+- Public shortcode rendering, HTTP no-JavaScript signup, enhanced activity board, and venue map.
 - Mail-test generation through WordPress mail hooks.
 - WordPress privacy export/erase integration and retention cleanup.
 - WordPress Plugin Check with no reported errors.
@@ -38,7 +39,7 @@ Initial WordPress-native release candidate for **Physical Activity Signup and Ad
 
 ### Deferred
 
-- Realtime display board service.
+- Realtime display board service; the board remains polling-based for normal WordPress hosting compatibility.
 - Group/team signup.
 - Winner/history administration.
 - Bundled map provider or geocoding.

@@ -1,5 +1,9 @@
 # Improvement 1: Better PASAT Activity Board
 
+## Execution Status
+
+Implemented. The board now supports kiosk mode, visible refresh and connection state, clearer status labels, change highlights, optional local QR signup links, shortcode filters, public REST filters, and a reusable Docker smoke test at `tools/smoke-activity-board.sh`.
+
 ## Goal
 
 Improve `[pasat_activity_board]` from a simple auto-refreshing list into a more useful public display board for participants, hosts, and venue screens, while keeping it WordPress-friendly and avoiding fragile realtime infrastructure.
@@ -178,6 +182,7 @@ Run:
 
 ```text
 tools/check-release.sh
+tools/smoke-activity-board.sh
 ```
 
 Manual smoke:

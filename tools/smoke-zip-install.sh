@@ -13,7 +13,11 @@ chmod 0777 "${WORK_DIR}"
 cleanup() {
 	docker rm -f "${DB_CONTAINER}" >/dev/null 2>&1 || true
 	docker network rm "${NETWORK_NAME}" >/dev/null 2>&1 || true
-	rm -rf "${WORK_DIR}"
+
+	if [[ -d "${WORK_DIR}" ]]; then
+		docker run --rm -v "${WORK_DIR}:/work" alpine:3.20 sh -lc 'rm -rf /work/* /work/.[!.]* /work/..?*' >/dev/null 2>&1 || true
+		rmdir "${WORK_DIR}" >/dev/null 2>&1 || true
+	fi
 }
 
 require_command() {

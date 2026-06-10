@@ -18,14 +18,25 @@ final class Assets {
 				'signupSuccess' => __( 'Signup received. Please check your e-mail.', 'pasat' ),
 				'signupFailed'  => __( 'Signup failed.', 'pasat' ),
 				'board'         => array(
+					'cancelled'    => __( 'Cancelled', 'pasat' ),
+					'connectionLost' => __( 'Connection lost. Showing last saved board.', 'pasat' ),
 					/* translators: %d is the number of confirmed signups for an activity. */
 					'confirmed'    => __( '%d confirmed', 'pasat' ),
+					'fewSpots'     => __( 'Few spots left', 'pasat' ),
 					'full'         => __( 'Full', 'pasat' ),
 					'noActivities' => __( 'No public activities are currently available.', 'pasat' ),
 					'open'         => __( 'Open', 'pasat' ),
+					'qrFallback'   => __( 'Signup QR', 'pasat' ),
+					'refreshing'   => __( 'Refreshing...', 'pasat' ),
+					'signUp'       => __( 'Sign up', 'pasat' ),
 					'signupClosed' => __( 'Signup closed', 'pasat' ),
 					/* translators: %d is the number of remaining confirmed signup spots. */
 					'spotsLeft'    => __( '%d spots left', 'pasat' ),
+					'startingSoon' => __( 'Starting soon', 'pasat' ),
+					/* translators: %d is the number of seconds since the activity board last refreshed. */
+					'updatedSecondsAgo' => __( 'Updated %d seconds ago', 'pasat' ),
+					/* translators: %d is the number of minutes since the activity board last refreshed. */
+					'updatedMinutesAgo' => __( 'Updated %d minutes ago', 'pasat' ),
 					'updated'      => __( 'Updated just now', 'pasat' ),
 					'waitlistOpen' => __( 'Waitlist open', 'pasat' ),
 					/* translators: %d is the number of waitlisted signups for an activity. */
