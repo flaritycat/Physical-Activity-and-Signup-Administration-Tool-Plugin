@@ -1,10 +1,12 @@
 <?php
 namespace PASAT\Admin;
 
+use PASAT\Badges\Awarder;
 use PASAT\Capabilities;
 use PASAT\Database\ActivitiesRepository;
 use PASAT\Database\AuditLogRepository;
 use PASAT\Database\HostsRepository;
+use PASAT\Database\ParticipationLogsRepository;
 use PASAT\Database\SignupsRepository;
 use PASAT\Database\VenuesRepository;
 use PASAT\Email\Mailer;
@@ -31,6 +33,10 @@ final class ActivitiesPage {
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 		$can_create = current_user_can( 'pasat_manage_all_activities' );
 
+		if ( 'results' === sanitize_key( wp_unslash( $_GET['pasat_export'] ?? '' ) ) ) {
+			self::export_results( $id );
+		}
+
 		echo '<div class="wrap pasat-admin">';
 		echo '<h1>' . esc_html__( 'PASAT Activities', 'pasat' );
 		if ( $can_create ) {
@@ -40,7 +46,12 @@ final class ActivitiesPage {
 		echo '</h1>';
 		self::notice();
 
-		if ( in_array( $action, array( 'new', 'edit' ), true ) ) {
+		if ( 'participation' === $action ) {
+			if ( ! $id || ! Capabilities::can_manage_participation( $id ) ) {
+				wp_die( esc_html__( 'You do not have permission to manage participation for this activity.', 'pasat' ) );
+			}
+			self::participation_screen( $id );
+		} elseif ( in_array( $action, array( 'new', 'edit' ), true ) ) {
 			$activity = $id ? $repo->get( $id ) : null;
 			if ( ! $id && ! $can_create ) {
 				wp_die( esc_html__( 'You do not have permission to create activities.', 'pasat' ) );
@@ -104,6 +115,26 @@ final class ActivitiesPage {
 			$new_id = $repo->duplicate( $id );
 			$audit->log( 'activity.duplicate', 'activity', $new_id, 'Duplicated activity' );
 			wp_safe_redirect( admin_url( 'admin.php?page=pasat-activities&updated=1' ) );
+			exit;
+		}
+
+		if ( 'save_participation' === $action && $id ) {
+			if ( ! Capabilities::can_manage_participation( $id ) ) {
+				wp_die( esc_html__( 'You do not have permission to manage participation for this activity.', 'pasat' ) );
+			}
+			self::save_participation( $id, wp_unslash( $_POST ) );
+			$audit->log( 'activity.participation_save', 'activity', $id, 'Saved participation results' );
+			wp_safe_redirect( admin_url( 'admin.php?page=pasat-activities&action=participation&id=' . $id . '&updated=1' ) );
+			exit;
+		}
+
+		if ( 'recalculate_badges' === $action && $id ) {
+			if ( ! Capabilities::can_manage_participation( $id ) ) {
+				wp_die( esc_html__( 'You do not have permission to recalculate badges for this activity.', 'pasat' ) );
+			}
+			$result = ( new Awarder() )->recalculate_activity( $id );
+			$audit->log( 'activity.badges_recalculate', 'activity', $id, 'Recalculated badges for ' . (int) $result['processed'] . ' participation logs' );
+			wp_safe_redirect( admin_url( 'admin.php?page=pasat-activities&action=participation&id=' . $id . '&badges=1' ) );
 			exit;
 		}
 	}
@@ -213,6 +244,9 @@ final class ActivitiesPage {
 						<?php self::row_action( (int) $activity['id'], 'cancel', __( 'Cancel', 'pasat' ) ); ?>
 						<?php self::row_action( (int) $activity['id'], 'archive', __( 'Archive', 'pasat' ) ); ?>
 						<?php self::row_action( (int) $activity['id'], 'duplicate', __( 'Duplicate', 'pasat' ) ); ?>
+						<?php if ( Capabilities::can_manage_participation( (int) $activity['id'] ) ) : ?>
+							<a href="<?php echo esc_url( admin_url( 'admin.php?page=pasat-activities&action=participation&id=' . absint( $activity['id'] ) ) ); ?>"><?php esc_html_e( 'Results', 'pasat' ); ?></a>
+						<?php endif; ?>
 						<a href="<?php echo esc_url( PosterDownloads::single_url( (int) $activity['id'] ) ); ?>"><?php esc_html_e( 'Poster PDF', 'pasat' ); ?></a>
 					</td>
 				</tr>
@@ -223,6 +257,129 @@ final class ActivitiesPage {
 			</tbody>
 		</table>
 		<?php
+	}
+
+	private static function participation_screen( int $activity_id ): void {
+		$activity    = ( new ActivitiesRepository() )->get_with_venue( $activity_id );
+		$signups     = array_filter(
+			( new SignupsRepository() )->active_for_activity( $activity_id ),
+			static fn( array $signup ): bool => 'confirmed' === ( $signup['status'] ?? '' )
+		);
+		$logs_repo   = new ParticipationLogsRepository();
+		$logs        = array();
+		foreach ( $logs_repo->list_for_activity( $activity_id ) as $log ) {
+			$logs[ (int) $log['participant_id'] ] = $log;
+		}
+		$can_place = current_user_can( 'pasat_manage_all_activities' ) || ! empty( Helpers::setting( 'hosts_can_record_placements', 1 ) );
+		?>
+		<h2><?php echo esc_html( $activity['title'] ?? __( 'Activity Results', 'pasat' ) ); ?></h2>
+		<p><?php esc_html_e( 'Record attendance, completion, placements, and result notes. Year and placement badges are recalculated when results are saved.', 'pasat' ); ?></p>
+		<p>
+			<a class="button" href="<?php echo esc_url( admin_url( 'admin.php?page=pasat-activities' ) ); ?>"><?php esc_html_e( 'Back to Activities', 'pasat' ); ?></a>
+			<a class="button" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin.php?page=pasat-activities&action=participation&id=' . $activity_id . '&pasat_export=results' ), Nonces::action( 'activity_results_export_' . $activity_id ), '_pasat_nonce' ) ); ?>"><?php esc_html_e( 'Export Results CSV', 'pasat' ); ?></a>
+		</p>
+		<form method="post" class="pasat-admin-form">
+			<?php Nonces::field( 'activity' ); ?>
+			<input type="hidden" name="pasat_action" value="save_participation">
+			<input type="hidden" name="activity_id" value="<?php echo esc_attr( (string) $activity_id ); ?>">
+			<table class="widefat striped">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'Participant', 'pasat' ); ?></th>
+						<th><?php esc_html_e( 'Attendance', 'pasat' ); ?></th>
+						<th><?php esc_html_e( 'Placement', 'pasat' ); ?></th>
+						<th><?php esc_html_e( 'Result', 'pasat' ); ?></th>
+						<th><?php esc_html_e( 'Notes', 'pasat' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php foreach ( $signups as $signup ) : ?>
+					<?php $log = $logs[ (int) $signup['participant_id'] ] ?? array(); ?>
+					<tr>
+						<td>
+							<strong><?php echo esc_html( trim( ( $signup['first_name'] ?? '' ) . ' ' . ( $signup['last_name'] ?? '' ) ) ); ?></strong><br>
+							<span class="description"><?php echo esc_html( $signup['email'] ?? '' ); ?></span>
+							<input type="hidden" name="participation[<?php echo esc_attr( (string) $signup['participant_id'] ); ?>][log_id]" value="<?php echo esc_attr( (string) ( $log['id'] ?? 0 ) ); ?>">
+							<input type="hidden" name="participation[<?php echo esc_attr( (string) $signup['participant_id'] ); ?>][signup_id]" value="<?php echo esc_attr( (string) $signup['id'] ); ?>">
+							<input type="hidden" name="participation[<?php echo esc_attr( (string) $signup['participant_id'] ); ?>][participant_id]" value="<?php echo esc_attr( (string) $signup['participant_id'] ); ?>">
+						</td>
+						<td>
+							<select name="participation[<?php echo esc_attr( (string) $signup['participant_id'] ); ?>][attendance_status]">
+								<?php foreach ( ParticipationLogsRepository::ATTENDANCE_STATUSES as $status ) : ?>
+									<option value="<?php echo esc_attr( $status ); ?>" <?php selected( $log['attendance_status'] ?? 'unknown', $status ); ?>><?php echo esc_html( ucwords( str_replace( '_', ' ', $status ) ) ); ?></option>
+								<?php endforeach; ?>
+							</select>
+						</td>
+						<td><input type="number" min="0" name="participation[<?php echo esc_attr( (string) $signup['participant_id'] ); ?>][placement]" value="<?php echo esc_attr( (string) ( $log['placement'] ?? '' ) ); ?>" <?php disabled( ! $can_place ); ?>></td>
+						<td>
+							<input class="small-text" name="participation[<?php echo esc_attr( (string) $signup['participant_id'] ); ?>][result_value]" value="<?php echo esc_attr( $log['result_value'] ?? '' ); ?>" placeholder="<?php esc_attr_e( 'Value', 'pasat' ); ?>">
+							<input class="small-text" name="participation[<?php echo esc_attr( (string) $signup['participant_id'] ); ?>][result_unit]" value="<?php echo esc_attr( $log['result_unit'] ?? '' ); ?>" placeholder="<?php esc_attr_e( 'Unit', 'pasat' ); ?>">
+						</td>
+						<td><textarea name="participation[<?php echo esc_attr( (string) $signup['participant_id'] ); ?>][private_notes]" rows="2"><?php echo esc_textarea( $log['private_notes'] ?? '' ); ?></textarea></td>
+					</tr>
+				<?php endforeach; ?>
+				<?php if ( ! $signups ) : ?>
+					<tr><td colspan="5"><?php esc_html_e( 'No confirmed signups are available for participation recording.', 'pasat' ); ?></td></tr>
+				<?php endif; ?>
+				</tbody>
+			</table>
+			<?php submit_button( __( 'Save Participation Results', 'pasat' ) ); ?>
+		</form>
+		<form method="post" class="pasat-admin-form">
+			<?php Nonces::field( 'activity' ); ?>
+			<input type="hidden" name="pasat_action" value="recalculate_badges">
+			<input type="hidden" name="activity_id" value="<?php echo esc_attr( (string) $activity_id ); ?>">
+			<?php submit_button( __( 'Recalculate Badges', 'pasat' ), 'secondary' ); ?>
+		</form>
+		<?php
+	}
+
+	private static function save_participation( int $activity_id, array $post ): void {
+		$rows      = isset( $post['participation'] ) && is_array( $post['participation'] ) ? $post['participation'] : array();
+		$repo      = new ParticipationLogsRepository();
+		$awarder   = new Awarder();
+		$can_place = current_user_can( 'pasat_manage_all_activities' ) || ! empty( Helpers::setting( 'hosts_can_record_placements', 1 ) );
+
+		foreach ( $rows as $row ) {
+			if ( ! is_array( $row ) ) {
+				continue;
+			}
+			if ( ! $can_place ) {
+				unset( $row['placement'] );
+			}
+			$log_id = $repo->save(
+				array(
+					'signup_id'          => absint( $row['signup_id'] ?? 0 ),
+					'activity_id'        => $activity_id,
+					'participant_id'     => absint( $row['participant_id'] ?? 0 ),
+					'attendance_status'  => sanitize_key( $row['attendance_status'] ?? 'unknown' ),
+					'placement'          => isset( $row['placement'] ) ? absint( $row['placement'] ) : null,
+					'result_value'       => sanitize_text_field( $row['result_value'] ?? '' ),
+					'result_unit'        => sanitize_text_field( $row['result_unit'] ?? '' ),
+					'private_notes'      => sanitize_textarea_field( $row['private_notes'] ?? '' ),
+				),
+				absint( $row['log_id'] ?? 0 )
+			);
+			if ( $log_id ) {
+				$awarder->recalculate_log( $log_id );
+			}
+		}
+	}
+
+	private static function export_results( int $activity_id ): void {
+		if ( ! $activity_id || ! Capabilities::can_manage_participation( $activity_id ) ) {
+			wp_die( esc_html__( 'You do not have permission to export these results.', 'pasat' ) );
+		}
+		check_admin_referer( Nonces::action( 'activity_results_export_' . $activity_id ), '_pasat_nonce' );
+		$logs = ( new ParticipationLogsRepository() )->list_for_activity( $activity_id );
+		header( 'Content-Type: text/csv; charset=utf-8' );
+		header( 'Content-Disposition: attachment; filename=pasat-activity-' . $activity_id . '-results.csv' );
+		$out = fopen( 'php://output', 'w' );
+		fputcsv( $out, array( 'participant_id', 'first_name', 'last_name', 'email', 'attendance_status', 'placement', 'result_value', 'result_unit', 'private_notes', 'updated_at' ) );
+		foreach ( $logs as $log ) {
+			fputcsv( $out, array( $log['participant_id'], Helpers::csv_cell( $log['first_name'] ), Helpers::csv_cell( $log['last_name'] ), Helpers::csv_cell( $log['email'] ), $log['attendance_status'], $log['placement'], Helpers::csv_cell( $log['result_value'] ), Helpers::csv_cell( $log['result_unit'] ), Helpers::csv_cell( $log['private_notes'] ), $log['updated_at'] ) );
+		}
+		exit;
 	}
 
 	private static function row_action( int $id, string $action, string $label ): void {
@@ -249,6 +406,9 @@ final class ActivitiesPage {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a read-only admin notice flag after a nonce-protected POST redirect.
 		if ( ! empty( $_GET['updated'] ) ) {
 			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Activity saved.', 'pasat' ) . '</p></div>';
+		}
+		if ( ! empty( $_GET['badges'] ) ) {
+			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Badges recalculated.', 'pasat' ) . '</p></div>';
 		}
 	}
 }

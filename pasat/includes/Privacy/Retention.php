@@ -52,6 +52,8 @@ final class Retention {
 				Eraser::delete_participant( $id );
 			} else {
 				$repo->anonymize( $id );
+				( new \PASAT\Database\ParticipationLogsRepository() )->anonymize_for_participant( $id );
+				( new \PASAT\Database\BadgesRepository() )->anonymize_for_participant( $id );
 			}
 		}
 

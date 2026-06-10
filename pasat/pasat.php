@@ -3,7 +3,7 @@
  * Plugin Name: Physical Activity Signup and Administration Tool
  * Plugin URI:
  * Description: A WordPress plugin for managing public signups and administration for physical activities, sessions, classes, and events.
- * Version: 0.1.1
+ * Version: 0.1.2
  * Author: Project Contributors
  * Text Domain: pasat
  * Domain Path: /languages
@@ -18,8 +18,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PASAT_VERSION', '0.1.1' );
-define( 'PASAT_DB_VERSION', '0.1.1' );
+define( 'PASAT_VERSION', '0.1.2' );
+define( 'PASAT_DB_VERSION', '0.1.2' );
 define( 'PASAT_PLUGIN_FILE', __FILE__ );
 define( 'PASAT_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PASAT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

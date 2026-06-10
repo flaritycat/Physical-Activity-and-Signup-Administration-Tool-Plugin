@@ -69,7 +69,7 @@ run_wp_cli() {
 			\$WP plugin install '${archive}' --activate --allow-root
 			\$WP plugin is-active pasat --allow-root
 			test \"\$(\$WP option get pasat_db_version --allow-root)\" = '${version}'
-			test \"\$(\$WP db query 'SHOW TABLES;' --skip-column-names --allow-root | grep -c '^wp_pasat_')\" = '6'
+			test \"\$(\$WP db query 'SHOW TABLES;' --skip-column-names --allow-root | grep -c '^wp_pasat_')\" = '8'
 			\$WP eval 'foreach ( array( \"pasat_activity_list\", \"pasat_activity_signup\", \"pasat_my_signups\" ) as \$shortcode ) { if ( ! shortcode_exists( \$shortcode ) ) { fwrite( STDERR, \"Missing shortcode: {\$shortcode}\n\" ); exit( 1 ); } } echo \"shortcodes:ok\n\";' --allow-root
 		"
 }

@@ -2,6 +2,8 @@
 namespace PASAT\Frontend;
 
 use PASAT\Database\ActivitiesRepository;
+use PASAT\Database\BadgesRepository;
+use PASAT\Database\ParticipationLogsRepository;
 use PASAT\Database\ParticipantsRepository;
 use PASAT\Database\SignupsRepository;
 use PASAT\Email\Mailer;
@@ -106,6 +108,9 @@ final class Shortcodes {
 		$error    = '';
 		$verified = false;
 		$email    = '';
+		$profile  = null;
+		$badges   = array();
+		$participation = array();
 		$request_method = isset( $_SERVER['REQUEST_METHOD'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) : '';
 
 		if ( isset( $_GET['pasat_lookup_token'] ) ) {
@@ -113,7 +118,13 @@ final class Shortcodes {
 			$email = self::email_from_lookup_token( $token );
 			if ( $email ) {
 				$verified = true;
-				$items    = ( new ParticipantsRepository() )->signups_for_email( $email );
+				$participants = new ParticipantsRepository();
+				$profile  = $participants->find_by_email( $email );
+				$items    = $participants->signups_for_email( $email );
+				if ( $profile && ! empty( Helpers::setting( 'badges_show_in_my_signups', 1 ) ) ) {
+					$badges        = ( new BadgesRepository() )->active_for_participant( (int) $profile['id'] );
+					$participation = ( new ParticipationLogsRepository() )->list_for_participant( (int) $profile['id'] );
+				}
 				$notice   = $items ? __( 'Your verified signups are listed below.', 'pasat' ) : __( 'No signups were found for this verified e-mail address.', 'pasat' );
 			} else {
 				$error = __( 'The signup lookup link is invalid or expired.', 'pasat' );
@@ -149,6 +160,9 @@ final class Shortcodes {
 				'error'    => $error,
 				'verified' => $verified,
 				'email'    => $email,
+				'profile'  => $profile,
+				'badges'   => $badges,
+				'participation' => $participation,
 			)
 		);
 	}

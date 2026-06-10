@@ -11,6 +11,8 @@ final class Routes {
 		$public_venues     = new PublicVenuesController();
 		$public_signup     = new PublicSignupController();
 		$admin_activities  = new AdminActivitiesController();
+		$admin_participants = new AdminParticipantsController();
+		$admin_participation = new AdminParticipationController();
 		$admin_venues      = new AdminVenuesController();
 		$admin_signups     = new AdminSignupsController();
 
@@ -25,6 +27,15 @@ final class Routes {
 		register_rest_route( 'pasat/v1', '/admin/activities/(?P<id>\d+)', array( 'methods' => 'GET', 'callback' => array( $admin_activities, 'show' ), 'permission_callback' => array( $admin_activities, 'can_read' ), 'args' => self::id_arg() ) );
 		register_rest_route( 'pasat/v1', '/admin/activities/(?P<id>\d+)', array( 'methods' => array( 'PUT', 'PATCH' ), 'callback' => array( $admin_activities, 'update' ), 'permission_callback' => array( $admin_activities, 'can_manage' ), 'args' => array_merge( self::id_arg(), self::activity_args() ) ) );
 		register_rest_route( 'pasat/v1', '/admin/activities/(?P<id>\d+)', array( 'methods' => 'DELETE', 'callback' => array( $admin_activities, 'delete' ), 'permission_callback' => array( $admin_activities, 'can_manage' ), 'args' => self::id_arg() ) );
+		register_rest_route( 'pasat/v1', '/admin/activities/(?P<id>\d+)/participation', array( 'methods' => 'GET', 'callback' => array( $admin_participation, 'list_activity' ), 'permission_callback' => array( $admin_participation, 'can_activity' ), 'args' => self::id_arg() ) );
+		register_rest_route( 'pasat/v1', '/admin/activities/(?P<id>\d+)/participation', array( 'methods' => 'POST', 'callback' => array( $admin_participation, 'create_for_activity' ), 'permission_callback' => array( $admin_participation, 'can_activity' ), 'args' => array_merge( self::id_arg(), self::participation_args() ) ) );
+		register_rest_route( 'pasat/v1', '/admin/activities/(?P<id>\d+)/badges/recalculate', array( 'methods' => 'POST', 'callback' => array( $admin_participation, 'recalculate' ), 'permission_callback' => array( $admin_participation, 'can_activity' ), 'args' => self::id_arg() ) );
+
+		register_rest_route( 'pasat/v1', '/admin/participants/(?P<id>\d+)/badges', array( 'methods' => 'GET', 'callback' => array( $admin_participants, 'badges' ), 'permission_callback' => array( $admin_participants, 'can_view' ), 'args' => self::id_arg() ) );
+		register_rest_route( 'pasat/v1', '/admin/participants/(?P<id>\d+)/participation', array( 'methods' => 'GET', 'callback' => array( $admin_participants, 'participation' ), 'permission_callback' => array( $admin_participants, 'can_view' ), 'args' => self::id_arg() ) );
+		register_rest_route( 'pasat/v1', '/admin/participants/(?P<id>\d+)/membership', array( 'methods' => array( 'PUT', 'PATCH' ), 'callback' => array( $admin_participants, 'update_membership' ), 'permission_callback' => array( $admin_participants, 'can_manage_memberships' ), 'args' => array_merge( self::id_arg(), self::membership_args() ) ) );
+		register_rest_route( 'pasat/v1', '/admin/participation/(?P<id>\d+)', array( 'methods' => 'GET', 'callback' => array( $admin_participation, 'show' ), 'permission_callback' => array( $admin_participation, 'can_log' ), 'args' => self::id_arg() ) );
+		register_rest_route( 'pasat/v1', '/admin/participation/(?P<id>\d+)', array( 'methods' => array( 'PUT', 'PATCH' ), 'callback' => array( $admin_participation, 'update' ), 'permission_callback' => array( $admin_participation, 'can_log' ), 'args' => array_merge( self::id_arg(), self::participation_args() ) ) );
 
 		register_rest_route( 'pasat/v1', '/admin/venues', array( 'methods' => 'GET', 'callback' => array( $admin_venues, 'index' ), 'permission_callback' => array( $admin_venues, 'can_manage' ), 'args' => self::list_args() ) );
 		register_rest_route( 'pasat/v1', '/admin/venues', array( 'methods' => 'POST', 'callback' => array( $admin_venues, 'create' ), 'permission_callback' => array( $admin_venues, 'can_manage' ), 'args' => self::venue_args() ) );
@@ -98,6 +109,7 @@ final class Routes {
 			'phone'       => array( 'sanitize_callback' => 'sanitize_text_field' ),
 			'age'         => array( 'sanitize_callback' => 'absint' ),
 			'consent_given' => array( 'sanitize_callback' => 'rest_sanitize_boolean' ),
+			'membership_opt_in' => array( 'sanitize_callback' => 'rest_sanitize_boolean' ),
 			'warning_acknowledged' => array( 'sanitize_callback' => 'rest_sanitize_boolean' ),
 		);
 	}
@@ -156,6 +168,34 @@ final class Routes {
 				'sanitize_callback' => 'sanitize_key',
 				'validate_callback' => static fn( mixed $value ): bool => null === $value || in_array( $value, array( 'confirmed', 'waitlisted', 'cancelled' ), true ),
 			),
+		);
+	}
+
+	private static function membership_args(): array {
+		return array(
+			'membership_status' => array(
+				'sanitize_callback' => 'sanitize_key',
+				'validate_callback' => static fn( mixed $value ): bool => null === $value || in_array( $value, \PASAT\Database\ParticipantsRepository::MEMBERSHIP_STATUSES, true ),
+			),
+			'membership_number' => array( 'sanitize_callback' => 'sanitize_text_field' ),
+			'membership_notes'  => array( 'sanitize_callback' => 'sanitize_textarea_field' ),
+		);
+	}
+
+	private static function participation_args(): array {
+		return array(
+			'signup_id'         => array( 'sanitize_callback' => 'absint' ),
+			'participant_id'    => array( 'sanitize_callback' => 'absint' ),
+			'attendance_status' => array(
+				'sanitize_callback' => 'sanitize_key',
+				'validate_callback' => static fn( mixed $value ): bool => null === $value || in_array( $value, \PASAT\Database\ParticipationLogsRepository::ATTENDANCE_STATUSES, true ),
+			),
+			'placement'         => array( 'sanitize_callback' => 'absint' ),
+			'placement_label'   => array( 'sanitize_callback' => 'sanitize_text_field' ),
+			'result_value'      => array( 'sanitize_callback' => 'sanitize_text_field' ),
+			'result_unit'       => array( 'sanitize_callback' => 'sanitize_text_field' ),
+			'result_notes'      => array( 'sanitize_callback' => 'sanitize_textarea_field' ),
+			'private_notes'     => array( 'sanitize_callback' => 'sanitize_textarea_field' ),
 		);
 	}
 }

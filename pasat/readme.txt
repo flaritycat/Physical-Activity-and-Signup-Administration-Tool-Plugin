@@ -4,7 +4,7 @@ Tags: activities, signup, events, waitlist, administration
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.1
-Stable tag: 0.1.1
+Stable tag: 0.1.2
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,7 +31,7 @@ Recommended production hosting: PHP memory limit of at least 128 MB, regular dat
 3. Create a WordPress page for public signups.
 4. Add `[pasat_activity_list]` and `[pasat_activity_signup]` to that page.
 5. Select that page under PASAT > Settings.
-6. Configure organization name, poster logo, labels, consent text, retention, map settings, and e-mail templates.
+6. Configure organization name, poster logo, labels, consent text, membership/badge settings, retention, map settings, and e-mail templates.
 7. Create at least one venue under PASAT > Venues. Add coordinates manually, or enable geocoding and run Geocode Address.
 8. Create a published activity under PASAT > Activities.
 9. Visit the public page and submit a test signup.
@@ -58,12 +58,20 @@ Yes. PASAT includes a Legacy Import form for structured JSON or CSV files coveri
 
 Yes. `[pasat_venue_map]` renders an embedded Leaflet map with OpenStreetMap-compatible tiles when venues have coordinates, plus accessible fallback cards. `[pasat_activity_signup show_map="1"]` can show the same map above the signup form. Address geocoding is optional, disabled by default, and only runs from administrator actions.
 
+= Does membership opt-in make someone an active member? =
+
+No. The public checkbox records membership interest. Administrators can manually move participants through statuses such as interested, pending, active, declined, or expired after any required review, payment, or onboarding.
+
 == Screenshots ==
 
 1. PASAT admin dashboard.
 2. Public activity list and signup form.
 
 == Changelog ==
+
+= 0.1.2 =
+
+Adds optional membership opt-in, participant membership management, participation/result logs, yearly participation badges, 1st/2nd/3rd placement badges, verified participant badge/history display, admin REST endpoints, privacy coverage, and a Docker membership/badges smoke test.
 
 = 0.1.1 =
 

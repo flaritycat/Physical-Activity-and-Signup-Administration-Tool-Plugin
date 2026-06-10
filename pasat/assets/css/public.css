@@ -230,6 +230,16 @@
 	padding: 0;
 }
 
+.pasat-profile-summary,
+.pasat-badges {
+	margin: 1rem 0;
+}
+
+.pasat-badge-list,
+.pasat-participation-list {
+	margin-left: 1.25rem;
+}
+
 .pasat-button {
 	background: #165a72;
 	border: 0;

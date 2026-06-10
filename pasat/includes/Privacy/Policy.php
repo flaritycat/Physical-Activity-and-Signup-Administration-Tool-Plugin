@@ -35,7 +35,7 @@ final class Policy {
 				'' !== $organization ? $organization : get_bloginfo( 'name' )
 			)
 		) . '</p>';
-		$content .= '<p>' . esc_html__( 'This may include your first name, last name, optional nickname, e-mail address, optional phone number, optional age, consent state, signup status, activity details, cancellation state, and waitlist status.', 'pasat' ) . '</p>';
+		$content .= '<p>' . esc_html__( 'This may include your first name, last name, optional nickname, e-mail address, optional phone number, optional age, consent state, signup status, activity details, cancellation state, waitlist status, optional membership interest/status, participation records, placements, and badges.', 'pasat' ) . '</p>';
 		$content .= '<p>' . esc_html__( 'PASAT stores hashed request metadata for abuse prevention and audit purposes instead of storing raw IP addresses or raw user-agent strings.', 'pasat' ) . '</p>';
 		$content .= '<p>' . esc_html__( 'PASAT uses WordPress mail to send signup confirmations, cancellation confirmations, waitlist promotion notices, activity cancellation notices, and private signup lookup links.', 'pasat' ) . '</p>';
 		$content .= '<p>' . esc_html(

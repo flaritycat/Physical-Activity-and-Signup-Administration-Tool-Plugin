@@ -11,6 +11,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="pasat-notice pasat-notice--success"><?php echo esc_html( $pasat['notice'] ); ?></div>
 	<?php endif; ?>
 	<?php if ( ! empty( $pasat['verified'] ) ) : ?>
+		<?php if ( ! empty( $pasat['profile'] ) && ! empty( PASAT\Helpers::setting( 'membership_enabled', 0 ) ) ) : ?>
+			<div class="pasat-profile-summary">
+				<strong><?php esc_html_e( 'Membership status', 'pasat' ); ?>:</strong>
+				<?php echo esc_html( ucfirst( str_replace( '_', ' ', (string) ( $pasat['profile']['membership_status'] ?? 'none' ) ) ) ); ?>
+			</div>
+		<?php endif; ?>
+		<?php if ( ! empty( $pasat['badges'] ) ) : ?>
+			<div class="pasat-badges">
+				<strong><?php esc_html_e( 'Badges', 'pasat' ); ?></strong>
+				<ul class="pasat-badge-list">
+					<?php foreach ( $pasat['badges'] as $pasat_badge ) : ?>
+						<li><?php echo esc_html( $pasat_badge['label'] ); ?></li>
+					<?php endforeach; ?>
+				</ul>
+			</div>
+		<?php endif; ?>
 		<table class="pasat-my-signups__table">
 			<thead>
 				<tr>
@@ -34,6 +50,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php endif; ?>
 			</tbody>
 		</table>
+		<?php if ( ! empty( $pasat['participation'] ) ) : ?>
+			<h3><?php esc_html_e( 'Participation History', 'pasat' ); ?></h3>
+			<ul class="pasat-participation-list">
+				<?php foreach ( $pasat['participation'] as $pasat_log ) : ?>
+					<li>
+						<?php
+						echo esc_html(
+							trim(
+								( $pasat_log['activity_title'] ?? '' )
+								. ' - '
+								. ( $pasat_log['attendance_status'] ?? '' )
+								. ( ! empty( $pasat_log['placement'] ) ? ' - #' . (int) $pasat_log['placement'] : '' )
+							)
+						);
+						?>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		<?php endif; ?>
 	<?php endif; ?>
 	<form class="pasat-form" method="post">
 		<?php wp_nonce_field( 'pasat_my_signups', 'pasat_my_signups_nonce' ); ?>

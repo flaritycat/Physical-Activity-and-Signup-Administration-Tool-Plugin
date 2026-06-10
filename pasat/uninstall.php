@@ -16,6 +16,8 @@ global $wpdb;
 $pasat_tables = array(
 	$wpdb->prefix . 'pasat_audit_log',
 	$wpdb->prefix . 'pasat_activity_hosts',
+	$wpdb->prefix . 'pasat_participant_badges',
+	$wpdb->prefix . 'pasat_participation_logs',
 	$wpdb->prefix . 'pasat_signups',
 	$wpdb->prefix . 'pasat_participants',
 	$wpdb->prefix . 'pasat_activities',

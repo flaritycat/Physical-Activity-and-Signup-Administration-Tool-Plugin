@@ -111,6 +111,8 @@ final class PublicSignupController {
 					'age'             => $age,
 					'consent_given'   => ! empty( $input['consent_given'] ) ? 1 : 0,
 					'consent_version' => PASAT_VERSION,
+					'membership_opt_in' => ! empty( $settings['membership_enabled'] ) && ! empty( $input['membership_opt_in'] ) ? 1 : 0,
+					'membership_default_status' => sanitize_key( (string) ( $settings['membership_default_status'] ?? 'interested' ) ),
 				)
 			);
 

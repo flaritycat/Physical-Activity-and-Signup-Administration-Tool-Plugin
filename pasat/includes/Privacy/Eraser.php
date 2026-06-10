@@ -2,6 +2,8 @@
 namespace PASAT\Privacy;
 
 use PASAT\Database\AuditLogRepository;
+use PASAT\Database\BadgesRepository;
+use PASAT\Database\ParticipationLogsRepository;
 use PASAT\Database\ParticipantsRepository;
 use PASAT\Helpers;
 
@@ -39,6 +41,8 @@ final class Eraser {
 			$removed = true;
 		} else {
 			$repo->anonymize( (int) $person['id'] );
+			( new ParticipationLogsRepository() )->anonymize_for_participant( (int) $person['id'] );
+			( new BadgesRepository() )->anonymize_for_participant( (int) $person['id'] );
 			$removed = false;
 		}
 
@@ -57,6 +61,8 @@ final class Eraser {
 		$signups      = Helpers::table( 'signups' );
 		$participants = Helpers::table( 'participants' );
 
+		( new ParticipationLogsRepository() )->delete_for_participant( $participant_id );
+		( new BadgesRepository() )->delete_for_participant( $participant_id );
 		$wpdb->delete( $signups, array( 'participant_id' => $participant_id ), array( '%d' ) );
 		$wpdb->delete( $participants, array( 'id' => $participant_id ), array( '%d' ) );
 	}

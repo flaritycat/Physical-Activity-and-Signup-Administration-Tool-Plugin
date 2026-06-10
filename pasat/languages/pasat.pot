@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Physical Activity Signup and Administration Tool 0.1.1\n"
+"Project-Id-Version: Physical Activity Signup and Administration Tool 0.1.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pasat\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-10T09:40:22+00:00\n"
+"POT-Creation-Date: 2026-06-10T10:00:02+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pasat\n"
@@ -30,211 +30,293 @@ msgstr ""
 msgid "Project Contributors"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:21
+#: includes/Admin/ActivitiesPage.php:23
 msgid "You do not have permission to manage activities."
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:35
+#: includes/Admin/ActivitiesPage.php:41
 msgid "PASAT Activities"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:37
+#: includes/Admin/ActivitiesPage.php:43
 #: includes/Admin/VenuesPage.php:27
 msgid "Add New"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:39
+#: includes/Admin/ActivitiesPage.php:45
 msgid "Download Posters ZIP"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:46
-#: includes/Admin/ActivitiesPage.php:78
+#: includes/Admin/ActivitiesPage.php:51
+#: includes/Admin/ActivitiesPage.php:123
+msgid "You do not have permission to manage participation for this activity."
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:57
+#: includes/Admin/ActivitiesPage.php:89
 msgid "You do not have permission to create activities."
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:49
+#: includes/Admin/ActivitiesPage.php:60
 msgid "You do not have permission to edit this activity."
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:75
+#: includes/Admin/ActivitiesPage.php:86
 msgid "You do not have permission to change this activity."
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:123
-#: includes/Admin/ActivitiesPage.php:201
+#: includes/Admin/ActivitiesPage.php:133
+msgid "You do not have permission to recalculate badges for this activity."
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:154
+#: includes/Admin/ActivitiesPage.php:232
 #: includes/Admin/AdminMenu.php:84
 msgid "Title"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:124
+#: includes/Admin/ActivitiesPage.php:155
 #: includes/Admin/VenuesPage.php:89
 msgid "Description"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:125
+#: includes/Admin/ActivitiesPage.php:156
 msgid "Activity Type"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:126
+#: includes/Admin/ActivitiesPage.php:157
 msgid "Season Year"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:127
+#: includes/Admin/ActivitiesPage.php:158
 msgid "Starts At"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:128
+#: includes/Admin/ActivitiesPage.php:159
 msgid "Ends At"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:129
-#: includes/Admin/ActivitiesPage.php:201
+#: includes/Admin/ActivitiesPage.php:160
+#: includes/Admin/ActivitiesPage.php:232
 #: includes/Admin/AdminMenu.php:84
-#: includes/Privacy/Exporter.php:51
-#: templates/public/my-signups.php:19
+#: includes/Privacy/Exporter.php:91
+#: templates/public/my-signups.php:35
 msgid "Venue"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:129
+#: includes/Admin/ActivitiesPage.php:160
 #: includes/Domain/Venue.php:10
 msgid "No venue"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:130
-#: includes/Admin/ActivitiesPage.php:201
+#: includes/Admin/ActivitiesPage.php:161
+#: includes/Admin/ActivitiesPage.php:232
 #: includes/Admin/VenuesPage.php:92
 #: includes/Admin/VenuesPage.php:108
 msgid "Capacity"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:131
+#: includes/Admin/ActivitiesPage.php:162
 msgid "Waitlist"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:131
+#: includes/Admin/ActivitiesPage.php:162
 msgid "Enable waitlist when full"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:132
+#: includes/Admin/ActivitiesPage.php:163
 msgid "Signup Opens"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:133
+#: includes/Admin/ActivitiesPage.php:164
 msgid "Signup Closes"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:134
-#: includes/Admin/ActivitiesPage.php:201
+#: includes/Admin/ActivitiesPage.php:165
+#: includes/Admin/ActivitiesPage.php:232
 #: includes/Admin/AdminMenu.php:84
 #: includes/Admin/AdminMenu.php:101
 #: includes/Admin/SignupsPage.php:54
-#: includes/Privacy/Exporter.php:52
-#: templates/public/my-signups.php:20
+#: includes/Privacy/Exporter.php:92
+#: templates/public/my-signups.php:36
 msgid "Status"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:135
+#: includes/Admin/ActivitiesPage.php:166
 msgid "Visibility"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:135
+#: includes/Admin/ActivitiesPage.php:166
 msgid "Public"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:135
+#: includes/Admin/ActivitiesPage.php:166
 msgid "Unlisted"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:135
+#: includes/Admin/ActivitiesPage.php:166
 msgid "Private"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:136
+#: includes/Admin/ActivitiesPage.php:167
 msgid "Age Limits"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:136
+#: includes/Admin/ActivitiesPage.php:167
 msgid "Minimum"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:136
+#: includes/Admin/ActivitiesPage.php:167
 msgid "Maximum"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:137
+#: includes/Admin/ActivitiesPage.php:168
 msgid "Warning Acknowledgement"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:137
+#: includes/Admin/ActivitiesPage.php:168
 msgid "Require acknowledgement"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:140
+#: includes/Admin/ActivitiesPage.php:171
 #: includes/Admin/AdminMenu.php:30
 msgid "Hosts"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:148
+#: includes/Admin/ActivitiesPage.php:179
 msgid "Selected users can manage this activity when they have the PASAT Activity Host role or equivalent assigned-activity capability."
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:153
+#: includes/Admin/ActivitiesPage.php:184
 msgid "Save Activity"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:153
+#: includes/Admin/ActivitiesPage.php:184
 msgid "Create Activity"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:155
+#: includes/Admin/ActivitiesPage.php:186
 msgid "Download Poster PDF"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:201
+#: includes/Admin/ActivitiesPage.php:232
 #: includes/Admin/AdminMenu.php:84
 msgid "Starts"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:201
+#: includes/Admin/ActivitiesPage.php:232
 #: includes/Admin/HostsPage.php:49
-#: includes/Admin/ParticipantsPage.php:36
+#: includes/Admin/ParticipantsPage.php:51
 #: includes/Admin/SignupsPage.php:54
 #: includes/Admin/VenuesPage.php:108
 msgid "Actions"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:211
+#: includes/Admin/ActivitiesPage.php:242
 #: includes/Admin/VenuesPage.php:118
 msgid "Edit"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:212
+#: includes/Admin/ActivitiesPage.php:243
 msgid "Publish"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:213
+#: includes/Admin/ActivitiesPage.php:244
 #: includes/Admin/SignupsPage.php:140
 msgid "Cancel"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:214
+#: includes/Admin/ActivitiesPage.php:245
 msgid "Archive"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:215
+#: includes/Admin/ActivitiesPage.php:246
 msgid "Duplicate"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:216
+#: includes/Admin/ActivitiesPage.php:248
+msgid "Results"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:250
 msgid "Poster PDF"
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:221
+#: includes/Admin/ActivitiesPage.php:255
 msgid "No activities yet."
 msgstr ""
 
-#: includes/Admin/ActivitiesPage.php:251
+#: includes/Admin/ActivitiesPage.php:275
+msgid "Activity Results"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:276
+msgid "Record attendance, completion, placements, and result notes. Year and placement badges are recalculated when results are saved."
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:278
+msgid "Back to Activities"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:279
+msgid "Export Results CSV"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:288
+#: includes/Admin/AdminMenu.php:101
+#: includes/Admin/SignupsPage.php:54
+#: includes/Email/Mailer.php:70
+msgid "Participant"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:289
+msgid "Attendance"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:290
+#: includes/Privacy/Exporter.php:58
+#: includes/Privacy/Exporter.php:76
+msgid "Placement"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:291
+msgid "Result"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:292
+msgid "Notes"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:315
+msgid "Value"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:316
+msgid "Unit"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:322
+msgid "No confirmed signups are available for participation recording."
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:326
+msgid "Save Participation Results"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:332
+msgid "Recalculate Badges"
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:371
+msgid "You do not have permission to export these results."
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:408
 msgid "Activity saved."
+msgstr ""
+
+#: includes/Admin/ActivitiesPage.php:411
+msgid "Badges recalculated."
 msgstr ""
 
 #: includes/Admin/AdminMenu.php:16
@@ -320,19 +402,14 @@ msgid "Recent Signups"
 msgstr ""
 
 #: includes/Admin/AdminMenu.php:101
-#: includes/Admin/SignupsPage.php:54
-#: includes/Email/Mailer.php:70
-msgid "Participant"
-msgstr ""
-
-#: includes/Admin/AdminMenu.php:101
 #: includes/Admin/HostsPage.php:34
 #: includes/Admin/HostsPage.php:45
 #: includes/Admin/SignupsPage.php:54
 #: includes/Frontend/Assets.php:26
 #: includes/Helpers.php:15
-#: includes/Privacy/Exporter.php:50
-#: templates/public/my-signups.php:17
+#: includes/Privacy/Exporter.php:56
+#: includes/Privacy/Exporter.php:90
+#: templates/public/my-signups.php:33
 #: templates/public/signup-form.php:35
 msgid "Activity"
 msgstr ""
@@ -403,107 +480,163 @@ msgstr ""
 msgid "No host assignments yet."
 msgstr ""
 
-#: includes/Admin/ParticipantsPage.php:17
+#: includes/Admin/ParticipantsPage.php:19
 msgid "You do not have permission to view participants."
 msgstr ""
 
-#: includes/Admin/ParticipantsPage.php:32
+#: includes/Admin/ParticipantsPage.php:36
 msgid "PASAT Participants"
 msgstr ""
 
-#: includes/Admin/ParticipantsPage.php:33
+#: includes/Admin/ParticipantsPage.php:37
 msgid "Participant records contain personal data. Export, anonymize, or delete only when permitted by your site policy."
 msgstr ""
 
-#: includes/Admin/ParticipantsPage.php:34
+#: includes/Admin/ParticipantsPage.php:42
+msgid "Any membership status"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:47
 msgid "Search"
 msgstr ""
 
-#: includes/Admin/ParticipantsPage.php:34
+#: includes/Admin/ParticipantsPage.php:48
 #: includes/Admin/SignupsPage.php:51
 msgid "Export CSV"
 msgstr ""
 
-#: includes/Admin/ParticipantsPage.php:36
+#: includes/Admin/ParticipantsPage.php:51
 #: includes/Admin/VenuesPage.php:88
 #: includes/Admin/VenuesPage.php:108
 msgid "Name"
 msgstr ""
 
-#: includes/Admin/ParticipantsPage.php:36
+#: includes/Admin/ParticipantsPage.php:51
 #: includes/Admin/SignupsPage.php:54
-#: includes/Privacy/Exporter.php:35
-#: templates/public/my-signups.php:41
+#: includes/Privacy/Exporter.php:37
+#: templates/public/my-signups.php:76
 #: templates/public/signup-form.php:52
 msgid "E-mail"
 msgstr ""
 
-#: includes/Admin/ParticipantsPage.php:36
-#: includes/Privacy/Exporter.php:36
+#: includes/Admin/ParticipantsPage.php:51
+#: includes/Privacy/Exporter.php:38
 #: templates/public/signup-form.php:53
 msgid "Phone"
 msgstr ""
 
-#: includes/Admin/ParticipantsPage.php:36
-#: includes/Privacy/Exporter.php:37
+#: includes/Admin/ParticipantsPage.php:51
+#: includes/Privacy/Exporter.php:39
 #: templates/public/signup-form.php:49
 msgid "Age"
 msgstr ""
 
-#: includes/Admin/ParticipantsPage.php:36
+#: includes/Admin/ParticipantsPage.php:51
 msgid "Consent"
 msgstr ""
 
-#: includes/Admin/ParticipantsPage.php:36
+#: includes/Admin/ParticipantsPage.php:51
+#: includes/Admin/ParticipantsPage.php:111
+msgid "Membership"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:51
+#: templates/public/my-signups.php:22
+msgid "Badges"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:51
+msgid "Participation"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:51
 msgid "Related Signups"
 msgstr ""
 
-#: includes/Admin/ParticipantsPage.php:44
-#: includes/Privacy/Exporter.php:38
+#: includes/Admin/ParticipantsPage.php:59
+#: includes/Privacy/Exporter.php:40
+#: includes/Privacy/Exporter.php:43
 msgid "Yes"
 msgstr ""
 
-#: includes/Admin/ParticipantsPage.php:44
-#: includes/Privacy/Exporter.php:38
+#: includes/Admin/ParticipantsPage.php:59
+#: includes/Privacy/Exporter.php:40
+#: includes/Privacy/Exporter.php:43
 msgid "No"
 msgstr ""
 
-#: includes/Admin/ParticipantsPage.php:49
+#: includes/Admin/ParticipantsPage.php:67
 msgid "No participants found."
 msgstr ""
 
-#: includes/Admin/ParticipantsPage.php:62
+#: includes/Admin/ParticipantsPage.php:80
 msgid "You do not have permission to modify participant data."
 msgstr ""
 
-#: includes/Admin/ParticipantsPage.php:88
-#: includes/Admin/SettingsPage.php:83
+#: includes/Admin/ParticipantsPage.php:95
+msgid "You do not have permission to manage memberships."
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:123
+msgid "Member number"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:124
+msgid "Private membership notes"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:125
+msgid "Save Membership"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:133
+#: includes/Admin/SettingsPage.php:89
 msgid "Anonymize"
 msgstr ""
 
-#: includes/Admin/ParticipantsPage.php:94
+#: includes/Admin/ParticipantsPage.php:139
 msgid "Delete this participant and related signups?"
 msgstr ""
 
-#: includes/Admin/ParticipantsPage.php:94
-#: includes/Admin/SettingsPage.php:83
+#: includes/Admin/ParticipantsPage.php:139
+#: includes/Admin/SettingsPage.php:89
 #: includes/Admin/VenuesPage.php:126
 msgid "Delete"
 msgstr ""
 
-#: includes/Admin/ParticipantsPage.php:102
+#: includes/Admin/ParticipantsPage.php:150
+msgid "Opted in"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:157
+msgid "No badges"
+msgstr ""
+
+#: includes/Admin/ParticipantsPage.php:170
+msgid "No participation"
+msgstr ""
+
+#. translators: %d is the number of participation logs.
+#: includes/Admin/ParticipantsPage.php:179
+#, php-format
+msgid "%d log"
+msgid_plural "%d logs"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Admin/ParticipantsPage.php:196
 msgid "No signups"
 msgstr ""
 
 #. translators: %d is the number of related signups.
-#: includes/Admin/ParticipantsPage.php:111
+#: includes/Admin/ParticipantsPage.php:205
 #, php-format
 msgid "%d signup"
 msgid_plural "%d signups"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/Admin/ParticipantsPage.php:138
+#: includes/Admin/ParticipantsPage.php:232
 msgid "You do not have permission to export participant data."
 msgstr ""
 
@@ -594,237 +727,285 @@ msgstr ""
 msgid "No audit entries yet."
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:57
+#: includes/Admin/SettingsPage.php:63
 msgid "You do not have permission to manage PASAT settings."
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:64
+#: includes/Admin/SettingsPage.php:70
 msgid "PASAT Settings"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:69
+#: includes/Admin/SettingsPage.php:75
 msgid "Organization Name"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:70
+#: includes/Admin/SettingsPage.php:76
 msgid "Public Page"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:70
+#: includes/Admin/SettingsPage.php:76
 msgid "Select page"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:72
+#: includes/Admin/SettingsPage.php:78
 msgid "Activity Label"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:73
+#: includes/Admin/SettingsPage.php:79
 msgid "Host Label"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:74
+#: includes/Admin/SettingsPage.php:80
 msgid "Default Season Year"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:75
+#: includes/Admin/SettingsPage.php:81
 msgid "Default Capacity"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:76
+#: includes/Admin/SettingsPage.php:82
 msgid "Default Waitlist Enabled"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:77
+#: includes/Admin/SettingsPage.php:83
 msgid "Require Consent Checkbox"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:78
+#: includes/Admin/SettingsPage.php:84
 msgid "Consent Text"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:79
+#: includes/Admin/SettingsPage.php:85
 msgid "Default Warning Text"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:80
+#: includes/Admin/SettingsPage.php:86
 msgid "Fail Signup If E-mail Fails"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:81
+#: includes/Admin/SettingsPage.php:87
 msgid "Allow Duplicate E-mail Per Activity"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:82
+#: includes/Admin/SettingsPage.php:88
 msgid "Retention Period Days"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:83
+#: includes/Admin/SettingsPage.php:89
 msgid "Erasure Mode"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:85
+#: includes/Admin/SettingsPage.php:91
 msgid "Map Settings"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:86
+#: includes/Admin/SettingsPage.php:92
 msgid "PASAT can display open-source venue maps using Leaflet and OpenStreetMap-compatible tiles. Address geocoding is optional and should respect the selected provider usage policy."
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:88
+#: includes/Admin/SettingsPage.php:94
 msgid "Enable Interactive Venue Maps"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:89
+#: includes/Admin/SettingsPage.php:95
 msgid "Show Map On Signup Page By Default"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:90
+#: includes/Admin/SettingsPage.php:96
 msgid "Map Tile URL"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:91
+#: includes/Admin/SettingsPage.php:97
 msgid "Map Attribution"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:92
+#: includes/Admin/SettingsPage.php:98
 msgid "Default Map Height"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:93
+#: includes/Admin/SettingsPage.php:99
 msgid "Default Map Zoom"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:94
+#: includes/Admin/SettingsPage.php:100
 msgid "Enable Address Geocoding"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:95
+#: includes/Admin/SettingsPage.php:101
 msgid "Geocoding Endpoint"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:96
+#: includes/Admin/SettingsPage.php:102
 msgid "Geocoding Throttle Seconds"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:98
-msgid "E-mail Templates"
-msgstr ""
-
-#: includes/Admin/SettingsPage.php:99
-msgid "Available placeholders: {organization_name}, {activity_title}, {activity_date}, {activity_time}, {venue_name}, {participant_name}, {signup_status}, {cancellation_url}, {site_name}, {site_url}."
-msgstr ""
-
-#: includes/Admin/SettingsPage.php:101
-msgid "Sender Name"
-msgstr ""
-
-#: includes/Admin/SettingsPage.php:102
-msgid "Confirmation Subject"
-msgstr ""
-
-#: includes/Admin/SettingsPage.php:103
-msgid "Confirmation Body"
-msgstr ""
-
 #: includes/Admin/SettingsPage.php:104
-msgid "Cancellation Subject"
+msgid "Membership And Badges"
 msgstr ""
 
 #: includes/Admin/SettingsPage.php:105
-msgid "Cancellation Body"
-msgstr ""
-
-#: includes/Admin/SettingsPage.php:106
-msgid "Waitlist Promotion Subject"
+msgid "Membership opt-in records interest only; it does not automatically create a legal or paid membership. Badges are awarded from administrator or host participation records."
 msgstr ""
 
 #: includes/Admin/SettingsPage.php:107
-msgid "Waitlist Promotion Body"
+msgid "Enable Membership Opt-In"
 msgstr ""
 
 #: includes/Admin/SettingsPage.php:108
-msgid "Activity Cancellation Subject"
+msgid "Membership Opt-In Text"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:109
-msgid "Activity Cancellation Body"
+#: includes/Admin/SettingsPage.php:110
+msgid "Default Status After Opt-In"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:113
-msgid "Mail Delivery Test"
-msgstr ""
-
-#: includes/Admin/SettingsPage.php:114
-msgid "Send a test e-mail through WordPress mail to confirm PASAT notifications can leave this site."
+#: includes/Admin/SettingsPage.php:119
+msgid "Enable Participation Badges"
 msgstr ""
 
 #: includes/Admin/SettingsPage.php:120
-msgid "Test Recipient"
+msgid "Year Badge Label Template"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:121
+msgid "First Place Badge Label"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:122
+msgid "Second Place Badge Label"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:123
+msgid "Third Place Badge Label"
 msgstr ""
 
 #: includes/Admin/SettingsPage.php:124
-msgid "Send Test E-mail"
+msgid "Show Badges In Verified My Signups"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:126
-msgid "Legacy Import"
+#: includes/Admin/SettingsPage.php:125
+msgid "Allow Hosts To Record Placements"
 msgstr ""
 
 #: includes/Admin/SettingsPage.php:127
-msgid "This plugin is a WordPress-native rewrite. Import structured JSON or CSV exports for venues, activities, participants, signups, and host assignments. Legacy passwords and external authentication data should be replaced with WordPress users and roles."
+msgid "E-mail Templates"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:128
+msgid "Available placeholders: {organization_name}, {activity_title}, {activity_date}, {activity_time}, {venue_name}, {participant_name}, {signup_status}, {cancellation_url}, {site_name}, {site_url}."
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:130
+msgid "Sender Name"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:131
+msgid "Confirmation Subject"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:132
+msgid "Confirmation Body"
 msgstr ""
 
 #: includes/Admin/SettingsPage.php:133
-msgid "Import Type"
+msgid "Cancellation Subject"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:134
+msgid "Cancellation Body"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:135
+msgid "Waitlist Promotion Subject"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:136
+msgid "Waitlist Promotion Body"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:137
+msgid "Activity Cancellation Subject"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:138
+msgid "Activity Cancellation Body"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:142
+msgid "Mail Delivery Test"
 msgstr ""
 
 #: includes/Admin/SettingsPage.php:143
+msgid "Send a test e-mail through WordPress mail to confirm PASAT notifications can leave this site."
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:149
+msgid "Test Recipient"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:153
+msgid "Send Test E-mail"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:155
+msgid "Legacy Import"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:156
+msgid "This plugin is a WordPress-native rewrite. Import structured JSON or CSV exports for venues, activities, participants, signups, and host assignments. Legacy passwords and external authentication data should be replaced with WordPress users and roles."
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:162
+msgid "Import Type"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:172
 msgid "JSON or CSV File"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:146
+#: includes/Admin/SettingsPage.php:175
 msgid "Maximum file size: 2 MB. CSV files must include a header row. JSON files may be an array of rows or an object containing the selected import type."
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:150
+#: includes/Admin/SettingsPage.php:179
 msgid "Run Import"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:213
+#: includes/Admin/SettingsPage.php:242
 msgid "PASAT test e-mail was accepted by WordPress mail."
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:216
+#: includes/Admin/SettingsPage.php:245
 msgid "PASAT test e-mail could not be sent. Check the site mail configuration or SMTP plugin."
 msgstr ""
 
 #. translators: 1: imported row count, 2: skipped row count.
-#: includes/Admin/SettingsPage.php:235
+#: includes/Admin/SettingsPage.php:264
 #, php-format
 msgid "PASAT import complete. Imported %1$d rows and skipped %2$d rows."
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:264
+#: includes/Admin/SettingsPage.php:293
 msgid "Poster Logo"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:266
+#: includes/Admin/SettingsPage.php:295
 msgid "No logo selected"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:271
+#: includes/Admin/SettingsPage.php:300
 msgid "Choose Logo"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:272
+#: includes/Admin/SettingsPage.php:301
 msgid "Remove Logo"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:273
+#: includes/Admin/SettingsPage.php:302
 msgid "Used on activity poster PDFs. PNG and JPEG images are supported when the WordPress image editor is available; JPEG is the safest fallback."
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:282
+#: includes/Admin/SettingsPage.php:311
 msgid "Enabled"
 msgstr ""
 
@@ -833,7 +1014,7 @@ msgid "You do not have permission to view signups."
 msgstr ""
 
 #: includes/Admin/SignupsPage.php:43
-#: includes/Privacy/Exporter.php:47
+#: includes/Privacy/Exporter.php:87
 msgid "PASAT Signups"
 msgstr ""
 
@@ -854,7 +1035,7 @@ msgid "Filter"
 msgstr ""
 
 #: includes/Admin/SignupsPage.php:66
-#: templates/public/my-signups.php:33
+#: templates/public/my-signups.php:49
 msgid "No signups found."
 msgstr ""
 
@@ -973,11 +1154,37 @@ msgstr ""
 msgid "Venue address geocoded."
 msgstr ""
 
-#: includes/Capabilities.php:33
+#: includes/Badges/Awarder.php:25
+#: includes/REST/AdminParticipationController.php:44
+#: includes/REST/AdminParticipationController.php:52
+msgid "Participation log not found."
+msgstr ""
+
+#: includes/Badges/Awarder.php:112
+#: includes/Helpers.php:49
+msgid "{year} Participant"
+msgstr ""
+
+#: includes/Badges/Awarder.php:117
+#: includes/Helpers.php:50
+msgid "1st Place"
+msgstr ""
+
+#: includes/Badges/Awarder.php:118
+#: includes/Helpers.php:51
+msgid "2nd Place"
+msgstr ""
+
+#: includes/Badges/Awarder.php:119
+#: includes/Helpers.php:52
+msgid "3rd Place"
+msgstr ""
+
+#: includes/Capabilities.php:36
 msgid "PASAT Activity Manager"
 msgstr ""
 
-#: includes/Capabilities.php:52
+#: includes/Capabilities.php:57
 msgid "PASAT Activity Host"
 msgstr ""
 
@@ -987,12 +1194,12 @@ msgstr ""
 msgid "%s copy"
 msgstr ""
 
-#: includes/Database/ParticipantsRepository.php:67
+#: includes/Database/ParticipantsRepository.php:107
 msgid "Anonymized"
 msgstr ""
 
 #. translators: %d is the anonymized participant ID.
-#: includes/Database/ParticipantsRepository.php:70
+#: includes/Database/ParticipantsRepository.php:110
 #, php-format
 msgid "Participant %d"
 msgstr ""
@@ -1141,41 +1348,41 @@ msgstr ""
 msgid "%d waitlisted"
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:59
+#: includes/Frontend/Shortcodes.php:61
 msgid "The signup form expired. Please try again."
 msgstr ""
 
 #. translators: %s is signup status.
-#: includes/Frontend/Shortcodes.php:67
+#: includes/Frontend/Shortcodes.php:69
 #, php-format
 msgid "Signup received. Your status is %s. Please check your e-mail for details."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:105
+#: includes/Frontend/Shortcodes.php:107
 msgid "Enter your e-mail address to receive a private signup lookup link."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:117
+#: includes/Frontend/Shortcodes.php:128
 msgid "Your verified signups are listed below."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:117
+#: includes/Frontend/Shortcodes.php:128
 msgid "No signups were found for this verified e-mail address."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:119
+#: includes/Frontend/Shortcodes.php:130
 msgid "The signup lookup link is invalid or expired."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:125
+#: includes/Frontend/Shortcodes.php:136
 msgid "The lookup form expired. Please try again."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:136
+#: includes/Frontend/Shortcodes.php:147
 msgid "If that e-mail address can receive mail, a private signup lookup link has been sent."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:138
+#: includes/Frontend/Shortcodes.php:149
 msgid "Please enter a valid e-mail address."
 msgstr ""
 
@@ -1209,6 +1416,10 @@ msgstr ""
 
 #: includes/Helpers.php:33
 msgid "I acknowledge the activity information and any safety warnings."
+msgstr ""
+
+#: includes/Helpers.php:46
+msgid "I would like to become a member."
 msgstr ""
 
 #: includes/Map/Geocoder.php:18
@@ -1393,45 +1604,114 @@ msgstr ""
 msgid "Powered by %s"
 msgstr ""
 
-#: includes/Privacy/Eraser.php:17
-#: includes/Privacy/Exporter.php:14
+#: includes/Privacy/Eraser.php:19
+#: includes/Privacy/Exporter.php:16
 msgid "PASAT activity signups"
 msgstr ""
 
-#: includes/Privacy/Eraser.php:50
+#: includes/Privacy/Eraser.php:54
 msgid "PASAT participant data was processed according to the configured erasure mode."
 msgstr ""
 
-#: includes/Privacy/Exporter.php:29
+#: includes/Privacy/Exporter.php:31
 msgid "PASAT Participant"
 msgstr ""
 
-#: includes/Privacy/Exporter.php:32
+#: includes/Privacy/Exporter.php:34
 msgid "First name"
 msgstr ""
 
-#: includes/Privacy/Exporter.php:33
+#: includes/Privacy/Exporter.php:35
 msgid "Last name"
 msgstr ""
 
-#: includes/Privacy/Exporter.php:34
+#: includes/Privacy/Exporter.php:36
 #: templates/public/signup-form.php:48
 msgid "Nickname"
 msgstr ""
 
-#: includes/Privacy/Exporter.php:38
+#: includes/Privacy/Exporter.php:40
 msgid "Consent given"
 msgstr ""
 
-#: includes/Privacy/Exporter.php:39
+#: includes/Privacy/Exporter.php:41
 msgid "Consented at"
 msgstr ""
 
+#: includes/Privacy/Exporter.php:42
+#: templates/public/my-signups.php:16
+msgid "Membership status"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:43
+msgid "Membership opted in"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:44
+msgid "Membership opted in at"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:45
+msgid "Membership number"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:46
+msgid "Membership notes"
+msgstr ""
+
 #: includes/Privacy/Exporter.php:53
+msgid "PASAT Participation"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:57
+msgid "Attendance status"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:59
+msgid "Result value"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:60
+msgid "Result unit"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:61
+msgid "Result notes"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:62
+msgid "Private notes"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:70
+msgid "PASAT Badges"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:73
+msgid "Badge label"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:74
+msgid "Badge type"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:75
+msgid "Season year"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:77
+msgid "Awarded at"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:78
+msgid "Revoked at"
+msgstr ""
+
+#: includes/Privacy/Exporter.php:93
 msgid "Created at"
 msgstr ""
 
-#: includes/Privacy/Exporter.php:54
+#: includes/Privacy/Exporter.php:94
 msgid "Cancelled at"
 msgstr ""
 
@@ -1454,7 +1734,7 @@ msgid "When you sign up for an activity, %s collects the information needed to a
 msgstr ""
 
 #: includes/Privacy/Policy.php:38
-msgid "This may include your first name, last name, optional nickname, e-mail address, optional phone number, optional age, consent state, signup status, activity details, cancellation state, and waitlist status."
+msgid "This may include your first name, last name, optional nickname, e-mail address, optional phone number, optional age, consent state, signup status, activity details, cancellation state, waitlist status, optional membership interest/status, participation records, placements, and badges."
 msgstr ""
 
 #: includes/Privacy/Policy.php:39
@@ -1477,6 +1757,14 @@ msgstr ""
 
 #: includes/REST/AdminActivitiesController.php:36
 msgid "You do not have permission to view this activity."
+msgstr ""
+
+#: includes/REST/AdminParticipantsController.php:37
+msgid "Participant not found."
+msgstr ""
+
+#: includes/REST/AdminParticipationController.php:36
+msgid "Participation log could not be saved."
 msgstr ""
 
 #: includes/REST/AdminSignupsController.php:51
@@ -1523,19 +1811,19 @@ msgstr ""
 msgid "This activity is full and the waitlist is not enabled."
 msgstr ""
 
-#: includes/REST/PublicSignupController.php:136
+#: includes/REST/PublicSignupController.php:138
 msgid "Signup could not be completed because the confirmation e-mail failed."
 msgstr ""
 
-#: includes/REST/PublicSignupController.php:157
+#: includes/REST/PublicSignupController.php:159
 msgid "Invalid cancellation link."
 msgstr ""
 
-#: includes/REST/PublicSignupController.php:163
+#: includes/REST/PublicSignupController.php:165
 msgid "Invalid or expired cancellation link."
 msgstr ""
 
-#: includes/REST/PublicSignupController.php:166
+#: includes/REST/PublicSignupController.php:168
 msgid "Cancelled by participant link."
 msgstr ""
 
@@ -1559,11 +1847,15 @@ msgstr ""
 msgid "Sign Up"
 msgstr ""
 
-#: templates/public/my-signups.php:18
+#: templates/public/my-signups.php:34
 msgid "Date"
 msgstr ""
 
-#: templates/public/my-signups.php:42
+#: templates/public/my-signups.php:54
+msgid "Participation History"
+msgstr ""
+
+#: templates/public/my-signups.php:77
 msgid "Request Lookup"
 msgstr ""
 
@@ -1583,7 +1875,7 @@ msgstr ""
 msgid "Last Name"
 msgstr ""
 
-#: templates/public/signup-form.php:61
+#: templates/public/signup-form.php:64
 msgid "Submit Signup"
 msgstr ""
 

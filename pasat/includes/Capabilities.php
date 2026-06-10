@@ -18,6 +18,9 @@ final class Capabilities {
 		'pasat_manage_hosts',
 		'pasat_view_audit_log',
 		'pasat_run_privacy_tools',
+		'pasat_manage_memberships',
+		'pasat_manage_participation_logs',
+		'pasat_manage_badges',
 	);
 
 	public static function install(): void {
@@ -44,7 +47,9 @@ final class Capabilities {
 		);
 		$manager = get_role( 'pasat_activity_manager' );
 		if ( $manager ) {
-			$manager->add_cap( 'pasat_manage_assigned_activities' );
+			foreach ( array( 'pasat_manage_assigned_activities', 'pasat_manage_memberships', 'pasat_manage_participation_logs', 'pasat_manage_badges' ) as $capability ) {
+				$manager->add_cap( $capability );
+			}
 		}
 
 		add_role(
@@ -56,6 +61,10 @@ final class Capabilities {
 				'pasat_view_signups'               => true,
 			)
 		);
+		$host = get_role( 'pasat_activity_host' );
+		if ( $host ) {
+			$host->add_cap( 'pasat_manage_participation_logs' );
+		}
 	}
 
 	public static function can_manage_activity( int $activity_id = 0 ): bool {
@@ -69,5 +78,13 @@ final class Capabilities {
 		}
 
 		return false;
+	}
+
+	public static function can_manage_participation( int $activity_id ): bool {
+		if ( ! current_user_can( 'pasat_manage_participation_logs' ) ) {
+			return false;
+		}
+
+		return self::can_manage_activity( $activity_id );
 	}
 }

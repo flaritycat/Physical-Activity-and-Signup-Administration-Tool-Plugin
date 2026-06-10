@@ -2,6 +2,32 @@
 
 All notable PASAT repository-level changes are documented here. The WordPress.org-style plugin changelog is also maintained in `pasat/readme.txt`.
 
+## 0.1.2 - 2026-06-10
+
+Membership, participation logs, placements, and badges.
+
+### Added
+
+- Optional membership opt-in on public signup forms, controlled by PASAT settings.
+- Participant membership fields for status, opt-in timestamp, membership number, and private membership notes.
+- Admin membership management on the Participants screen with audit logging.
+- Participation/result logs per participant and activity, including attendance status, placement, result value/unit, notes, and recorder metadata.
+- Activity **Results** workflow for administrators and assigned hosts with nonce-protected saves, badge recalculation, and CSV export.
+- Participant badges for yearly participation and 1st/2nd/3rd placements, recalculated idempotently from participation logs.
+- Verified `[pasat_my_signups]` badge, membership, and participation-history display.
+- Admin REST endpoints for participant badges/history/membership and activity participation/badge recalculation.
+- Privacy export, erasure, retention, and Privacy Policy Guide coverage for membership, participation, and badge data.
+- Docker membership/badges smoke test covering opt-in, admin membership update, badge award/revoke, privacy export/erase, public REST non-exposure, and host scoping.
+
+### Changed
+
+- Bumped plugin and database schema version to `0.1.2`.
+- PASAT Activity Managers and Activity Hosts receive the new scoped participation capabilities on upgrade.
+
+### Deferred
+
+- Membership payments, renewals, public badge galleries, leaderboards, badge artwork, participant certificates, team placements, heats/rounds, and badge notification e-mails.
+
 ## 0.1.1 - 2026-06-10
 
 Open-source venue map improvement.

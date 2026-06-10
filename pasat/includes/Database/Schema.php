@@ -77,10 +77,68 @@ final class Schema {
 			consent_given TINYINT(1) NOT NULL DEFAULT 0,
 			consent_version VARCHAR(50) NULL,
 			consented_at DATETIME NULL,
+			membership_status VARCHAR(30) NOT NULL DEFAULT 'none',
+			membership_opted_in TINYINT(1) NOT NULL DEFAULT 0,
+			membership_opted_in_at DATETIME NULL,
+			membership_status_updated_at DATETIME NULL,
+			membership_number VARCHAR(100) NULL,
+			membership_notes TEXT NULL,
 			created_at DATETIME NOT NULL,
 			updated_at DATETIME NOT NULL,
 			PRIMARY KEY  (id),
-			KEY email (email)
+			KEY email (email),
+			KEY membership_status (membership_status),
+			KEY membership_number (membership_number)
+		) $charset;";
+
+		$sql[] = 'CREATE TABLE ' . Helpers::table( 'participation_logs' ) . " (
+			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+			signup_id BIGINT UNSIGNED NULL,
+			activity_id BIGINT UNSIGNED NOT NULL,
+			participant_id BIGINT UNSIGNED NOT NULL,
+			attendance_status VARCHAR(30) NOT NULL DEFAULT 'unknown',
+			checked_in_at DATETIME NULL,
+			completed_at DATETIME NULL,
+			placement INT UNSIGNED NULL,
+			placement_label VARCHAR(100) NULL,
+			result_value VARCHAR(120) NULL,
+			result_unit VARCHAR(50) NULL,
+			result_notes TEXT NULL,
+			private_notes TEXT NULL,
+			recorded_by BIGINT UNSIGNED NULL,
+			created_at DATETIME NOT NULL,
+			updated_at DATETIME NOT NULL,
+			PRIMARY KEY  (id),
+			KEY activity_id (activity_id),
+			KEY participant_id (participant_id),
+			KEY signup_id (signup_id),
+			KEY attendance_status (attendance_status),
+			KEY placement (placement)
+		) $charset;";
+
+		$sql[] = 'CREATE TABLE ' . Helpers::table( 'participant_badges' ) . " (
+			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+			participant_id BIGINT UNSIGNED NOT NULL,
+			badge_type VARCHAR(50) NOT NULL,
+			badge_key VARCHAR(120) NOT NULL,
+			label VARCHAR(190) NOT NULL,
+			season_year SMALLINT UNSIGNED NULL,
+			activity_id BIGINT UNSIGNED NULL,
+			participation_log_id BIGINT UNSIGNED NULL,
+			placement INT UNSIGNED NULL,
+			metadata LONGTEXT NULL,
+			awarded_by BIGINT UNSIGNED NULL,
+			awarded_at DATETIME NOT NULL,
+			revoked_at DATETIME NULL,
+			created_at DATETIME NOT NULL,
+			updated_at DATETIME NOT NULL,
+			PRIMARY KEY  (id),
+			KEY participant_id (participant_id),
+			KEY badge_type (badge_type),
+			KEY badge_key (badge_key),
+			KEY season_year (season_year),
+			KEY activity_id (activity_id),
+			KEY placement (placement)
 		) $charset;";
 
 		$sql[] = 'CREATE TABLE ' . Helpers::table( 'signups' ) . " (

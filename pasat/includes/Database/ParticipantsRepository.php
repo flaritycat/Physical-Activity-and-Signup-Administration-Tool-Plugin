@@ -10,6 +10,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 // phpcs:disable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 // PASAT table identifiers come from fixed plugin table names via $wpdb->prefix; user values remain prepared or sanitized.
 final class ParticipantsRepository extends Repository {
+	public const MEMBERSHIP_STATUSES = array( 'none', 'interested', 'pending', 'active', 'declined', 'expired' );
+
 	public function __construct() {
 		parent::__construct( 'participants' );
 	}
@@ -39,27 +41,65 @@ final class ParticipantsRepository extends Repository {
 			'consented_at'    => ! empty( $input['consent_given'] ) ? $now : null,
 			'updated_at'      => $now,
 		);
+		$formats  = array( '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%s' );
+
+		if ( ! empty( $input['membership_opt_in'] ) ) {
+			$current_status = $existing['membership_status'] ?? 'none';
+			$data['membership_opted_in'] = 1;
+			$data['membership_opted_in_at'] = ! empty( $existing['membership_opted_in_at'] ) ? $existing['membership_opted_in_at'] : $now;
+			$formats[] = '%d';
+			$formats[] = '%s';
+
+			if ( 'none' === $current_status ) {
+				$data['membership_status'] = $this->sanitize_membership_status( (string) ( $input['membership_default_status'] ?? 'interested' ) );
+				$data['membership_status_updated_at'] = $now;
+				$formats[] = '%s';
+				$formats[] = '%s';
+			}
+		}
 
 		if ( $existing ) {
-			$this->update( (int) $existing['id'], $data, array( '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%s' ) );
+			$this->update( (int) $existing['id'], $data, $formats );
 			return (int) $existing['id'];
 		}
 
 		$data['created_at'] = $now;
-		return $this->insert( $data, array( '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%s' ) );
+		$formats[] = '%s';
+		return $this->insert( $data, $formats );
 	}
 
-	public function search( string $query = '', int $limit = 100 ): array {
+	public function search( string $query = '', int $limit = 100, array $args = array() ): array {
 		$params = array();
-		$where  = '1=1';
+		$where  = array( '1=1' );
 		if ( '' !== trim( $query ) ) {
 			$like    = '%' . $this->wpdb->esc_like( sanitize_text_field( $query ) ) . '%';
-			$where   = '(first_name LIKE %s OR last_name LIKE %s OR email LIKE %s)';
-			$params  = array( $like, $like, $like );
+			$where[] = '(first_name LIKE %s OR last_name LIKE %s OR email LIKE %s)';
+			$params  = array_merge( $params, array( $like, $like, $like ) );
 		}
 
-		$sql = "SELECT * FROM {$this->table} WHERE {$where} ORDER BY updated_at DESC LIMIT " . absint( $limit );
+		if ( ! empty( $args['membership_status'] ) && in_array( $args['membership_status'], self::MEMBERSHIP_STATUSES, true ) ) {
+			$where[]  = 'membership_status = %s';
+			$params[] = $args['membership_status'];
+		}
+
+		$sql = "SELECT * FROM {$this->table} WHERE " . implode( ' AND ', $where ) . ' ORDER BY updated_at DESC LIMIT ' . absint( $limit );
 		return $this->wpdb->get_results( $this->prepare_or_raw( $sql, $params ), ARRAY_A ) ?: array();
+	}
+
+	public function update_membership( int $id, array $input ): bool {
+		$status = $this->sanitize_membership_status( (string) ( $input['membership_status'] ?? 'none' ) );
+
+		return $this->update(
+			$id,
+			array(
+				'membership_status'            => $status,
+				'membership_status_updated_at' => Helpers::now(),
+				'membership_number'            => sanitize_text_field( $input['membership_number'] ?? '' ),
+				'membership_notes'             => sanitize_textarea_field( $input['membership_notes'] ?? '' ),
+				'updated_at'                   => Helpers::now(),
+			),
+			array( '%s', '%s', '%s', '%s', '%s' )
+		);
 	}
 
 	public function anonymize( int $id ): bool {
@@ -77,10 +117,16 @@ final class ParticipantsRepository extends Repository {
 			'consent_given'   => 0,
 			'consent_version' => null,
 			'consented_at'    => null,
+			'membership_status' => 'none',
+			'membership_opted_in' => 0,
+			'membership_opted_in_at' => null,
+			'membership_status_updated_at' => null,
+			'membership_number' => null,
+			'membership_notes' => null,
 			'updated_at'      => Helpers::now(),
 		);
 
-		return $this->update( $id, $data, array( '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%s' ) );
+		return $this->update( $id, $data, array( '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s' ) );
 	}
 
 	public function signups_for_email( string $email ): array {
@@ -121,5 +167,9 @@ final class ParticipantsRepository extends Repository {
 			),
 			ARRAY_A
 		) ?: array();
+	}
+
+	public function sanitize_membership_status( string $status ): string {
+		return in_array( $status, self::MEMBERSHIP_STATUSES, true ) ? $status : 'none';
 	}
 }

@@ -24,6 +24,7 @@ PASAT lets a WordPress site owner:
 - provide secure cancellation links
 - promote waitlisted participants when a confirmed spot opens
 - manage activities, venues, participants, signups, and hosts in wp-admin
+- optionally collect membership interest, record participation/results, and award participation/placement badges
 - integrate with WordPress privacy export, erasure, and retention tools
 
 The plugin was designed after reviewing the previous standalone `HSF` application, but PASAT is a native WordPress rewrite. It does not require Python, FastAPI, Uvicorn, Docker, PostgreSQL, SQLAlchemy, JWT authentication, or any external application server at runtime.
@@ -123,7 +124,7 @@ wp-content/plugins/pasat/pasat.php
 4. Publish the page.
 5. Go to **PASAT > Settings**.
 6. Select the page under **Public Page**.
-7. Set the organization name, poster logo, labels, default capacity, consent text, retention period, and e-mail templates.
+7. Set the organization name, poster logo, labels, default capacity, consent text, membership/badge options, retention period, and e-mail templates.
 8. Go to **PASAT > Venues** and create at least one venue/location. Add latitude/longitude manually, or enable address geocoding under **Map Settings** and run **Geocode Address** from the venue row.
 9. Go to **PASAT > Activities** and create a published activity with signup dates and capacity.
 10. Add `[pasat_venue_map]` or use `[pasat_activity_signup show_map="1"]` if you want public venue maps on the signup page.
@@ -152,13 +153,17 @@ Activities also include printable signup poster downloads:
 
 Set the poster logo in **PASAT > Settings > Poster Logo**. JPEG works as the safest fallback. PNG is supported when the WordPress image editor can convert it for PDF embedding.
 
+Use the **Results** action on an activity row to record attendance, completion, placements, result values, and private result notes for confirmed participants. Saving results recalculates yearly participation badges and 1st/2nd/3rd place badges. Assigned hosts can record results only for their assigned activities, and placement entry can be disabled for hosts in settings.
+
 ### Signups
 
 Use **PASAT > Signups** to filter signups, search by participant or activity, cancel signups manually, confirm waitlisted signups, and export filtered CSV data. CSV exports guard against spreadsheet formula injection and preserve host activity scope.
 
 ### Participants
 
-Use **PASAT > Participants** to search participant records, view related signups, export filtered data when permitted, and anonymize or delete records according to policy.
+Use **PASAT > Participants** to search participant records, filter by membership status, update membership status/number/notes, view related signups, view participation history, view badge summaries, export filtered data when permitted, and anonymize or delete records according to policy.
+
+Membership opt-in is intentionally only interest capture. It does not automatically make someone a legally active or paid member; administrators can manually move a participant through statuses such as interested, pending, active, declined, or expired.
 
 ### Hosts
 
@@ -239,6 +244,8 @@ The board supports kiosk styling, visible refresh/connection status, clearer sta
 
 The public signup form collects first name, last name, optional nickname, e-mail, optional phone, optional age, consent, warning acknowledgement, and selected activity.
 
+If membership opt-in is enabled, the form also shows an optional membership interest checkbox. Checking it stores opt-in state and timestamp on the participant and sets the membership status to the configured default, usually `interested`, without downgrading existing active or pending members.
+
 Server-side validation checks required fields, e-mail validity, activity status, signup window, age restrictions, consent, warning acknowledgement, duplicate active signups, capacity, and waitlist settings.
 
 After a successful signup, PASAT creates or updates the participant by e-mail, creates a confirmed or waitlisted signup, generates a secure cancellation token, stores only the token hash, and sends a confirmation e-mail. The duplicate and capacity checks run under an activity-level database advisory lock to reduce oversubscription during signup bursts.
@@ -285,6 +292,14 @@ Admin endpoints:
 - `GET /pasat/v1/admin/activities/{id}`
 - `PUT/PATCH /pasat/v1/admin/activities/{id}`
 - `DELETE /pasat/v1/admin/activities/{id}`
+- `GET /pasat/v1/admin/activities/{id}/participation`
+- `POST /pasat/v1/admin/activities/{id}/participation`
+- `POST /pasat/v1/admin/activities/{id}/badges/recalculate`
+- `GET /pasat/v1/admin/participation/{id}`
+- `PUT/PATCH /pasat/v1/admin/participation/{id}`
+- `GET /pasat/v1/admin/participants/{id}/badges`
+- `GET /pasat/v1/admin/participants/{id}/participation`
+- `PUT/PATCH /pasat/v1/admin/participants/{id}/membership`
 - `GET /pasat/v1/admin/venues`
 - `POST /pasat/v1/admin/venues`
 - `GET /pasat/v1/admin/venues/{id}`
@@ -301,7 +316,7 @@ REST routes declare basic argument validation and sanitization, and privileged e
 
 ## Privacy And Data Protection
 
-PASAT stores participant names, e-mail addresses, optional phone numbers, optional ages, consent state, signup state, and hashed request metadata. It does not store raw IP addresses or raw user-agent strings.
+PASAT stores participant names, e-mail addresses, optional phone numbers, optional ages, consent state, signup state, optional membership interest/status, participation/result logs, badges, and hashed request metadata. It does not store raw IP addresses or raw user-agent strings.
 
 The plugin integrates with WordPress privacy exporters and erasers, and registers the WP-Cron event `pasat_daily_retention_cleanup`.
 
@@ -317,6 +332,8 @@ PASAT creates custom tables using the active WordPress database prefix:
 - `{prefix}pasat_venues`
 - `{prefix}pasat_participants`
 - `{prefix}pasat_signups`
+- `{prefix}pasat_participation_logs`
+- `{prefix}pasat_participant_badges`
 - `{prefix}pasat_activity_hosts`
 - `{prefix}pasat_audit_log`
 
@@ -332,7 +349,7 @@ Security reporting and operational expectations are documented in `SECURITY.md`.
 
 ## My Signups Lookup
 
-`[pasat_my_signups]` avoids exposing participant data directly. A participant enters an e-mail address, PASAT sends a private lookup link if mail delivery is available, and the link displays only signups for that verified e-mail address. The public message does not reveal whether the address exists in the database.
+`[pasat_my_signups]` avoids exposing participant data directly. A participant enters an e-mail address, PASAT sends a private lookup link if mail delivery is available, and the link displays only signups for that verified e-mail address. When enabled, the verified view can also show that participant's membership status, participation history, and earned badges. The public message does not reveal whether the address exists in the database.
 
 ## Migration Notes
 
@@ -395,6 +412,14 @@ tools/smoke-venue-map.sh
 
 This development-only script installs the packaged plugin into disposable WordPress/MariaDB containers, renders `[pasat_venue_map]` and `[pasat_activity_signup show_map="1"]`, checks Leaflet/public asset enqueueing, verifies public venue REST output, mocks an admin geocoding response, and confirms unauthenticated geocoding is denied.
 
+Optional Membership/Badges smoke test for release maintainers with Docker:
+
+```text
+tools/smoke-membership-badges.sh
+```
+
+This development-only script installs the packaged plugin into disposable WordPress/MariaDB containers, enables membership opt-in, submits a public signup, verifies membership storage, updates membership status, records participation, checks year and placement badge award/revoke behavior, verifies privacy export/erase handling, confirms public REST does not expose badge/member data, and checks assigned-host participation scope.
+
 The repository also includes GitHub Actions CI in `.github/workflows/pasat-ci.yml`. Once GitHub publishing credentials are available, pushes and pull requests run the release preflight on PHP 8.1 and PHP 8.3, upload short-lived release ZIP artifacts, and run the Docker ZIP-install smoke test on `main` pushes or manual workflow dispatch.
 
 Production release checks are documented in `docs/PRODUCTION_READINESS.md`, with a fillable signoff template in `docs/RELEASE_SIGNOFF_TEMPLATE.md`.
@@ -407,7 +432,7 @@ Build an installable plugin ZIP from the repository root:
 tools/build-release.sh
 ```
 
-The release script requires the standard `zip` command and writes ignored artifacts to `dist/`, for example `dist/pasat-0.1.1.zip` and `dist/pasat-0.1.1.zip.sha256`. The ZIP root is `pasat/`, so it can be installed through **Plugins > Add New > Upload Plugin** or copied into `wp-content/plugins/pasat`.
+The release script requires the standard `zip` command and writes ignored artifacts to `dist/`, for example `dist/pasat-0.1.2.zip` and `dist/pasat-0.1.2.zip.sha256`. The ZIP root is `pasat/`, so it can be installed through **Plugins > Add New > Upload Plugin** or copied into `wp-content/plugins/pasat`.
 
 ## Manual Test Checklist
 
@@ -430,9 +455,13 @@ The release script requires the standard `zip` command and writes ignored artifa
 17. Download **Download Posters ZIP** and confirm it contains one PDF per available activity.
 18. Add `[pasat_venue_map]` to a page and confirm venues with coordinates appear on the embedded map and fallback cards.
 19. Enable **PASAT > Settings > Map Settings > Enable Address Geocoding**, run **Geocode Address** on a test venue, and confirm coordinates/status update.
-20. Use **PASAT > Settings > Mail Delivery Test** to send a test e-mail through the production SMTP/mail setup.
-21. Test confirmation, cancellation, waitlist promotion, and lookup e-mails through the production SMTP/mail setup.
-22. Confirm GitHub publishing credentials are configured and push the local commits.
+20. Enable membership opt-in under **PASAT > Settings > Membership And Badges**, submit a signup with opt-in checked, and confirm the participant is marked interested.
+21. Update that participant's membership status and member number under **PASAT > Participants**.
+22. Use **PASAT > Activities > Results** to mark a confirmed participant completed and assign placement `1`, then confirm badges appear on the participant record.
+23. Request `[pasat_my_signups]` for that participant and confirm badges/history appear only after the verified lookup link.
+24. Use **PASAT > Settings > Mail Delivery Test** to send a test e-mail through the production SMTP/mail setup.
+25. Test confirmation, cancellation, waitlist promotion, and lookup e-mails through the production SMTP/mail setup.
+26. Confirm GitHub publishing credentials are configured and push the local commits.
 
 ## Known Limitations
 
@@ -440,6 +469,7 @@ The release script requires the standard `zip` command and writes ignored artifa
 - Bulk poster ZIP downloads require PHP ZipArchive; single activity poster PDFs remain available without ZipArchive.
 - The venue map uses Leaflet from a CDN and OpenStreetMap-compatible tiles by default; high-traffic sites should configure a suitable tile provider or self-host tiles.
 - Address geocoding is opt-in and single-venue/admin-triggered. Bulk geocoding queues and drag-and-drop marker placement are deferred.
+- Membership payment, renewal workflows, public badge galleries, leaderboards, certificates, and badge artwork controls are deferred.
 - Group/team signup is not implemented in the MVP.
 - Winner/history administration is deferred.
 - The importer handles structured JSON/CSV rows but may still need organization-specific field mapping for messy legacy exports.

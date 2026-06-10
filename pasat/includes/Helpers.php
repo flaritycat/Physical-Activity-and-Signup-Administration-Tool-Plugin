@@ -42,6 +42,16 @@ final class Helpers {
 			'geocoding_enabled'                  => 0,
 			'geocoding_endpoint'                 => 'https://nominatim.openstreetmap.org/search',
 			'geocoding_throttle_seconds'         => 1,
+			'membership_enabled'                 => 0,
+			'membership_opt_in_text'             => __( 'I would like to become a member.', 'pasat' ),
+			'membership_default_status'          => 'interested',
+			'badges_enabled'                     => 1,
+			'badge_year_label_template'          => __( '{year} Participant', 'pasat' ),
+			'badge_first_place_label'            => __( '1st Place', 'pasat' ),
+			'badge_second_place_label'           => __( '2nd Place', 'pasat' ),
+			'badge_third_place_label'            => __( '3rd Place', 'pasat' ),
+			'badges_show_in_my_signups'          => 1,
+			'hosts_can_record_placements'        => 1,
 			'poster_logo_id'                     => 0,
 		);
 	}

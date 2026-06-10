@@ -1,12 +1,41 @@
 # Improvement 2: Membership, Participation Logs, Placements, And Badges
 
+## Execution Status
+
+Implemented for PASAT `0.1.2`.
+
+Delivered:
+
+- optional public membership opt-in
+- participant membership status, member number, and private notes
+- admin membership editing with audit logging
+- participation/result logs per participant/activity
+- activity **Results** workflow for admins and assigned hosts
+- yearly participation badges
+- 1st, 2nd, and 3rd place badges
+- idempotent badge recalculation and revocation
+- verified `[pasat_my_signups]` badge/history display
+- admin REST endpoints for membership, participation, and badges
+- privacy export/erase/retention coverage
+- `tools/smoke-membership-badges.sh`
+
+Deferred:
+
+- membership payments and renewal automation
+- public badge galleries and leaderboards
+- badge artwork uploads
+- printable certificates
+- team/group placements
+- multiple heats/rounds
+- badge notification e-mails
+
 ## Goal
 
 Extend PASAT so public signups can optionally express interest in becoming a member, administrators and hosts can record detailed participation/results for activities, and participants can receive badges for each year they participated plus placement badges for 1st, 2nd, and 3rd place.
 
 This should stay WordPress-native, privacy-conscious, and generic. Membership should not assume a specific club, festival, country, payment provider, or legal membership model.
 
-## Current State
+## Prior State
 
 - Participants are stored separately from signups.
 - Signups track confirmed, waitlisted, and cancelled status.
@@ -14,9 +43,9 @@ This should stay WordPress-native, privacy-conscious, and generic. Membership sh
 - Hosts can be scoped to assigned activities.
 - Audit logging exists for important admin actions.
 - Privacy exporter/eraser and retention cleanup exist.
-- No membership intent/status fields exist yet.
-- No dedicated participation/result log exists yet.
-- No badge model exists yet.
+- No membership intent/status fields existed yet.
+- No dedicated participation/result log existed yet.
+- No badge model existed yet.
 
 ## Product Concepts
 

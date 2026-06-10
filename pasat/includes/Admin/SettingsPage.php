@@ -4,6 +4,7 @@ namespace PASAT\Admin;
 use PASAT\Email\Mailer;
 use PASAT\Helpers;
 use PASAT\Migration\HsfImporter;
+use PASAT\Database\ParticipantsRepository;
 use PASAT\Security\Nonces;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -26,6 +27,10 @@ final class SettingsPage {
 			'map_enabled',
 			'show_map_on_signup',
 			'geocoding_enabled',
+			'membership_enabled',
+			'badges_enabled',
+			'badges_show_in_my_signups',
+			'hosts_can_record_placements',
 		);
 
 		foreach ( $defaults as $key => $default ) {
@@ -48,6 +53,7 @@ final class SettingsPage {
 		}
 
 		$output['erasure_mode'] = in_array( $output['erasure_mode'], array( 'anonymize', 'delete' ), true ) ? $output['erasure_mode'] : 'anonymize';
+		$output['membership_default_status'] = in_array( $output['membership_default_status'], ParticipantsRepository::MEMBERSHIP_STATUSES, true ) ? $output['membership_default_status'] : 'interested';
 
 		return $output;
 	}
@@ -94,6 +100,29 @@ final class SettingsPage {
 					<?php self::checkbox_row( 'geocoding_enabled', __( 'Enable Address Geocoding', 'pasat' ), $settings ); ?>
 					<?php self::text_row( 'geocoding_endpoint', __( 'Geocoding Endpoint', 'pasat' ), $settings ); ?>
 					<?php self::number_row( 'geocoding_throttle_seconds', __( 'Geocoding Throttle Seconds', 'pasat' ), $settings ); ?>
+				</table>
+				<h2><?php esc_html_e( 'Membership And Badges', 'pasat' ); ?></h2>
+				<p><?php esc_html_e( 'Membership opt-in records interest only; it does not automatically create a legal or paid membership. Badges are awarded from administrator or host participation records.', 'pasat' ); ?></p>
+				<table class="form-table" role="presentation">
+					<?php self::checkbox_row( 'membership_enabled', __( 'Enable Membership Opt-In', 'pasat' ), $settings ); ?>
+					<?php self::text_row( 'membership_opt_in_text', __( 'Membership Opt-In Text', 'pasat' ), $settings ); ?>
+					<tr>
+						<th><label for="pasat-membership-default-status"><?php esc_html_e( 'Default Status After Opt-In', 'pasat' ); ?></label></th>
+						<td>
+							<select id="pasat-membership-default-status" name="pasat_settings[membership_default_status]">
+								<?php foreach ( ParticipantsRepository::MEMBERSHIP_STATUSES as $status ) : ?>
+									<option value="<?php echo esc_attr( $status ); ?>" <?php selected( $settings['membership_default_status'] ?? 'interested', $status ); ?>><?php echo esc_html( ucfirst( str_replace( '_', ' ', $status ) ) ); ?></option>
+								<?php endforeach; ?>
+							</select>
+						</td>
+					</tr>
+					<?php self::checkbox_row( 'badges_enabled', __( 'Enable Participation Badges', 'pasat' ), $settings ); ?>
+					<?php self::text_row( 'badge_year_label_template', __( 'Year Badge Label Template', 'pasat' ), $settings ); ?>
+					<?php self::text_row( 'badge_first_place_label', __( 'First Place Badge Label', 'pasat' ), $settings ); ?>
+					<?php self::text_row( 'badge_second_place_label', __( 'Second Place Badge Label', 'pasat' ), $settings ); ?>
+					<?php self::text_row( 'badge_third_place_label', __( 'Third Place Badge Label', 'pasat' ), $settings ); ?>
+					<?php self::checkbox_row( 'badges_show_in_my_signups', __( 'Show Badges In Verified My Signups', 'pasat' ), $settings ); ?>
+					<?php self::checkbox_row( 'hosts_can_record_placements', __( 'Allow Hosts To Record Placements', 'pasat' ), $settings ); ?>
 				</table>
 				<h2><?php esc_html_e( 'E-mail Templates', 'pasat' ); ?></h2>
 				<p><?php esc_html_e( 'Available placeholders: {organization_name}, {activity_title}, {activity_date}, {activity_time}, {venue_name}, {participant_name}, {signup_status}, {cancellation_url}, {site_name}, {site_url}.', 'pasat' ); ?></p>

@@ -10,6 +10,7 @@ final class Installer {
 		if ( get_option( 'pasat_db_version' ) !== PASAT_DB_VERSION ) {
 			Database\Schema::install();
 			self::install_defaults();
+			Capabilities::install();
 		}
 	}
 

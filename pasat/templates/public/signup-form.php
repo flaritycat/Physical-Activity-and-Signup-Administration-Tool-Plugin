@@ -55,6 +55,9 @@ $pasat_warning_required = $pasat_activity && ! empty( $pasat_activity['requires_
 		<?php if ( ! empty( $pasat_settings['require_consent'] ) ) : ?>
 			<label class="pasat-check"><input type="checkbox" name="consent_given" value="1" required> <span><?php echo esc_html( $pasat_settings['consent_text'] ); ?></span></label>
 		<?php endif; ?>
+		<?php if ( ! empty( $pasat_settings['membership_enabled'] ) ) : ?>
+			<label class="pasat-check"><input type="checkbox" name="membership_opt_in" value="1"> <span><?php echo esc_html( $pasat_settings['membership_opt_in_text'] ); ?></span></label>
+		<?php endif; ?>
 		<?php if ( '' !== trim( (string) $pasat_warning_text ) ) : ?>
 			<label class="pasat-check"><input type="checkbox" name="warning_acknowledged" value="1" <?php echo $pasat_warning_required ? 'required' : ''; ?>> <span><?php echo esc_html( $pasat_warning_text ); ?></span></label>
 		<?php endif; ?>
