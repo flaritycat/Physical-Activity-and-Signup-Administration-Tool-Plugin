@@ -62,6 +62,7 @@ final class SettingsPage {
 				<table class="form-table" role="presentation">
 					<?php self::text_row( 'organization_name', __( 'Organization Name', 'pasat' ), $settings ); ?>
 					<tr><th><?php esc_html_e( 'Public Page', 'pasat' ); ?></th><td><select name="pasat_settings[public_page_id]"><option value="0"><?php esc_html_e( 'Select page', 'pasat' ); ?></option><?php foreach ( $pages as $page ) : ?><option value="<?php echo esc_attr( (string) $page->ID ); ?>" <?php selected( (int) $settings['public_page_id'], (int) $page->ID ); ?>><?php echo esc_html( $page->post_title ); ?></option><?php endforeach; ?></select></td></tr>
+					<?php self::logo_row( $settings ); ?>
 					<?php self::text_row( 'activity_label', __( 'Activity Label', 'pasat' ), $settings ); ?>
 					<?php self::text_row( 'host_label', __( 'Host Label', 'pasat' ), $settings ); ?>
 					<?php self::number_row( 'default_season_year', __( 'Default Season Year', 'pasat' ), $settings ); ?>
@@ -237,6 +238,21 @@ final class SettingsPage {
 
 	private static function textarea_row( string $key, string $label, array $settings ): void {
 		echo '<tr><th><label for="pasat-' . esc_attr( $key ) . '">' . esc_html( $label ) . '</label></th><td><textarea class="large-text" rows="5" id="pasat-' . esc_attr( $key ) . '" name="pasat_settings[' . esc_attr( $key ) . ']">' . esc_textarea( $settings[ $key ] ?? '' ) . '</textarea></td></tr>';
+	}
+
+	private static function logo_row( array $settings ): void {
+		$logo_id = absint( $settings['poster_logo_id'] ?? 0 );
+		echo '<tr><th><label for="pasat-poster-logo-id">' . esc_html__( 'Poster Logo', 'pasat' ) . '</label></th><td>';
+		echo '<input type="hidden" id="pasat-poster-logo-id" data-pasat-logo-id name="pasat_settings[poster_logo_id]" value="' . esc_attr( (string) $logo_id ) . '">';
+		echo '<div class="pasat-logo-preview" data-pasat-logo-preview data-empty-label="' . esc_attr__( 'No logo selected', 'pasat' ) . '">';
+		if ( $logo_id ) {
+			echo wp_kses_post( wp_get_attachment_image( $logo_id, 'medium', false, array( 'class' => 'pasat-logo-preview__image' ) ) );
+		}
+		echo '</div>';
+		echo '<button type="button" class="button" data-pasat-logo-select>' . esc_html__( 'Choose Logo', 'pasat' ) . '</button> ';
+		echo '<button type="button" class="button" data-pasat-logo-remove>' . esc_html__( 'Remove Logo', 'pasat' ) . '</button>';
+		echo '<p class="description">' . esc_html__( 'Used on activity poster PDFs. PNG and JPEG images are supported when the WordPress image editor is available; JPEG is the safest fallback.', 'pasat' ) . '</p>';
+		echo '</td></tr>';
 	}
 
 	private static function number_row( string $key, string $label, array $settings ): void {

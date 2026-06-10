@@ -34,6 +34,7 @@ final class Helpers {
 			'pasat_strict_email_delivery'        => 0,
 			'allow_duplicate_email_per_activity' => 0,
 			'map_enabled'                        => 0,
+			'poster_logo_id'                     => 0,
 		);
 	}
 
@@ -106,6 +107,10 @@ final class Helpers {
 		}
 
 		return $url;
+	}
+
+	public static function activity_qr_url( int $activity_id ): string {
+		return add_query_arg( 'psa', max( 0, $activity_id ), home_url( '/' ) );
 	}
 
 	public static function csv_cell( mixed $value ): string {

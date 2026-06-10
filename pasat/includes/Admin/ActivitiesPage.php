@@ -36,6 +36,7 @@ final class ActivitiesPage {
 		if ( $can_create ) {
 			echo ' <a class="page-title-action" href="' . esc_url( admin_url( 'admin.php?page=pasat-activities&action=new' ) ) . '">' . esc_html__( 'Add New', 'pasat' ) . '</a>';
 		}
+		echo ' <a class="page-title-action" href="' . esc_url( PosterDownloads::zip_url() ) . '">' . esc_html__( 'Download Posters ZIP', 'pasat' ) . '</a>';
 		echo '</h1>';
 		self::notice();
 
@@ -150,6 +151,9 @@ final class ActivitiesPage {
 				<?php endif; ?>
 			</table>
 			<?php submit_button( $id ? __( 'Save Activity', 'pasat' ) : __( 'Create Activity', 'pasat' ) ); ?>
+			<?php if ( $id ) : ?>
+				<p><a class="button button-secondary" href="<?php echo esc_url( PosterDownloads::single_url( $id ) ); ?>"><?php esc_html_e( 'Download Poster PDF', 'pasat' ); ?></a></p>
+			<?php endif; ?>
 		</form>
 		<?php
 	}
@@ -209,6 +213,7 @@ final class ActivitiesPage {
 						<?php self::row_action( (int) $activity['id'], 'cancel', __( 'Cancel', 'pasat' ) ); ?>
 						<?php self::row_action( (int) $activity['id'], 'archive', __( 'Archive', 'pasat' ) ); ?>
 						<?php self::row_action( (int) $activity['id'], 'duplicate', __( 'Duplicate', 'pasat' ) ); ?>
+						<a href="<?php echo esc_url( PosterDownloads::single_url( (int) $activity['id'] ) ); ?>"><?php esc_html_e( 'Poster PDF', 'pasat' ); ?></a>
 					</td>
 				</tr>
 			<?php endforeach; ?>

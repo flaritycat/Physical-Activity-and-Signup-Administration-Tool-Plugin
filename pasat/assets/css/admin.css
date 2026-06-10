@@ -54,6 +54,29 @@
 	margin-bottom: 4px;
 }
 
+.pasat-logo-preview {
+	align-items: center;
+	background: #fff;
+	border: 1px dashed #8c8f94;
+	display: flex;
+	margin-bottom: 10px;
+	min-height: 72px;
+	padding: 10px;
+	width: min(320px, 100%);
+}
+
+.pasat-logo-preview:empty::before {
+	color: #646970;
+	content: attr(data-empty-label);
+}
+
+.pasat-logo-preview__image {
+	display: block;
+	height: auto;
+	max-height: 96px;
+	max-width: 280px;
+}
+
 @media (max-width: 782px) {
 	.pasat-admin .pasat-admin-metrics {
 		grid-template-columns: 1fr;

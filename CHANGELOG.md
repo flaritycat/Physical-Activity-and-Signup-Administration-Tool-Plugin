@@ -15,6 +15,7 @@ Initial WordPress-native release candidate for **Physical Activity Signup and Ad
 - Activity and venue management with capacity, waitlist, signup window, status, visibility, age-limit, warning acknowledgement, and host assignment support.
 - Public shortcodes for activity listing, signup, verified my-signups lookup, venue map/listing, and read-only activity board.
 - Activity Board kiosk mode, visible refresh/connection state, improved status labels, change highlights, optional local QR signup codes, and venue/type/host/refresh/limit filters.
+- Printable activity poster PDFs with unique QR signup codes, configurable poster logo, per-activity downloads, and bulk ZIP export for administrators and assigned hosts.
 - Public signup validation, duplicate prevention, advisory locking around capacity checks, waitlist placement, secure cancellation links, and waitlist promotion.
 - E-mail notifications through `wp_mail()` for signup confirmation, cancellation, waitlist promotion, lookup links, activity cancellation notices, and mail-delivery testing.
 - REST API routes under `pasat/v1` with public activity endpoints and capability-protected admin endpoints.
@@ -31,7 +32,7 @@ Initial WordPress-native release candidate for **Physical Activity Signup and Ad
 - Public signup, duplicate rejection, waitlist placement, cancellation, and waitlist promotion.
 - Concurrent signup behavior for capacity-one activities.
 - Role and capability scoping for managers and assigned hosts.
-- Public shortcode rendering, HTTP no-JavaScript signup, enhanced activity board, and venue map.
+- Public shortcode rendering, HTTP no-JavaScript signup, enhanced activity board, printable poster PDFs, and venue map.
 - Mail-test generation through WordPress mail hooks.
 - WordPress privacy export/erase integration and retention cleanup.
 - WordPress Plugin Check with no reported errors.
@@ -50,3 +51,4 @@ Initial WordPress-native release candidate for **Physical Activity Signup and Ad
 
 - Production launch still requires real SMTP receipt testing, review in the target WordPress theme, final privacy/legal signoff, and authenticated GitHub publishing.
 - PASAT does not require Python, Docker, PostgreSQL, Node.js, Composer, queues, realtime sockets, or a separate application server at runtime.
+- Bulk activity poster ZIP downloads require PHP ZipArchive; single poster PDF downloads remain available without ZipArchive.

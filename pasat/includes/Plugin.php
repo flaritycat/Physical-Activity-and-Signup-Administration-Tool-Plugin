@@ -2,6 +2,7 @@
 namespace PASAT;
 
 use PASAT\Admin\AdminMenu;
+use PASAT\Admin\PosterDownloads;
 use PASAT\Admin\SettingsPage;
 use PASAT\Frontend\Assets as FrontendAssets;
 use PASAT\Frontend\Shortcodes;
@@ -35,8 +36,11 @@ final class Plugin {
 		add_action( 'admin_init', array( SettingsPage::class, 'register_settings' ) );
 		add_action( 'admin_init', array( Policy::class, 'register' ) );
 		add_action( 'rest_api_init', array( Routes::class, 'register' ) );
+		add_action( 'template_redirect', array( Shortcodes::class, 'handle_activity_qr_redirect' ) );
 		add_action( 'admin_post_pasat_cancel_signup', array( Shortcodes::class, 'handle_cancellation_link' ) );
 		add_action( 'admin_post_nopriv_pasat_cancel_signup', array( Shortcodes::class, 'handle_cancellation_link' ) );
+		add_action( 'admin_post_pasat_activity_poster', array( PosterDownloads::class, 'single' ) );
+		add_action( 'admin_post_pasat_activity_posters_zip', array( PosterDownloads::class, 'zip' ) );
 		add_action( 'pasat_daily_retention_cleanup', array( Retention::class, 'run_scheduled' ) );
 
 		add_filter( 'wp_privacy_personal_data_exporters', array( Exporter::class, 'register' ) );

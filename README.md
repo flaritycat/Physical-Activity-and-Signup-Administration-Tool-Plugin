@@ -34,6 +34,7 @@ The plugin was designed after reviewing the previous standalone `HSF` applicatio
 - PHP 8.1 or newer
 - A working WordPress mail setup for signup e-mails
 - Administrator access for activation and setup
+- PHP ZipArchive extension for bulk poster ZIP downloads; single poster PDFs do not require it
 
 PASAT does not bundle SMTP settings. Use an established WordPress SMTP plugin if your site needs authenticated SMTP delivery.
 
@@ -46,6 +47,7 @@ PASAT is not a demanding plugin for normal community programs, classes, workshop
 - Standard Linux WordPress hosting, shared hosting, VPS, or managed WordPress hosting
 - WordPress-compatible MySQL or MariaDB database
 - PHP 8.1 or newer with normal WordPress extensions enabled
+- PHP ZipArchive extension if administrators need one-click ZIP downloads of all printable activity poster PDFs
 - HTTPS enabled, especially because participant contact data is submitted publicly
 - WordPress permalinks and REST API available
 - `wp_mail()` working, or an SMTP plugin configured
@@ -118,7 +120,7 @@ wp-content/plugins/pasat/pasat.php
 4. Publish the page.
 5. Go to **PASAT > Settings**.
 6. Select the page under **Public Page**.
-7. Set the organization name, labels, default capacity, consent text, retention period, and e-mail templates.
+7. Set the organization name, poster logo, labels, default capacity, consent text, retention period, and e-mail templates.
 8. Go to **PASAT > Venues** and create at least one venue/location.
 9. Go to **PASAT > Activities** and create a published activity with signup dates and capacity.
 10. Visit the public page and submit a test signup.
@@ -135,6 +137,14 @@ Use **PASAT > Venues** to create reusable locations with name, description, addr
 Use **PASAT > Activities** to create and manage public activities. Activities support title, description, type, season year, schedule, venue, capacity, waitlist, signup windows, status, visibility, age limits, warning acknowledgement text, and host assignment when the current administrator has host-management permissions.
 
 Only published public activities with an open signup window appear in public signup flows.
+
+Activities also include printable signup poster downloads:
+
+- **Poster PDF** on each activity row downloads a single activity poster.
+- **Download Posters ZIP** downloads one PDF per activity available to the current administrator or assigned host.
+- Posters include the configured organization logo, activity title, venue/time details, a direct fallback signup link, and a unique QR code that redirects to the configured public signup page for that activity.
+
+Set the poster logo in **PASAT > Settings > Poster Logo**. JPEG works as the safest fallback. PNG is supported when the WordPress image editor can convert it for PDF embedding.
 
 ### Signups
 
@@ -342,6 +352,14 @@ tools/smoke-activity-board.sh
 
 This development-only script installs the packaged plugin into disposable WordPress/MariaDB containers, creates sample venues and activities, renders `[pasat_activity_board mode="kiosk" show_qr="1"]`, checks venue/type filtering, verifies QR signup markup, and confirms the public REST response exposes only public activity fields.
 
+Optional Activity Poster smoke test for release maintainers with Docker:
+
+```text
+tools/smoke-activity-posters.sh
+```
+
+This development-only script installs the packaged plugin into disposable WordPress/MariaDB containers, creates a sample activity and JPEG logo, renders a poster PDF, checks logo embedding and QR content, verifies poster download URLs, and exercises ZIP creation when ZipArchive is available.
+
 The repository also includes GitHub Actions CI in `.github/workflows/pasat-ci.yml`. Once GitHub publishing credentials are available, pushes and pull requests run the release preflight on PHP 8.1 and PHP 8.3, upload short-lived release ZIP artifacts, and run the Docker ZIP-install smoke test on `main` pushes or manual workflow dispatch.
 
 Production release checks are documented in `docs/PRODUCTION_READINESS.md`, with a fillable signoff template in `docs/RELEASE_SIGNOFF_TEMPLATE.md`.
@@ -372,13 +390,17 @@ The release script requires the standard `zip` command and writes ignored artifa
 12. Run a WordPress personal data export for a participant e-mail.
 13. Run retention cleanup from **PASAT > Privacy**.
 14. Test the public page in the production theme on desktop and mobile viewports.
-15. Use **PASAT > Settings > Mail Delivery Test** to send a test e-mail through the production SMTP/mail setup.
-16. Test confirmation, cancellation, waitlist promotion, and lookup e-mails through the production SMTP/mail setup.
-17. Confirm GitHub publishing credentials are configured and push the local commits.
+15. Select a poster logo in **PASAT > Settings**.
+16. Download a single **Poster PDF** from **PASAT > Activities** and scan its QR code.
+17. Download **Download Posters ZIP** and confirm it contains one PDF per available activity.
+18. Use **PASAT > Settings > Mail Delivery Test** to send a test e-mail through the production SMTP/mail setup.
+19. Test confirmation, cancellation, waitlist promotion, and lookup e-mails through the production SMTP/mail setup.
+20. Confirm GitHub publishing credentials are configured and push the local commits.
 
 ## Known Limitations
 
 - The activity board is a read-only polling display with kiosk/QR/filter options, not a realtime service.
+- Bulk poster ZIP downloads require PHP ZipArchive; single activity poster PDFs remain available without ZipArchive.
 - The venue map shortcode displays coordinate-enabled venues and links to an external map, but does not bundle a full map provider.
 - Group/team signup is not implemented in the MVP.
 - Winner/history administration is deferred.

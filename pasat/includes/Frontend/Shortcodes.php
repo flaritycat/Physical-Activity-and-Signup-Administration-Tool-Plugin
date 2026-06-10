@@ -231,6 +231,17 @@ final class Shortcodes {
 		exit;
 	}
 
+	public static function handle_activity_qr_redirect(): void {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Public QR redirects intentionally use an activity id, not private data.
+		$activity_id = absint( wp_unslash( $_GET['psa'] ?? 0 ) );
+		if ( ! $activity_id ) {
+			return;
+		}
+
+		wp_safe_redirect( Helpers::public_signup_url( $activity_id ) );
+		exit;
+	}
+
 	private static function lookup_url( string $token ): string {
 		$page_id = absint( Helpers::setting( 'public_page_id', 0 ) );
 		$url     = $page_id ? get_permalink( $page_id ) : home_url( '/' );

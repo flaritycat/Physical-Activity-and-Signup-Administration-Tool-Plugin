@@ -309,12 +309,13 @@
 				pluralLabel(boardLabel('confirmed', '%d confirmed'), activity.confirmed || 0) + ', ' + pluralLabel(boardLabel('waitlisted', '%d waitlisted'), activity.waitlisted || 0)
 			);
 
-			if (options.showQr && activity.signup_url) {
+			if (options.showQr && (activity.qr_url || activity.signup_url)) {
+				var qrValue = activity.qr_url || activity.signup_url;
 				var qr = appendText(aside, 'span', 'pasat-board-qr', boardLabel('qrFallback', 'Signup QR'));
 				var link = appendText(aside, 'a', 'pasat-board-qr-link', boardLabel('signUp', 'Sign up'));
 				if (qr) {
-					qr.setAttribute('data-pasat-qr-value', activity.signup_url);
-					renderQr(qr, activity.signup_url);
+					qr.setAttribute('data-pasat-qr-value', qrValue);
+					renderQr(qr, qrValue);
 				}
 				if (link) {
 					link.setAttribute('href', activity.signup_url);

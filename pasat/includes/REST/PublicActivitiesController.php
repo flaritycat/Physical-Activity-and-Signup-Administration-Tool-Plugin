@@ -57,6 +57,7 @@ final class PublicActivitiesController {
 			'waitlist_enabled'   => (bool) $activity['waitlist_enabled'],
 			'signup_open'        => ( new ActivitiesRepository() )->is_public_signup_open( $activity ),
 			'signup_url'         => esc_url_raw( Helpers::public_signup_url( (int) $activity['id'] ) ),
+			'qr_url'             => esc_url_raw( Helpers::activity_qr_url( (int) $activity['id'] ) ),
 			'requires_warning_ack' => (bool) $activity['requires_warning_ack'],
 		);
 	}

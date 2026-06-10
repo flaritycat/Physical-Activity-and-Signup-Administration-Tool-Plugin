@@ -39,6 +39,15 @@ final class AdminMenu {
 
 		wp_enqueue_style( 'pasat-admin', PASAT_PLUGIN_URL . 'assets/css/admin.css', array(), PASAT_VERSION );
 		wp_enqueue_script( 'pasat-admin', PASAT_PLUGIN_URL . 'assets/js/admin.js', array(), PASAT_VERSION, true );
+		wp_enqueue_media();
+		wp_localize_script(
+			'pasat-admin',
+			'PASAT_ADMIN',
+			array(
+				'chooseLogo' => __( 'Choose Poster Logo', 'pasat' ),
+				'useLogo'    => __( 'Use this logo', 'pasat' ),
+			)
+		);
 	}
 
 	public static function dashboard(): void {

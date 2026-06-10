@@ -171,8 +171,13 @@ if ( ! is_array( $data ) || 1 !== count( $data ) ) {
 
 $activity = reset( $data );
 
-if ( 'Morning Yoga' !== ( $activity['title'] ?? '' ) || empty( $activity['signup_url'] ) ) {
+if ( 'Morning Yoga' !== ( $activity['title'] ?? '' ) || empty( $activity['signup_url'] ) || empty( $activity['qr_url'] ) ) {
 	fwrite( STDERR, 'Filtered REST activity did not include expected public fields: ' . wp_json_encode( $activity ) . "\n" );
+	exit( 1 );
+}
+
+if ( false === strpos( $activity['qr_url'], '?psa=' . $activity_a ) ) {
+	fwrite( STDERR, 'Filtered REST activity did not include the expected short QR URL: ' . wp_json_encode( $activity ) . "\n" );
 	exit( 1 );
 }
 

@@ -84,6 +84,7 @@ $pasat_board_status = static function ( array $pasat_activity, array $pasat_capa
 		<?php
 		$pasat_capacity    = $pasat_signups ? $pasat_signups->capacity_snapshot( $pasat_activity ) : array( 'capacity' => null, 'confirmed' => 0, 'waitlisted' => 0, 'remaining' => null, 'is_full' => false );
 		$pasat_link        = PASAT\Helpers::public_signup_url( absint( $pasat_activity['id'] ) );
+		$pasat_qr_link     = PASAT\Helpers::activity_qr_url( absint( $pasat_activity['id'] ) );
 		$pasat_signup_open = $pasat_activity_repo ? $pasat_activity_repo->is_public_signup_open( $pasat_activity ) : true;
 		$pasat_status      = $pasat_board_status( $pasat_activity, $pasat_capacity, $pasat_signup_open, (int) $pasat_board_options['few_spots'] );
 		$pasat_state       = wp_json_encode(
@@ -125,7 +126,7 @@ $pasat_board_status = static function ( array $pasat_activity, array $pasat_capa
 						?>
 					</span>
 					<?php if ( ! empty( $pasat_board_options['show_qr'] ) ) : ?>
-						<span class="pasat-board-qr" data-pasat-qr-value="<?php echo esc_attr( $pasat_link ); ?>" aria-label="<?php echo esc_attr( sprintf(
+						<span class="pasat-board-qr" data-pasat-qr-value="<?php echo esc_attr( $pasat_qr_link ); ?>" aria-label="<?php echo esc_attr( sprintf(
 							/* translators: %s is activity title. */
 							__( 'Signup QR code for %s', 'pasat' ),
 							$pasat_activity['title']
