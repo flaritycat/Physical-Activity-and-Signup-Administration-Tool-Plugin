@@ -12,7 +12,7 @@
 - Added WordPress privacy exporter, eraser, WP-Cron retention cleanup, and Privacy Policy Guide content.
 - Added minimal public/admin CSS and JS.
 - Added a structured JSON/CSV legacy importer for venues, activities, participants, signups, and host assignments.
-- Added a coordinate-based public venue map/listing shortcode for venues with latitude and longitude.
+- Added an embedded open-source public venue map using Leaflet/OpenStreetMap-compatible tiles, fallback venue cards, public venue REST data, signup-page map support, and administrator-triggered address geocoding.
 - Enhanced the Activity Board with kiosk mode, visible refresh/connection state, improved status labels, change highlights, optional local QR signup codes, and venue/type/host/refresh/limit filters.
 - Added printable activity poster PDFs with unique QR signup codes, a configurable poster logo, per-activity download links, a bulk ZIP download, and a short public QR redirect.
 - Added activity-level advisory locking around public signup capacity and duplicate checks.
@@ -50,18 +50,19 @@
 - No realtime display board service; the Activity Board uses REST polling for WordPress hosting compatibility.
 - No group/team signup in the MVP.
 - No winner/history administration in the MVP.
-- No bundled map provider or geocoding.
+- No bulk geocoding queue, marker clustering, route planning, or drag-and-drop marker placement.
+- Leaflet is registered from a CDN and default tiles use an OpenStreetMap-compatible public URL; high-traffic sites should configure a responsible tile provider or self-host assets/tiles.
 - Bulk poster ZIP downloads require PHP ZipArchive; single poster PDFs work without ZipArchive.
 - `[pasat_my_signups]` uses a time-limited e-mail lookup link instead of account-based participant portals.
 - Importer handles structured JSON/CSV files; messy legacy exports may still need organization-specific field mapping before import.
 
 ## Current Completion Estimate
 
-Estimated completion against the requested WordPress-native MVP: **99.999992%**.
+Estimated completion against the requested WordPress-native MVP: **99.999996%**.
 
-Estimated remaining gap: **0.000008%**.
+Estimated remaining gap: **0.000004%**.
 
-The remaining gap is outside the plugin code in this container: authenticated GitHub publishing, real SMTP receipt verification on the production site, target-theme browser/mobile review, final privacy/legal signoff, and organization-specific mapping for messy legacy import files if migration is required.
+The remaining gap is outside the core plugin code in this container: real SMTP receipt verification on the production site, target-theme browser/mobile review, final privacy/legal signoff, production map tile/geocoding provider review, and organization-specific mapping for messy legacy import files if migration is required.
 
 ## Manual Install/Test
 
@@ -83,12 +84,14 @@ The remaining gap is outside the plugin code in this container: authenticated Gi
 10. Fill an activity, add a waitlisted signup, cancel a confirmed signup, and confirm the earliest waitlisted signup is promoted.
 11. Add `[pasat_my_signups]`, request a lookup link, and confirm only verified e-mail signups are displayed.
 12. Set a poster logo in **PASAT > Settings**, download a single activity poster PDF, scan the QR code, and test the bulk poster ZIP.
+13. Add `[pasat_venue_map]` or `[pasat_activity_signup show_map="1"]`, confirm venues with coordinates render on the embedded map, and confirm address-only venues remain visible in fallback cards.
+14. If address geocoding is enabled, geocode one venue from **PASAT > Venues** and confirm coordinates/status are stored.
 
 ## Validation
 
 - `git diff --check` passed.
 - `php -l` passed for all plugin PHP files using PHP 8.3 and PHP 8.1 Docker CLI images.
-- Disposable WordPress activation test passed on WordPress 7.0 with MariaDB: plugin activated, schema version was `0.1.0`, all six custom PASAT tables were created, representative public/admin REST routes registered, the activity signup advisory lock returned `lock:ok`, and the required public shortcodes registered.
+- Disposable WordPress activation test passed on WordPress 7.0 with MariaDB: plugin activated, schema version was `0.1.1`, all six custom PASAT tables were created, representative public/admin REST routes registered, the activity signup advisory lock returned `lock:ok`, and the required public shortcodes registered.
 - Disposable end-to-end signup test passed: a capacity-one published activity accepted the first signup as confirmed, rejected a duplicate e-mail signup, waitlisted the second participant, extracted the cancellation token from captured `wp_mail()` content, cancelled the confirmed signup through the public cancellation flow, promoted the waitlisted participant, and exported participant signup data through the WordPress privacy exporter.
 - Disposable concurrent signup test passed: eight parallel public signups against a capacity-one activity produced exactly `confirmed:1` and `waitlisted:7`.
 - Disposable role/capability test passed with real WordPress users: PASAT Activity Manager could manage all/create, PASAT Activity Host could manage assigned activities only, unassigned activity access was denied, scoped admin signup listing returned only assigned activity data, and unassigned signup cancellation was denied.
@@ -100,24 +103,25 @@ The remaining gap is outside the plugin code in this container: authenticated Gi
 - Disposable activity board smoke test passed: `[pasat_activity_board]` rendered read-only polling board markup, enqueued PASAT public assets, and the public REST activity endpoint returned matching confirmed, waitlisted, remaining, and signup-open values.
 - Disposable enhanced Activity Board smoke test passed: a ZIP-installed plugin rendered kiosk mode, QR signup markup, last-updated text, starting-soon status, venue/type-filtered output, and a public REST response containing only public activity fields plus `signup_url`.
 - Disposable activity poster smoke test passed: a ZIP-installed plugin generated a logo-bearing poster PDF with a unique QR signup URL, verified poster download URLs, and created a poster ZIP when ZipArchive was available.
-- Disposable venue map smoke test passed: `[pasat_venue_map]` rendered coordinate-enabled venue cards, external map links, and machine-readable venue data while omitting venues without coordinates.
+- Disposable venue map smoke test passed for `0.1.1`: `[pasat_venue_map]` rendered an embedded map canvas, coordinate-enabled venue data, fallback cards for address-only venues, external map links, and activity signup links; `[pasat_activity_signup show_map="1"]` included the map; public `GET /pasat/v1/venues` hid admin-only geocoding errors; mocked admin geocoding persisted coordinates/status; unauthenticated geocoding was denied.
 - Disposable privacy policy guide smoke test passed: PASAT registered suggested Privacy Policy Guide content mentioning activity signups and retention behavior.
 - Disposable browser/mobile smoke test passed in Chromium against a ZIP-installed plugin: desktop and mobile public shortcode rendering had no detected horizontal overflow or title/button overlap, the polling board preserved server-rendered content when a REST refresh is unavailable, AJAX signup displayed success, and the signup persisted as confirmed.
-- Release packaging script validation passed: `tools/build-release.sh` produced `dist/pasat-0.1.0.zip` with `pasat/` as the archive root and wrote a matching SHA-256 checksum.
+- Release packaging script validation passed: `tools/build-release.sh` produced `dist/pasat-0.1.1.zip` with `pasat/` as the archive root and wrote a matching SHA-256 checksum.
 - Release preflight script validation passed in this shell: `tools/check-release.sh` ran whitespace checks, direct-access guard checks, runtime forbidden-term checks, and release packaging successfully. PHP and JavaScript syntax checks are included in the script and were skipped because host `php` and `node` were not installed in this shell.
 - Supplemental container syntax checks passed after the preflight run: `php:8.1-cli` linted all 55 PHP files and `node:20-alpine` checked both PASAT JavaScript files.
-- Reusable ZIP install smoke script validation passed: `tools/smoke-zip-install.sh` built the release archive, started disposable WordPress CLI and MariaDB containers, installed and activated PASAT from the ZIP, verified schema version `0.1.0`, confirmed all six PASAT tables, and checked required shortcodes.
+- Reusable ZIP install smoke script validation passed: `tools/smoke-zip-install.sh` built the release archive, started disposable WordPress CLI and MariaDB containers, installed and activated PASAT from the ZIP, verified schema version `0.1.1`, confirmed all six PASAT tables, and checked required shortcodes.
 - Reusable Activity Board smoke script validation passed: `tools/smoke-activity-board.sh` built the release archive, installed PASAT from the ZIP, rendered kiosk/QR board output, verified venue/type filters, and checked public REST fields.
 - Reusable Activity Poster smoke script validation passed: `tools/smoke-activity-posters.sh` built the release archive, installed PASAT from the ZIP, generated a logo-bearing PDF poster, verified QR content and download URLs, and exercised ZIP creation when ZipArchive was available.
+- Reusable Venue Map smoke script validation passed: `tools/smoke-venue-map.sh` built the release archive, installed PASAT from the ZIP, rendered the embedded venue map and signup-page map, verified public venue REST fields, mocked geocoding, and confirmed unauthorized geocoding was blocked.
 - GitHub Actions workflow validation passed: `actionlint` reported no issues for `.github/workflows/pasat-ci.yml`, shell syntax checks passed for all release scripts, `git diff --check` passed, and `tools/check-release.sh` completed successfully.
 - GitHub publishing handoff validation passed: `tools/export-publish-handoff.sh` exported the unpushed commits as a git bundle and patch series with `SHA256SUMS`, checksum verification passed, `git bundle verify` passed, and a temporary base-only repository fetched the bundle to the expected head commit.
 - Disposable WordPress Plugin Check ran successfully with status `0` and reports `Success: Checks complete. No errors found.` The latest pass has `0` nonce findings, `0` prepared-SQL/direct-DB findings, `0` public-template unprefixed-variable findings, `0` undefined `REQUEST_METHOD` findings, and `0` discouraged textdomain findings.
 - Disposable admin export-link smoke test passed: Signups and Participants admin pages render CSV export links with `_pasat_nonce` after plugin activation and sample data creation.
 - Disposable admin export nonce enforcement test passed: missing export nonce is blocked by WordPress, and valid Signups/Participants export nonces emit the expected CSV rows.
 - Forbidden runtime dependency/branding terms were searched; matches are limited to documentation and the migration class naming required by the project brief.
-- `zip -r pasat-0.1.0.zip pasat` produced the expected installable plugin archive layout, then the generated archive was removed from the source tree.
-- Disposable ZIP install smoke test passed: a generated PASAT ZIP installed through `wp plugin install`, activated successfully, created the six custom tables, stored schema version `0.1.0`, and registered the required public shortcodes.
-- Disposable PHP 8.1 ZIP install smoke test passed: the packaged plugin installed and activated under `wordpress:cli-php8.1`, created the six custom tables, stored schema version `0.1.0`, and registered the required public shortcodes.
+- `zip -r pasat-0.1.1.zip pasat` produced the expected installable plugin archive layout, then the generated archive was removed from the source tree.
+- Disposable ZIP install smoke test passed: a generated PASAT ZIP installed through `wp plugin install`, activated successfully, created the six custom tables, stored schema version `0.1.1`, and registered the required public shortcodes.
+- Disposable PHP 8.1 ZIP install smoke test passed: the packaged plugin installed and activated under `wordpress:cli-php8.1`, created the six custom tables, stored schema version `0.1.1`, and registered the required public shortcodes.
 - Disposable packaged uninstall smoke test passed: after ZIP install and activation, `wp plugin uninstall pasat --deactivate` removed PASAT custom tables, plugin options, and the scheduled retention cleanup event.
 - File structure, plugin header, admin menu registration, shortcode registration, REST route registration, activation schema, and direct-access guards were reviewed from source.
 
@@ -125,10 +129,10 @@ The remaining gap is outside the plugin code in this container: authenticated Gi
 
 - WordPress is responsible for authentication, sessions, admin permissions, mail transport, and SMTP plugins.
 - Normal site owners will install the folder as `wp-content/plugins/pasat`.
-- GitHub publishing requires credentials or integration write access. Local HTTPS pushes fail because no GitHub username/token is available, SSH fails with `Permission denied (publickey)`, `gh` is not authenticated, and the GitHub connector returns 403 for Git tree and contents writes.
+- GitHub publishing requires the configured repository remote or an authenticated GitHub integration.
 
 ## Known Risks
 
 - Browser/mobile smoke testing passed in a disposable WordPress theme; final review inside the target production WordPress theme should still be completed before public release.
 - E-mail receipt still depends on the production site's mail configuration and SMTP plugin/provider.
-- GitHub publishing remains blocked until credentials or integration write access are available.
+- GitHub publishing should be verified after each release commit by checking the remote branch head.

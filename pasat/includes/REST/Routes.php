@@ -8,6 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class Routes {
 	public static function register(): void {
 		$public_activities = new PublicActivitiesController();
+		$public_venues     = new PublicVenuesController();
 		$public_signup     = new PublicSignupController();
 		$admin_activities  = new AdminActivitiesController();
 		$admin_venues      = new AdminVenuesController();
@@ -15,6 +16,7 @@ final class Routes {
 
 		register_rest_route( 'pasat/v1', '/activities', array( 'methods' => 'GET', 'callback' => array( $public_activities, 'index' ), 'permission_callback' => '__return_true', 'args' => self::list_args() ) );
 		register_rest_route( 'pasat/v1', '/activities/(?P<id>\d+)', array( 'methods' => 'GET', 'callback' => array( $public_activities, 'show' ), 'permission_callback' => '__return_true', 'args' => self::id_arg() ) );
+		register_rest_route( 'pasat/v1', '/venues', array( 'methods' => 'GET', 'callback' => array( $public_venues, 'index' ), 'permission_callback' => '__return_true', 'args' => self::venue_map_args() ) );
 		register_rest_route( 'pasat/v1', '/signups', array( 'methods' => 'POST', 'callback' => array( $public_signup, 'create' ), 'permission_callback' => '__return_true', 'args' => self::public_signup_args() ) );
 		register_rest_route( 'pasat/v1', '/signups/cancel', array( 'methods' => 'POST', 'callback' => array( $public_signup, 'cancel' ), 'permission_callback' => '__return_true', 'args' => self::cancel_args() ) );
 
@@ -29,6 +31,7 @@ final class Routes {
 		register_rest_route( 'pasat/v1', '/admin/venues/(?P<id>\d+)', array( 'methods' => 'GET', 'callback' => array( $admin_venues, 'show' ), 'permission_callback' => array( $admin_venues, 'can_manage' ), 'args' => self::id_arg() ) );
 		register_rest_route( 'pasat/v1', '/admin/venues/(?P<id>\d+)', array( 'methods' => array( 'PUT', 'PATCH' ), 'callback' => array( $admin_venues, 'update' ), 'permission_callback' => array( $admin_venues, 'can_manage' ), 'args' => array_merge( self::id_arg(), self::venue_args() ) ) );
 		register_rest_route( 'pasat/v1', '/admin/venues/(?P<id>\d+)', array( 'methods' => 'DELETE', 'callback' => array( $admin_venues, 'delete' ), 'permission_callback' => array( $admin_venues, 'can_manage' ), 'args' => self::id_arg() ) );
+		register_rest_route( 'pasat/v1', '/admin/venues/(?P<id>\d+)/geocode', array( 'methods' => 'POST', 'callback' => array( $admin_venues, 'geocode' ), 'permission_callback' => array( $admin_venues, 'can_manage' ), 'args' => self::id_arg() ) );
 
 		register_rest_route( 'pasat/v1', '/admin/signups', array( 'methods' => 'GET', 'callback' => array( $admin_signups, 'index' ), 'permission_callback' => array( $admin_signups, 'can_read' ), 'args' => self::signup_list_args() ) );
 		register_rest_route( 'pasat/v1', '/admin/signups/(?P<id>\d+)', array( 'methods' => array( 'PUT', 'PATCH' ), 'callback' => array( $admin_signups, 'update' ), 'permission_callback' => array( $admin_signups, 'can_manage' ), 'args' => array_merge( self::id_arg(), self::signup_update_args() ) ) );
@@ -64,6 +67,23 @@ final class Routes {
 			'host_id' => array(
 				'sanitize_callback' => 'absint',
 				'validate_callback' => static fn( mixed $value ): bool => null === $value || '' === $value || ( is_numeric( $value ) && (int) $value >= 0 ),
+			),
+		);
+	}
+
+	private static function venue_map_args(): array {
+		return array(
+			'source' => array(
+				'sanitize_callback' => 'sanitize_key',
+				'validate_callback' => static fn( mixed $value ): bool => null === $value || in_array( $value, array( 'upcoming', 'all' ), true ),
+			),
+			'activity_id' => array(
+				'sanitize_callback' => 'absint',
+				'validate_callback' => static fn( mixed $value ): bool => null === $value || '' === $value || ( is_numeric( $value ) && (int) $value >= 0 ),
+			),
+			'limit' => array(
+				'sanitize_callback' => 'absint',
+				'validate_callback' => static fn( mixed $value ): bool => null === $value || ( is_numeric( $value ) && (int) $value >= 1 && (int) $value <= 500 ),
 			),
 		);
 	}
@@ -115,6 +135,8 @@ final class Routes {
 			'address'     => array( 'sanitize_callback' => 'sanitize_textarea_field' ),
 			'venue_type'  => array( 'sanitize_callback' => 'sanitize_text_field' ),
 			'capacity'    => array( 'sanitize_callback' => 'absint' ),
+			'latitude'    => array( 'sanitize_callback' => static fn( mixed $value ): string => sanitize_text_field( (string) $value ) ),
+			'longitude'   => array( 'sanitize_callback' => static fn( mixed $value ): string => sanitize_text_field( (string) $value ) ),
 		);
 	}
 

@@ -33,7 +33,15 @@ final class Helpers {
 			'default_warning_text'               => __( 'I acknowledge the activity information and any safety warnings.', 'pasat' ),
 			'pasat_strict_email_delivery'        => 0,
 			'allow_duplicate_email_per_activity' => 0,
-			'map_enabled'                        => 0,
+			'map_enabled'                        => 1,
+			'show_map_on_signup'                 => 0,
+			'map_tile_url'                       => 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+			'map_tile_attribution'               => __( '&copy; OpenStreetMap contributors', 'pasat' ),
+			'map_default_height'                 => 420,
+			'map_default_zoom'                   => 13,
+			'geocoding_enabled'                  => 0,
+			'geocoding_endpoint'                 => 'https://nominatim.openstreetmap.org/search',
+			'geocoding_throttle_seconds'         => 1,
 			'poster_logo_id'                     => 0,
 		);
 	}

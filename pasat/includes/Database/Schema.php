@@ -26,10 +26,15 @@ final class Schema {
 			longitude DECIMAL(10,7) NULL,
 			venue_type VARCHAR(100) NULL,
 			capacity INT UNSIGNED NULL,
+			geocoded_at DATETIME NULL,
+			geocoding_status VARCHAR(30) NOT NULL DEFAULT 'not_geocoded',
+			geocoding_error TEXT NULL,
+			geocoding_provider VARCHAR(100) NULL,
 			created_at DATETIME NOT NULL,
 			updated_at DATETIME NOT NULL,
 			PRIMARY KEY  (id),
-			KEY name (name(191))
+			KEY name (name(191)),
+			KEY geocoding_status (geocoding_status)
 		) $charset;";
 
 		$sql[] = 'CREATE TABLE ' . Helpers::table( 'activities' ) . " (

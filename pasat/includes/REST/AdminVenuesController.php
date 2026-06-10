@@ -2,6 +2,7 @@
 namespace PASAT\REST;
 
 use PASAT\Database\VenuesRepository;
+use PASAT\Map\Geocoder;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -43,5 +44,15 @@ final class AdminVenuesController {
 		}
 		$repo->delete( $id );
 		return new WP_REST_Response( array( 'deleted' => true ) );
+	}
+
+	public function geocode( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		$result = ( new Geocoder() )->geocode_venue( absint( $request['id'] ) );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return new WP_REST_Response( $result );
 	}
 }

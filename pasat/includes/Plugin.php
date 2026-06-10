@@ -28,6 +28,8 @@ final class Plugin {
 	}
 
 	public function boot(): void {
+		Installer::maybe_upgrade();
+
 		add_action( 'init', array( $this, 'load_textdomain' ), 1 );
 		add_action( 'init', array( Shortcodes::class, 'register' ) );
 		add_action( 'wp_enqueue_scripts', array( FrontendAssets::class, 'register' ) );

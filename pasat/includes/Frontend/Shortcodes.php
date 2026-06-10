@@ -4,9 +4,9 @@ namespace PASAT\Frontend;
 use PASAT\Database\ActivitiesRepository;
 use PASAT\Database\ParticipantsRepository;
 use PASAT\Database\SignupsRepository;
-use PASAT\Database\VenuesRepository;
 use PASAT\Email\Mailer;
 use PASAT\Helpers;
+use PASAT\Map\VenueMapData;
 use PASAT\REST\PublicSignupController;
 use PASAT\Security\RateLimiter;
 use PASAT\Security\Tokens;
@@ -46,10 +46,10 @@ final class Shortcodes {
 	}
 
 	public static function activity_signup( array $atts = array() ): string {
-		Assets::enqueue();
-		$atts        = shortcode_atts( array( 'activity_id' => 0 ), $atts, 'pasat_activity_signup' );
+		$atts        = shortcode_atts( array( 'activity_id' => 0, 'show_map' => '' ), $atts, 'pasat_activity_signup' );
 		$query_id    = isset( $_GET['pasat_activity_id'] ) ? absint( wp_unslash( $_GET['pasat_activity_id'] ) ) : 0;
 		$activity_id = absint( $atts['activity_id'] ?: $query_id );
+		$show_map    = self::truthy_or_default( $atts['show_map'], (bool) Helpers::setting( 'show_map_on_signup', 0 ) );
 		$message     = '';
 		$error       = '';
 		$request_method = isset( $_SERVER['REQUEST_METHOD'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) : '';
@@ -74,6 +74,17 @@ final class Shortcodes {
 		$repo       = new ActivitiesRepository();
 		$activities = $activity_id ? array_filter( array( $repo->get_with_venue( $activity_id ) ) ) : $repo->list( array( 'public' => true, 'upcoming' => true, 'limit' => 100 ) );
 		$activity   = $activity_id ? reset( $activities ) : null;
+		$map_html   = $show_map ? self::venue_map_markup(
+			array(
+				'source'      => 'upcoming',
+				'activity_id' => $activity_id,
+				'show_cards'  => true,
+			)
+		) : '';
+
+		if ( ! $show_map ) {
+			Assets::enqueue();
+		}
 
 		return Renderer::render(
 			'public/signup-form.php',
@@ -83,6 +94,7 @@ final class Shortcodes {
 				'message'    => $message,
 				'error'      => $error,
 				'settings'   => Helpers::settings(),
+				'map_html'   => $map_html,
 			)
 		);
 	}
@@ -141,16 +153,28 @@ final class Shortcodes {
 		);
 	}
 
-	public static function venue_map(): string {
-		Assets::enqueue();
-		$venues = array_values(
-			array_filter(
-				( new VenuesRepository() )->list(),
-				static fn( array $venue ): bool => '' !== (string) ( $venue['latitude'] ?? '' ) && '' !== (string) ( $venue['longitude'] ?? '' )
-			)
+	public static function venue_map( array $atts = array() ): string {
+		$atts = shortcode_atts(
+			array(
+				'source'      => 'upcoming',
+				'activity_id' => '0',
+				'height'      => (string) Helpers::setting( 'map_default_height', 420 ),
+				'show_cards'  => '1',
+				'limit'       => '500',
+			),
+			$atts,
+			'pasat_venue_map'
 		);
 
-		return Renderer::render( 'public/venue-map.php', array( 'venues' => $venues ) );
+		return self::venue_map_markup(
+			array(
+				'source'      => sanitize_key( (string) $atts['source'] ),
+				'activity_id' => absint( $atts['activity_id'] ),
+				'height'      => absint( $atts['height'] ),
+				'show_cards'  => self::truthy_or_default( $atts['show_cards'], true ),
+				'limit'       => absint( $atts['limit'] ),
+			)
+		);
 	}
 
 	public static function activity_board( array $atts = array() ): string {
@@ -247,6 +271,40 @@ final class Shortcodes {
 		$url     = $page_id ? get_permalink( $page_id ) : home_url( '/' );
 
 		return add_query_arg( 'pasat_lookup_token', rawurlencode( $token ), $url );
+	}
+
+	private static function venue_map_markup( array $args ): string {
+		Assets::enqueue_map();
+
+		$source = in_array( $args['source'] ?? 'upcoming', array( 'upcoming', 'all' ), true ) ? $args['source'] : 'upcoming';
+		$height = max( 240, min( 900, absint( $args['height'] ?? Helpers::setting( 'map_default_height', 420 ) ) ) );
+		$venues = VenueMapData::public_venues(
+			array(
+				'source'      => $source,
+				'activity_id' => absint( $args['activity_id'] ?? 0 ),
+				'limit'       => absint( $args['limit'] ?? 500 ),
+			)
+		);
+
+		return Renderer::render(
+			'public/venue-map.php',
+			array(
+				'venues'  => $venues,
+				'options' => array(
+					'height'     => $height,
+					'show_cards' => ! empty( $args['show_cards'] ),
+					'interactive' => ! empty( Helpers::setting( 'map_enabled', 1 ) ),
+				),
+			)
+		);
+	}
+
+	private static function truthy_or_default( mixed $value, bool $default ): bool {
+		if ( '' === $value || null === $value ) {
+			return $default;
+		}
+
+		return in_array( strtolower( (string) $value ), array( '1', 'true', 'yes', 'on' ), true );
 	}
 
 	private static function lookup_transient_key( string $token ): string {

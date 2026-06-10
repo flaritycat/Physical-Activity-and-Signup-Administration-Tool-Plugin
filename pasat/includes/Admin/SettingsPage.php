@@ -24,6 +24,8 @@ final class SettingsPage {
 			'pasat_strict_email_delivery',
 			'allow_duplicate_email_per_activity',
 			'map_enabled',
+			'show_map_on_signup',
+			'geocoding_enabled',
 		);
 
 		foreach ( $defaults as $key => $default ) {
@@ -34,6 +36,10 @@ final class SettingsPage {
 			$value = $input[ $key ] ?? $default;
 			if ( is_int( $default ) ) {
 				$output[ $key ] = absint( $value );
+			} elseif ( 'map_tile_url' === $key ) {
+				$output[ $key ] = sanitize_text_field( $value );
+			} elseif ( str_contains( $key, 'url' ) || str_contains( $key, 'endpoint' ) ) {
+				$output[ $key ] = esc_url_raw( $value );
 			} elseif ( str_contains( $key, 'body' ) || str_contains( $key, 'text' ) ) {
 				$output[ $key ] = sanitize_textarea_field( $value );
 			} else {
@@ -75,6 +81,19 @@ final class SettingsPage {
 					<?php self::checkbox_row( 'allow_duplicate_email_per_activity', __( 'Allow Duplicate E-mail Per Activity', 'pasat' ), $settings ); ?>
 					<?php self::number_row( 'retention_period_days', __( 'Retention Period Days', 'pasat' ), $settings ); ?>
 					<tr><th><?php esc_html_e( 'Erasure Mode', 'pasat' ); ?></th><td><select name="pasat_settings[erasure_mode]"><option value="anonymize" <?php selected( $settings['erasure_mode'], 'anonymize' ); ?>><?php esc_html_e( 'Anonymize', 'pasat' ); ?></option><option value="delete" <?php selected( $settings['erasure_mode'], 'delete' ); ?>><?php esc_html_e( 'Delete', 'pasat' ); ?></option></select></td></tr>
+				</table>
+				<h2><?php esc_html_e( 'Map Settings', 'pasat' ); ?></h2>
+				<p><?php esc_html_e( 'PASAT can display open-source venue maps using Leaflet and OpenStreetMap-compatible tiles. Address geocoding is optional and should respect the selected provider usage policy.', 'pasat' ); ?></p>
+				<table class="form-table" role="presentation">
+					<?php self::checkbox_row( 'map_enabled', __( 'Enable Interactive Venue Maps', 'pasat' ), $settings ); ?>
+					<?php self::checkbox_row( 'show_map_on_signup', __( 'Show Map On Signup Page By Default', 'pasat' ), $settings ); ?>
+					<?php self::text_row( 'map_tile_url', __( 'Map Tile URL', 'pasat' ), $settings ); ?>
+					<?php self::text_row( 'map_tile_attribution', __( 'Map Attribution', 'pasat' ), $settings ); ?>
+					<?php self::number_row( 'map_default_height', __( 'Default Map Height', 'pasat' ), $settings ); ?>
+					<?php self::number_row( 'map_default_zoom', __( 'Default Map Zoom', 'pasat' ), $settings ); ?>
+					<?php self::checkbox_row( 'geocoding_enabled', __( 'Enable Address Geocoding', 'pasat' ), $settings ); ?>
+					<?php self::text_row( 'geocoding_endpoint', __( 'Geocoding Endpoint', 'pasat' ), $settings ); ?>
+					<?php self::number_row( 'geocoding_throttle_seconds', __( 'Geocoding Throttle Seconds', 'pasat' ), $settings ); ?>
 				</table>
 				<h2><?php esc_html_e( 'E-mail Templates', 'pasat' ); ?></h2>
 				<p><?php esc_html_e( 'Available placeholders: {organization_name}, {activity_title}, {activity_date}, {activity_time}, {venue_name}, {participant_name}, {signup_status}, {cancellation_url}, {site_name}, {site_url}.', 'pasat' ); ?></p>

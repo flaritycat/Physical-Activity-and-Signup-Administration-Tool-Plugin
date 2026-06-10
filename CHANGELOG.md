@@ -2,6 +2,31 @@
 
 All notable PASAT repository-level changes are documented here. The WordPress.org-style plugin changelog is also maintained in `pasat/readme.txt`.
 
+## 0.1.1 - 2026-06-10
+
+Open-source venue map improvement.
+
+### Added
+
+- Embedded Leaflet venue maps for `[pasat_venue_map]` with OpenStreetMap-compatible tile settings.
+- `[pasat_activity_signup show_map="1"]` support for showing the venue map above the public signup form.
+- Public `GET /pasat/v1/venues` endpoint with public venue/activity map data only.
+- Venue geocoding schema fields for cached coordinates, status, provider, timestamp, and error details.
+- Admin **Geocode Address** and **Open Map** venue row actions with capability checks and nonce protection.
+- Map settings for enabling maps, showing maps on signup pages by default, tile URL, attribution, default height/zoom, geocoding endpoint, and throttle.
+- `PASAT\Map\Geocoder` and `PASAT\Map\VenueMapData` services.
+- Docker venue-map smoke test covering shortcode rendering, signup map rendering, REST output, mocked geocoding, and unauthorized geocoding rejection.
+
+### Changed
+
+- Bumped plugin and database schema version to `0.1.1`.
+- Venue map fallback cards now include venues without coordinates, so address-only venues still appear for users without JavaScript or before geocoding.
+- Public venue map data omits admin-only geocoding error details.
+
+### Deferred
+
+- Bulk geocoding queues, marker clustering, drag-and-drop marker placement, route planning, and bundled/self-hosted Leaflet assets.
+
 ## 0.1.0 - 2026-06-09
 
 Initial WordPress-native release candidate for **Physical Activity Signup and Administration Tool**.

@@ -6,6 +6,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 final class Installer {
+	public static function maybe_upgrade(): void {
+		if ( get_option( 'pasat_db_version' ) !== PASAT_DB_VERSION ) {
+			Database\Schema::install();
+			self::install_defaults();
+		}
+	}
+
 	public static function install_defaults(): void {
 		if ( false === get_option( 'pasat_settings', false ) ) {
 			add_option( 'pasat_settings', Helpers::default_settings() );

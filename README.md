@@ -35,6 +35,7 @@ The plugin was designed after reviewing the previous standalone `HSF` applicatio
 - A working WordPress mail setup for signup e-mails
 - Administrator access for activation and setup
 - PHP ZipArchive extension for bulk poster ZIP downloads; single poster PDFs do not require it
+- Outbound HTTPS access if you enable admin address geocoding or use the default external Leaflet/OpenStreetMap-compatible map assets
 
 PASAT does not bundle SMTP settings. Use an established WordPress SMTP plugin if your site needs authenticated SMTP delivery.
 
@@ -52,6 +53,7 @@ PASAT is not a demanding plugin for normal community programs, classes, workshop
 - WordPress permalinks and REST API available
 - `wp_mail()` working, or an SMTP plugin configured
 - WP-Cron enabled, or a real server cron triggering `wp-cron.php`
+- Outbound HTTPS if administrators will geocode venue addresses, or if the site uses the default Leaflet CDN and OpenStreetMap-compatible tile URL
 
 ### Recommended Production Setup
 
@@ -60,6 +62,7 @@ PASAT is not a demanding plugin for normal community programs, classes, workshop
 - A transactional mail setup using a reputable SMTP or mail delivery plugin
 - A real cron job for reliable retention cleanup on low-traffic sites
 - Object/page caching is fine, but exclude pages containing signup forms from full-page cache when nonce or form behavior is affected
+- A responsible map tile provider or self-hosted tiles for high-traffic public map pages
 - Web application firewall or host-level rate limiting for public sites with high exposure
 
 ### Resource Expectations
@@ -121,16 +124,19 @@ wp-content/plugins/pasat/pasat.php
 5. Go to **PASAT > Settings**.
 6. Select the page under **Public Page**.
 7. Set the organization name, poster logo, labels, default capacity, consent text, retention period, and e-mail templates.
-8. Go to **PASAT > Venues** and create at least one venue/location.
+8. Go to **PASAT > Venues** and create at least one venue/location. Add latitude/longitude manually, or enable address geocoding under **Map Settings** and run **Geocode Address** from the venue row.
 9. Go to **PASAT > Activities** and create a published activity with signup dates and capacity.
-10. Visit the public page and submit a test signup.
-11. Confirm the signup appears under **PASAT > Signups**.
+10. Add `[pasat_venue_map]` or use `[pasat_activity_signup show_map="1"]` if you want public venue maps on the signup page.
+11. Visit the public page and submit a test signup.
+12. Confirm the signup appears under **PASAT > Signups**.
 
 ## Admin Workflow
 
 ### Venues
 
 Use **PASAT > Venues** to create reusable locations with name, description, address, type, capacity, latitude, and longitude. Venues can be deleted only when they are not used by an activity.
+
+Venue maps use stored latitude/longitude as authoritative coordinates. Administrators can enter coordinates manually, or enable address geocoding in **PASAT > Settings > Map Settings** and run **Geocode Address** for individual venues. PASAT never geocodes addresses during public page loads.
 
 ### Activities
 
@@ -179,6 +185,13 @@ Displays a public signup form for available activities.
 Locks the signup form to one activity.
 
 ```text
+[pasat_activity_signup show_map="1"]
+[pasat_activity_signup activity_id="123" show_map="1"]
+```
+
+Displays the signup form with the public venue map above it. When an `activity_id` is provided, the map is scoped to that activity's venue.
+
+```text
 [pasat_my_signups]
 ```
 
@@ -188,7 +201,19 @@ Lets participants request a private, time-limited e-mail lookup link before view
 [pasat_venue_map]
 ```
 
-Displays venues/locations that have latitude and longitude, including address, capacity/type metadata, and an external map link. The markup also includes machine-readable venue data for theme or script integration.
+Displays an embedded open-source venue map using Leaflet and OpenStreetMap-compatible tiles when coordinates are available. It also renders accessible fallback venue cards with addresses, related activities, signup links, and external map links where possible.
+
+Useful venue map options:
+
+```text
+[pasat_venue_map source="upcoming"]
+[pasat_venue_map source="all"]
+[pasat_venue_map activity_id="123"]
+[pasat_venue_map height="420"]
+[pasat_venue_map show_cards="1"]
+```
+
+The default map tile URL is `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`. OpenStreetMap public tiles are suitable for low or ordinary traffic; larger public sites should configure a responsible tile provider or self-host tiles and update the attribution under **PASAT > Settings > Map Settings**.
 
 ```text
 [pasat_activity_board]
@@ -249,6 +274,7 @@ Public endpoints:
 
 - `GET /pasat/v1/activities`
 - `GET /pasat/v1/activities/{id}`
+- `GET /pasat/v1/venues`
 - `POST /pasat/v1/signups`
 - `POST /pasat/v1/signups/cancel`
 
@@ -264,11 +290,12 @@ Admin endpoints:
 - `GET /pasat/v1/admin/venues/{id}`
 - `PUT/PATCH /pasat/v1/admin/venues/{id}`
 - `DELETE /pasat/v1/admin/venues/{id}`
+- `POST /pasat/v1/admin/venues/{id}/geocode`
 - `GET /pasat/v1/admin/signups`
 - `PUT/PATCH /pasat/v1/admin/signups/{id}`
 - `POST /pasat/v1/admin/signups/{id}/cancel`
 
-Public endpoints expose activity data only. Participant data is restricted to users with PASAT capabilities.
+Public endpoints expose public activity and venue map data only. Participant data is restricted to users with PASAT capabilities.
 
 REST routes declare basic argument validation and sanitization, and privileged endpoints enforce WordPress capabilities plus assigned-activity scope where relevant.
 
@@ -360,6 +387,14 @@ tools/smoke-activity-posters.sh
 
 This development-only script installs the packaged plugin into disposable WordPress/MariaDB containers, creates a sample activity and JPEG logo, renders a poster PDF, checks logo embedding and QR content, verifies poster download URLs, and exercises ZIP creation when ZipArchive is available.
 
+Optional Venue Map smoke test for release maintainers with Docker:
+
+```text
+tools/smoke-venue-map.sh
+```
+
+This development-only script installs the packaged plugin into disposable WordPress/MariaDB containers, renders `[pasat_venue_map]` and `[pasat_activity_signup show_map="1"]`, checks Leaflet/public asset enqueueing, verifies public venue REST output, mocks an admin geocoding response, and confirms unauthenticated geocoding is denied.
+
 The repository also includes GitHub Actions CI in `.github/workflows/pasat-ci.yml`. Once GitHub publishing credentials are available, pushes and pull requests run the release preflight on PHP 8.1 and PHP 8.3, upload short-lived release ZIP artifacts, and run the Docker ZIP-install smoke test on `main` pushes or manual workflow dispatch.
 
 Production release checks are documented in `docs/PRODUCTION_READINESS.md`, with a fillable signoff template in `docs/RELEASE_SIGNOFF_TEMPLATE.md`.
@@ -372,7 +407,7 @@ Build an installable plugin ZIP from the repository root:
 tools/build-release.sh
 ```
 
-The release script requires the standard `zip` command and writes ignored artifacts to `dist/`, for example `dist/pasat-0.1.0.zip` and `dist/pasat-0.1.0.zip.sha256`. The ZIP root is `pasat/`, so it can be installed through **Plugins > Add New > Upload Plugin** or copied into `wp-content/plugins/pasat`.
+The release script requires the standard `zip` command and writes ignored artifacts to `dist/`, for example `dist/pasat-0.1.1.zip` and `dist/pasat-0.1.1.zip.sha256`. The ZIP root is `pasat/`, so it can be installed through **Plugins > Add New > Upload Plugin** or copied into `wp-content/plugins/pasat`.
 
 ## Manual Test Checklist
 
@@ -393,15 +428,18 @@ The release script requires the standard `zip` command and writes ignored artifa
 15. Select a poster logo in **PASAT > Settings**.
 16. Download a single **Poster PDF** from **PASAT > Activities** and scan its QR code.
 17. Download **Download Posters ZIP** and confirm it contains one PDF per available activity.
-18. Use **PASAT > Settings > Mail Delivery Test** to send a test e-mail through the production SMTP/mail setup.
-19. Test confirmation, cancellation, waitlist promotion, and lookup e-mails through the production SMTP/mail setup.
-20. Confirm GitHub publishing credentials are configured and push the local commits.
+18. Add `[pasat_venue_map]` to a page and confirm venues with coordinates appear on the embedded map and fallback cards.
+19. Enable **PASAT > Settings > Map Settings > Enable Address Geocoding**, run **Geocode Address** on a test venue, and confirm coordinates/status update.
+20. Use **PASAT > Settings > Mail Delivery Test** to send a test e-mail through the production SMTP/mail setup.
+21. Test confirmation, cancellation, waitlist promotion, and lookup e-mails through the production SMTP/mail setup.
+22. Confirm GitHub publishing credentials are configured and push the local commits.
 
 ## Known Limitations
 
 - The activity board is a read-only polling display with kiosk/QR/filter options, not a realtime service.
 - Bulk poster ZIP downloads require PHP ZipArchive; single activity poster PDFs remain available without ZipArchive.
-- The venue map shortcode displays coordinate-enabled venues and links to an external map, but does not bundle a full map provider.
+- The venue map uses Leaflet from a CDN and OpenStreetMap-compatible tiles by default; high-traffic sites should configure a suitable tile provider or self-host tiles.
+- Address geocoding is opt-in and single-venue/admin-triggered. Bulk geocoding queues and drag-and-drop marker placement are deferred.
 - Group/team signup is not implemented in the MVP.
 - Winner/history administration is deferred.
 - The importer handles structured JSON/CSV rows but may still need organization-specific field mapping for messy legacy exports.

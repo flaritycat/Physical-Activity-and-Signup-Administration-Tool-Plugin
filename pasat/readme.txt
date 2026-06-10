@@ -4,7 +4,7 @@ Tags: activities, signup, events, waitlist, administration
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.1
-Stable tag: 0.1.0
+Stable tag: 0.1.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,7 +20,7 @@ PASAT is WordPress-native. It uses WordPress users, roles, capabilities, nonces,
 
 PASAT is not demanding for normal activity programs. It runs as a native WordPress plugin and does not require Python, Docker, PostgreSQL, Node.js, Composer, queues, realtime sockets, or a separate app server.
 
-Minimum practical hosting: WordPress 6.0+, PHP 8.1+, MySQL/MariaDB, HTTPS, working REST API, working wp_mail() or an SMTP plugin, and WP-Cron or a real cron job. Bulk activity poster ZIP downloads require PHP ZipArchive; single poster PDF downloads do not.
+Minimum practical hosting: WordPress 6.0+, PHP 8.1+, MySQL/MariaDB, HTTPS, working REST API, working wp_mail() or an SMTP plugin, and WP-Cron or a real cron job. Bulk activity poster ZIP downloads require PHP ZipArchive; single poster PDF downloads do not. Outbound HTTPS is needed if administrators enable address geocoding or use the default external Leaflet/OpenStreetMap-compatible map assets.
 
 Recommended production hosting: PHP memory limit of at least 128 MB, regular database backups, reliable SMTP/transactional mail, and a real cron job for retention cleanup on low-traffic sites. For high-volume signup openings, use solid WordPress hosting and monitor database/mail performance.
 
@@ -31,8 +31,8 @@ Recommended production hosting: PHP memory limit of at least 128 MB, regular dat
 3. Create a WordPress page for public signups.
 4. Add `[pasat_activity_list]` and `[pasat_activity_signup]` to that page.
 5. Select that page under PASAT > Settings.
-6. Configure organization name, poster logo, labels, consent text, retention, and e-mail templates.
-7. Create at least one venue under PASAT > Venues.
+6. Configure organization name, poster logo, labels, consent text, retention, map settings, and e-mail templates.
+7. Create at least one venue under PASAT > Venues. Add coordinates manually, or enable geocoding and run Geocode Address.
 8. Create a published activity under PASAT > Activities.
 9. Visit the public page and submit a test signup.
 
@@ -54,6 +54,10 @@ Yes. Users with the PASAT Activity Host role can manage assigned activities when
 
 Yes. PASAT includes a Legacy Import form for structured JSON or CSV files covering venues, activities, participants, signups, and host assignments. Passwords and external authentication records should be mapped to WordPress users instead of imported directly.
 
+= Does PASAT include venue maps? =
+
+Yes. `[pasat_venue_map]` renders an embedded Leaflet map with OpenStreetMap-compatible tiles when venues have coordinates, plus accessible fallback cards. `[pasat_activity_signup show_map="1"]` can show the same map above the signup form. Address geocoding is optional, disabled by default, and only runs from administrator actions.
+
 == Screenshots ==
 
 1. PASAT admin dashboard.
@@ -61,9 +65,13 @@ Yes. PASAT includes a Legacy Import form for structured JSON or CSV files coveri
 
 == Changelog ==
 
+= 0.1.1 =
+
+Adds the open-source venue map improvement: embedded Leaflet venue maps, fallback venue cards, `[pasat_activity_signup show_map="1"]`, public venue REST data, map settings, venue geocoding status fields, administrator geocoding actions, and a Docker venue-map smoke test.
+
 = 0.1.0 =
 
-Initial WordPress-native MVP with custom tables, admin pages, shortcodes, public signup, waitlist handling, cancellation links, REST endpoints, e-mail notifications, an enhanced polling activity board, a coordinate-based venue map view, privacy hooks, and Privacy Policy Guide content.
+Initial WordPress-native MVP with custom tables, admin pages, shortcodes, public signup, waitlist handling, cancellation links, REST endpoints, e-mail notifications, an enhanced polling activity board, a coordinate-based venue listing, privacy hooks, and Privacy Policy Guide content.
 
 Includes verified e-mail lookup for participant signups, activity cancellation notices, host assignment management, participant related-signup views, filtered/scoped CSV exports, participant deletion, REST argument validation, activity board kiosk/QR/filter options, printable activity poster PDFs with unique QR signup codes, and activity-level signup locking for capacity checks.
 

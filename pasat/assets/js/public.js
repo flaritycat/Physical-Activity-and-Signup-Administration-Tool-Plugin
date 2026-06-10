@@ -393,6 +393,98 @@
 		}, 5000);
 	});
 
+	function mapLabel(key, fallback) {
+		return window.PASAT_PUBLIC && window.PASAT_PUBLIC.map && window.PASAT_PUBLIC.map[key]
+			? window.PASAT_PUBLIC.map[key]
+			: fallback;
+	}
+
+	function venuePopup(venue) {
+		var wrapper = document.createElement('div');
+		var title = appendText(wrapper, 'strong', 'pasat-map-popup__title', venue.name);
+		var activities = Array.isArray(venue.activities) ? venue.activities : [];
+		if (title) {
+			title.setAttribute('tabindex', '-1');
+		}
+		appendText(wrapper, 'p', 'pasat-map-popup__meta', venue.address);
+		if (activities.length) {
+			appendText(wrapper, 'p', 'pasat-map-popup__label', activities.length === 1 ? mapLabel('activity', 'Activity') : mapLabel('activities', 'Activities'));
+			var list = document.createElement('ul');
+			list.className = 'pasat-map-popup__activities';
+			activities.forEach(function (activity) {
+				var item = document.createElement('li');
+				var link = document.createElement('a');
+				link.href = activity.signup_url;
+				link.textContent = activity.title;
+				item.appendChild(link);
+				if (activity.date_label) {
+					item.appendChild(document.createTextNode(' ' + activity.date_label));
+				}
+				list.appendChild(item);
+			});
+			wrapper.appendChild(list);
+		}
+		return wrapper;
+	}
+
+	function initVenueMap(mapElement) {
+		var canvas = mapElement.querySelector('[data-pasat-map-canvas]');
+		if (!canvas || mapElement.getAttribute('data-pasat-map-enabled') !== '1' || !window.L || !window.PASAT_PUBLIC) {
+			return;
+		}
+
+		var venues;
+		try {
+			venues = JSON.parse(mapElement.getAttribute('data-venues') || '[]');
+		} catch (error) {
+			venues = [];
+		}
+
+		venues = venues.filter(function (venue) {
+			return venue.latitude !== null && venue.longitude !== null;
+		});
+		if (!venues.length) {
+			return;
+		}
+
+		var config = window.PASAT_PUBLIC.map || {};
+		var map = window.L.map(canvas, {
+			scrollWheelZoom: false
+		});
+		var bounds = [];
+
+		window.L.tileLayer(config.tileUrl || 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			attribution: config.attribution || '&copy; OpenStreetMap contributors',
+			maxZoom: 19
+		}).addTo(map);
+
+		venues.forEach(function (venue) {
+			var latLng = [parseFloat(venue.latitude), parseFloat(venue.longitude)];
+			var marker;
+			if (isNaN(latLng[0]) || isNaN(latLng[1])) {
+				return;
+			}
+			bounds.push(latLng);
+			marker = window.L.marker(latLng).addTo(map);
+			marker.bindPopup(venuePopup(venue));
+		});
+
+		if (bounds.length === 1) {
+			map.setView(bounds[0], parseInt(config.zoom, 10) || 13);
+		} else {
+			map.fitBounds(bounds, {
+				padding: [24, 24]
+			});
+		}
+
+		mapElement.classList.add('pasat-venue-map--ready');
+		window.setTimeout(function () {
+			map.invalidateSize();
+		}, 100);
+	}
+
+	document.querySelectorAll('[data-pasat-venue-map]').forEach(initVenueMap);
+
 	function createQrMatrix(text) {
 		var bytes = textBytes(text);
 		var versions = [

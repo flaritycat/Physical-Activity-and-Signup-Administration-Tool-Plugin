@@ -25,6 +25,9 @@ $pasat_warning_required = $pasat_activity && ! empty( $pasat_activity['requires_
 	<?php if ( ! empty( $pasat['error'] ) ) : ?>
 		<div class="pasat-notice pasat-notice--error"><?php echo esc_html( $pasat['error'] ); ?></div>
 	<?php endif; ?>
+	<?php if ( ! empty( $pasat['map_html'] ) ) : ?>
+		<?php echo $pasat['map_html']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Rendered by PASAT template with escaped values. ?>
+	<?php endif; ?>
 	<form class="pasat-form" method="post" data-pasat-signup-form>
 		<?php wp_nonce_field( 'pasat_public_signup', 'pasat_public_nonce' ); ?>
 		<input type="hidden" name="pasat_public_signup" value="1">

@@ -1,10 +1,33 @@
 # Improvement 2: Open-Source Venue Map On Signup Pages
 
+## Execution Status
+
+Implemented for PASAT `0.1.1`.
+
+Delivered:
+
+- embedded Leaflet venue maps for `[pasat_venue_map]`
+- `[pasat_activity_signup show_map="1"]`
+- fallback venue cards for address-only and no-JavaScript users
+- public `GET /pasat/v1/venues` endpoint
+- venue geocoding status fields and schema upgrade
+- admin **Geocode Address** and **Open Map** venue row actions
+- map/geocoding settings under **PASAT > Settings**
+- mocked geocoding and public map smoke coverage in `tools/smoke-venue-map.sh`
+
+Deferred:
+
+- bulk geocoding queue
+- marker clustering
+- route planning/directions
+- drag-and-drop marker placement
+- bundled/self-hosted Leaflet assets
+
 ## Goal
 
 Add a proper open-source venue map to PASAT so public signup pages can show all relevant venues on an embedded map, using venue addresses and/or coordinates.
 
-The current plugin has a basic `[pasat_venue_map]` shortcode, but it only renders coordinate-enabled venue cards and external OpenStreetMap links. It does not geocode addresses, does not show an embedded interactive map, and does not automatically appear alongside the signup flow.
+Before this improvement, the plugin had a basic `[pasat_venue_map]` shortcode, but it only rendered coordinate-enabled venue cards and external OpenStreetMap links. It did not geocode addresses, did not show an embedded interactive map, and did not automatically appear alongside the signup flow.
 
 ## Current State
 
