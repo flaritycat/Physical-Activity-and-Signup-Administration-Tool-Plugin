@@ -1,475 +1,329 @@
-# Improvement 2: Membership, Participation Logs, Placements, And Badges
+# Improvement 2: Open-Source Venue Map On Signup Pages
 
 ## Goal
 
-Extend PASAT so public signups can optionally express interest in becoming a member, administrators and hosts can record detailed participation/results for activities, and participants can receive badges for each year they participated plus placement badges for 1st, 2nd, and 3rd place.
+Add a proper open-source venue map to PASAT so public signup pages can show all relevant venues on an embedded map, using venue addresses and/or coordinates.
 
-This should stay WordPress-native, privacy-conscious, and generic. Membership should not assume a specific club, festival, country, payment provider, or legal membership model.
+The current plugin has a basic `[pasat_venue_map]` shortcode, but it only renders coordinate-enabled venue cards and external OpenStreetMap links. It does not geocode addresses, does not show an embedded interactive map, and does not automatically appear alongside the signup flow.
 
 ## Current State
 
-- Participants are stored separately from signups.
-- Signups track confirmed, waitlisted, and cancelled status.
-- Activities have season/program year support.
-- Hosts can be scoped to assigned activities.
-- Audit logging exists for important admin actions.
-- Privacy exporter/eraser and retention cleanup exist.
-- No membership intent/status fields exist yet.
-- No dedicated participation/result log exists yet.
-- No badge model exists yet.
+- Venues store:
+  - name
+  - description
+  - address
+  - latitude
+  - longitude
+  - venue type
+  - capacity
+- `[pasat_venue_map]` exists.
+- `[pasat_venue_map]` filters out venues without latitude/longitude.
+- Each venue card links to `openstreetmap.org`.
+- The signup page does not automatically show a map.
+- No bundled map library exists.
+- No address geocoding exists.
+- No geocoding cache/status exists.
 
-## Product Concepts
+## Desired User Experience
 
-### Membership
+### Public Signup Page
 
-Public signup forms should include an optional membership choice when enabled:
+When a visitor views the signup page, they should be able to see where activities take place.
+
+Expected behavior:
+
+- show an embedded OpenStreetMap-based map near the activity list/signup form
+- show markers for venues connected to public upcoming activities
+- allow clicking a marker to see venue name, address, and related activities
+- allow clicking from the map popup to the relevant activity signup
+- degrade gracefully to venue cards and external OpenStreetMap links when JavaScript is unavailable
+
+### Venue Map Shortcode
+
+Enhance `[pasat_venue_map]` so it can render:
 
 ```text
-[ ] I would like to become a member
+[pasat_venue_map]
+[pasat_venue_map source="upcoming"]
+[pasat_venue_map source="all"]
+[pasat_venue_map activity_id="123"]
+[pasat_venue_map height="420"]
+[pasat_venue_map show_cards="1"]
 ```
 
-The choice should be stored as membership intent, not automatic active membership. Many organizations need manual approval, payment, guardianship checks, or separate onboarding before someone is a real member.
+Suggested defaults:
 
-Suggested membership states:
+- `source="upcoming"`
+- `show_cards="1"`
+- `height="420"`
 
-- `none`
-- `interested`
-- `pending`
-- `active`
-- `declined`
-- `expired`
+### Activity Signup Shortcode
 
-Initial MVP behavior:
+Add an option to include the map directly with the signup UI:
 
-- public signup can mark a participant as `interested`
-- admins can update membership status manually
-- participant export/erasure includes membership fields
-- membership status is not exposed publicly
+```text
+[pasat_activity_signup show_map="1"]
+[pasat_activity_signup activity_id="123" show_map="1"]
+```
 
-### Participation Logs
+If `activity_id` is provided, the map should focus on that activity's venue.
 
-PASAT should distinguish signup status from actual participation. A confirmed signup is not always an attended/completed activity.
+## Map Technology
 
-Create a detailed per-participant activity log that can record:
+Use open-source tools:
 
-- attended/check-in state
-- completion state
-- placement/result
-- score/time/result text where relevant
-- private admin notes
-- who recorded the entry
-- timestamps
+- Leaflet.js for the interactive map
+- OpenStreetMap tile layer by default
+- no proprietary Google Maps dependency
+- no API key required for the default map display
 
-Suggested attendance states:
+Important tile policy note:
 
-- `unknown`
-- `attended`
-- `completed`
-- `no_show`
-- `excused`
-- `disqualified`
+- OpenStreetMap public tiles are fine for low/ordinary traffic.
+- Larger public sites should configure a responsible tile provider or self-host tiles.
+- Add a setting for tile URL and attribution.
 
-### Placements
+Default tile layer:
 
-Some activities may be non-competitive, while others may have placements. Placement should therefore be optional per log entry.
+```text
+https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
+```
 
-Rules:
+Default attribution:
 
-- placement is an integer, normally `1`, `2`, `3`, etc.
-- 1st, 2nd, and 3rd place trigger placement badges
-- placement can be recorded by admins and assigned hosts
-- only confirmed/attended/completed participants should normally receive placements
-- placement changes should recalculate badges idempotently
-- ties should be supported later through a `placement_label` or `result_label`, but MVP can allow duplicate placement numbers if admins need ties
+```text
+© OpenStreetMap contributors
+```
 
-### Badges
+## Address Geocoding
 
-Badges should reward participation history, not expose private participant data publicly.
+PASAT should support venues based on addresses, but geocoding must be implemented carefully.
 
-Required badge types:
+### MVP Approach
 
-- yearly participation badge for every season/program year where the participant completed or attended at least one activity
-- 1st place badge
-- 2nd place badge
-- 3rd place badge
+1. Keep latitude/longitude as the authoritative map coordinates.
+2. Add an admin geocoding action that converts venue address to coordinates.
+3. Cache geocoding results in venue fields.
+4. Never geocode on every public page load.
+5. Allow manual coordinate entry/editing to override geocoding.
 
-Suggested badge examples:
+### Geocoding Provider
 
-- `2026 Participant`
-- `2027 Participant`
-- `1st Place`
-- `2nd Place`
-- `3rd Place`
+Use OpenStreetMap Nominatim-compatible geocoding by default, but make it configurable.
 
-Badges should be participant-linked and auditable. They can initially be shown only in wp-admin and in verified `[pasat_my_signups]` views. Public badge galleries can be deferred.
+Default endpoint:
+
+```text
+https://nominatim.openstreetmap.org/search
+```
+
+Important:
+
+- Respect Nominatim usage policy.
+- Send a meaningful User-Agent or Referer through WordPress HTTP API.
+- Rate limit geocoding requests.
+- Do not bulk-geocode aggressively.
+- Provide settings for endpoint URL and throttle.
+
+### Geocoding Status
+
+Add fields or metadata for:
+
+- `geocoded_at`
+- `geocoding_status`
+- `geocoding_error`
+- `geocoding_provider`
+
+Possible statuses:
+
+- `not_geocoded`
+- `geocoded`
+- `failed`
+- `manual`
 
 ## Proposed Database Changes
 
-Use dbDelta migrations and increment `pasat_db_version`.
+Use dbDelta migration and increment `pasat_db_version`.
 
-### Update `pasat_participants`
+### Update `pasat_venues`
 
 Add:
 
-- `membership_status VARCHAR(30) not null default 'none'`
-- `membership_opted_in TINYINT(1) not null default 0`
-- `membership_opted_in_at DATETIME nullable`
-- `membership_status_updated_at DATETIME nullable`
-- `membership_number VARCHAR(100) nullable`
-- `membership_notes TEXT nullable`
+- `geocoded_at DATETIME nullable`
+- `geocoding_status VARCHAR(30) not null default 'not_geocoded'`
+- `geocoding_error TEXT nullable`
+- `geocoding_provider VARCHAR(100) nullable`
 
 Indexes:
 
-- `membership_status`
-- `membership_number`
+- `geocoding_status`
 
-### New `pasat_participation_logs`
+No new table is required for MVP.
 
-Fields:
+## Settings
 
-- `id BIGINT unsigned auto_increment primary key`
-- `signup_id BIGINT unsigned nullable`
-- `activity_id BIGINT unsigned not null`
-- `participant_id BIGINT unsigned not null`
-- `attendance_status VARCHAR(30) not null default 'unknown'`
-- `checked_in_at DATETIME nullable`
-- `completed_at DATETIME nullable`
-- `placement INT unsigned nullable`
-- `placement_label VARCHAR(100) nullable`
-- `result_value VARCHAR(120) nullable`
-- `result_unit VARCHAR(50) nullable`
-- `result_notes TEXT nullable`
-- `private_notes TEXT nullable`
-- `recorded_by BIGINT unsigned nullable`
-- `created_at DATETIME not null`
-- `updated_at DATETIME not null`
+Add a **Map Settings** section under **PASAT > Settings**:
 
-Indexes:
+- enable venue maps
+- show map on public signup page by default
+- tile URL
+- tile attribution
+- default map height
+- default zoom
+- geocoding enabled
+- geocoding provider endpoint
+- geocoding throttle seconds
+- geocoding country/language bias, optional
+- whether admins can geocode addresses from the venue list
 
-- `activity_id`
-- `participant_id`
-- `signup_id`
-- `attendance_status`
-- `placement`
+Suggested defaults:
 
-Uniqueness:
-
-- one active/logical participation result per participant/activity should be enforced by repository logic
-- database-level unique `(activity_id, participant_id)` is attractive, but repository-level enforcement is safer if future re-runs/heats are added
-
-### New `pasat_participant_badges`
-
-Fields:
-
-- `id BIGINT unsigned auto_increment primary key`
-- `participant_id BIGINT unsigned not null`
-- `badge_type VARCHAR(50) not null`
-- `badge_key VARCHAR(120) not null`
-- `label VARCHAR(190) not null`
-- `season_year SMALLINT unsigned nullable`
-- `activity_id BIGINT unsigned nullable`
-- `participation_log_id BIGINT unsigned nullable`
-- `placement INT unsigned nullable`
-- `metadata LONGTEXT nullable`
-- `awarded_by BIGINT unsigned nullable`
-- `awarded_at DATETIME not null`
-- `revoked_at DATETIME nullable`
-- `created_at DATETIME not null`
-- `updated_at DATETIME not null`
-
-Badge types:
-
-- `year_participation`
-- `placement`
-- `manual` later
-
-Indexes:
-
-- `participant_id`
-- `badge_type`
-- `badge_key`
-- `season_year`
-- `activity_id`
-- `placement`
-
-Uniqueness:
-
-- active year badge: participant + badge type + season year
-- active placement badge: participant + badge type + activity id + placement
-
-Because MySQL does not handle filtered unique indexes consistently across supported WordPress hosts, enforce uniqueness in repository code and use normal indexes for performance.
-
-## Domain Rules
-
-### Membership Opt-In
-
-1. Setting `membership_enabled` controls whether the signup form shows membership opt-in.
-2. Setting `membership_opt_in_text` controls the checkbox label.
-3. If checked during signup:
-   - set `participants.membership_opted_in = 1`
-   - set `participants.membership_opted_in_at = now` if empty
-   - set `participants.membership_status = interested` if current status is `none`
-4. If a participant already has `active`, `pending`, or `expired`, do not downgrade them to `interested`.
-5. Admin changes to membership status should write audit log entries.
-
-### Participation Logs
-
-1. A confirmed signup can be marked attended/completed/no-show/excused/disqualified.
-2. Activity hosts can manage logs only for assigned activities unless they have global activity capabilities.
-3. Logs can be created manually for participants if needed, but this should require admin/host capability and a clear audit log.
-4. Updating a log should trigger badge recalculation for that participant/activity/year.
-
-### Year Badges
-
-Award a `year_participation` badge when:
-
-- participant has at least one participation log in the year with `attendance_status` of `attended` or `completed`
-- related activity is not archived/cancelled, unless admin explicitly allows historical results
-
-Use activity `season_year` when available; otherwise derive the year from `starts_at`.
-
-Recalculate behavior:
-
-- if the participant no longer has any qualifying participation logs for that year, revoke the year badge
-- if a qualifying log returns, restore or create the badge
-
-### Placement Badges
-
-Award a `placement` badge when:
-
-- participation log has `placement` of `1`, `2`, or `3`
-- attendance status is `attended` or `completed`
-- activity is published/archived historical, but not cancelled unless explicitly allowed
-
-Labels:
-
-- `1st Place`
-- `2nd Place`
-- `3rd Place`
-
-Recalculate behavior:
-
-- changing placement from 1 to 2 revokes the 1st-place badge for that activity/log and awards 2nd place
-- clearing placement revokes the placement badge
-- changing attendance to no-show/disqualified revokes placement badge
+- maps enabled: `1`
+- show on signup page: `0`
+- tile URL: OpenStreetMap public tile URL
+- attribution: OpenStreetMap contributors
+- geocoding enabled: `0` until admin explicitly enables it
+- throttle: `1` request per second minimum
 
 ## Admin UI
 
+### Venues
+
+Enhance **PASAT > Venues**:
+
+- show coordinates column
+- show geocoding status column
+- add row action: **Geocode Address**
+- add row action: **Open Map**
+- show last geocoded timestamp
+- show geocoding errors in admin notices
+- allow manual coordinates to mark status as `manual`
+
+### Activity Form
+
+When an activity has a venue:
+
+- show a compact map preview if coordinates exist
+- show warning if selected venue has address but no coordinates
+
 ### Settings
 
-Add a **Membership And Badges** section:
+Add map/geocoding settings with explanatory copy:
 
-- enable membership opt-in
-- membership opt-in label/text
-- default membership status after opt-in, default `interested`
-- enable badges
-- year badge label template, for example `{year} Participant`
-- placement badge labels for 1/2/3
-- whether badges appear in verified participant self-service view
-- whether hosts can record placements
-
-### Participants
-
-Enhance **PASAT > Participants**:
-
-- show membership status in the table
-- filter by membership status
-- edit membership status, membership number, and notes
-- show badge summary
-- show participation history
-- export membership and badge data in participant CSV/export
-
-### Activities
-
-Add a **Participation / Results** action for each activity:
-
-- list confirmed signups
-- mark attended/completed/no-show/excused/disqualified
-- record placement
-- record result value/unit
-- save private notes
-- bulk update attendance
-- export results CSV
-- recalculate badges for the activity
-
-Assigned hosts should see only their assigned activities.
-
-### Badges
-
-MVP can show badges inside participant detail and verified my-signups views.
-
-Optional later admin page:
-
-- badge ledger
-- filters by participant/year/type/activity
-- manual award/revoke
-- badge artwork controls
+- public map display uses open-source map tiles
+- address geocoding may call an external geocoding service
+- administrators should review provider terms and usage limits
 
 ## Public UI
 
-### Signup Form
+### Embedded Map
 
-If membership is enabled, show a membership opt-in checkbox:
+Render:
 
-```text
-[ ] I would like to become a member of {organization_name}
-```
+- `div.pasat-venue-map__canvas`
+- data attributes or localized JSON containing venues and activities
+- fallback venue cards below the map
 
-Validation:
+Marker popup should include:
 
-- optional by default
-- if checked, store opt-in state and timestamp
-- do not require public users to create WordPress accounts
-- do not expose whether an e-mail is already a member
+- venue name
+- address
+- upcoming activities at the venue
+- signup links
 
-### My Signups
+### No JavaScript Fallback
 
-After verified e-mail lookup, optionally show:
+When JavaScript is unavailable:
 
-- membership status, if enabled
-- participation history
-- earned badges
+- show venue cards
+- show external OpenStreetMap links for venues with coordinates
+- show address text for venues without coordinates
 
-Important privacy rules:
+### Accessibility
 
-- show only after verified e-mail lookup
-- never expose participant badge data in unauthenticated public REST responses
-- avoid public display of minors unless explicitly configured and legally reviewed
+- map container has an accessible label
+- venue cards remain keyboard-accessible
+- marker popup links are real links
+- no critical signup behavior depends on the map
 
 ## REST API
 
+Add public endpoint:
+
+```text
+GET /pasat/v1/venues
+```
+
+Public response should include only:
+
+- id
+- name
+- address
+- latitude
+- longitude
+- venue type
+- related public upcoming activities summary, optional
+
+Do not expose private/admin-only notes.
+
 Admin endpoints:
 
-- `GET /pasat/v1/admin/participants/{id}/badges`
-- `GET /pasat/v1/admin/participants/{id}/participation`
-- `PUT /pasat/v1/admin/participants/{id}/membership`
-- `GET /pasat/v1/admin/activities/{id}/participation`
-- `POST /pasat/v1/admin/activities/{id}/participation`
-- `PUT /pasat/v1/admin/participation/{id}`
-- `POST /pasat/v1/admin/activities/{id}/badges/recalculate`
-
-Public endpoints:
-
-- no unauthenticated public badge participant endpoints in MVP
-- verified lookup can remain server-rendered before adding REST
+```text
+POST /pasat/v1/admin/venues/{id}/geocode
+POST /pasat/v1/admin/venues/geocode-missing
+```
 
 Permissions:
 
-- admins with `pasat_view_participants` can view badges/history
-- admins with `pasat_manage_signups` can edit participation logs
-- assigned hosts can edit logs only for assigned activities if setting allows
-- membership status edits require a new or existing higher capability, probably `pasat_view_participants` plus `pasat_manage_signups`, or a new `pasat_manage_memberships`
+- public venue endpoint is readable without auth
+- geocoding endpoints require `pasat_manage_venues`
 
-## Capabilities
+## Security And Privacy
 
-Add optional new capabilities:
+Venue addresses are public operational data in most cases, but still treat them carefully:
 
-- `pasat_manage_memberships`
-- `pasat_manage_participation_logs`
-- `pasat_manage_badges`
+- only public venues/activity-linked venues should be shown publicly
+- escape all venue output
+- sanitize map settings
+- validate tile URLs and geocoding endpoint URLs
+- use `wp_remote_get()` for geocoding
+- use nonces for admin geocoding actions
+- rate limit geocoding
+- do not send participant data to geocoding providers
+- do not geocode on public requests
 
-Assign to administrators and PASAT Activity Managers.
+## Implementation Order
 
-PASAT Activity Hosts should get:
-
-- `pasat_manage_participation_logs`
-
-Host access must still be activity-scoped.
-
-## Privacy And Compliance
-
-Membership and badge data are personal data.
-
-Required updates:
-
-- privacy policy guide text
-- personal data exporter includes membership fields, participation logs, and badges
-- eraser/anonymizer handles membership notes, member number, participation logs, and badges
-- retention cleanup can anonymize/delete old participation and badge data according to settings
-- admin notices should explain that membership opt-in may not equal legally active membership
-- audit membership status changes and badge awards/revocations
-
-Sensitive fields:
-
-- `membership_notes`
-- `private_notes`
-- result notes if they include health/injury context
-
-Avoid public exposure by default.
-
-## E-mail
-
-MVP can skip automatic badge e-mails.
-
-Optional e-mail templates later:
-
-- membership interest received
-- membership status changed
-- badge awarded
-- annual participation summary
-
-If implemented, use `wp_mail()` and existing mail settings conventions.
-
-## Import/Migration
-
-Extend importer later for:
-
-- membership status
-- member number
-- participation logs
-- placements/results
-- historical badges
-
-Importer should prefer importing raw participation/result records, then recalculating badges, rather than trusting imported badge rows blindly.
-
-## Suggested Implementation Order
-
-1. Add settings defaults and Settings UI for membership and badges.
-2. Add schema migration for participant membership fields.
-3. Add `pasat_participation_logs` and `pasat_participant_badges` tables.
-4. Add repositories:
-   - `ParticipationLogsRepository`
-   - `BadgesRepository`
-   - optional `MembershipRepository` if participant repository becomes too large
-5. Add domain service:
-   - `Badges/Awarder.php`
-   - recalculates year and placement badges idempotently
-6. Extend public signup form and signup processing for membership opt-in.
-7. Extend Participants admin page with membership fields, filters, badge summary, and participation history.
-8. Add Activity Participation/Results admin screen.
-9. Add host-scoped participation editing.
-10. Add privacy exporter/eraser/retention coverage.
-11. Add REST endpoints if needed by the admin UI.
-12. Add CSV export for activity results.
-13. Update docs, readme, implementation report, and language POT.
-14. Add smoke tests for:
-    - signup membership opt-in
-    - admin membership update
-    - participation log creation
-    - year badge award/revoke
-    - 1/2/3 placement badges
-    - privacy export/erase coverage
+1. Add map settings defaults.
+2. Add venue geocoding fields to schema.
+3. Add `MapSettings` or helper methods for tile URL/attribution.
+4. Add a `Geocoder` service using WordPress HTTP API.
+5. Extend `VenuesRepository` with geocoding status updates and coordinate filtering.
+6. Add admin venue row actions for geocoding and opening maps.
+7. Add public venue REST endpoint.
+8. Add Leaflet assets:
+   - vendor CSS/JS if bundled
+   - or registered CDN with local fallback, depending project policy
+9. Enhance `[pasat_venue_map]` rendering.
+10. Add `show_map` option to `[pasat_activity_signup]`.
+11. Add frontend map initialization JS.
+12. Add responsive CSS.
+13. Update README, readme.txt, implementation report, and POT.
+14. Add smoke tests.
 
 ## Acceptance Criteria
 
-- Membership opt-in can be enabled/disabled in settings.
-- Public signups can choose membership opt-in.
-- Membership opt-in is stored with timestamp.
-- Admins can manage membership status and membership number.
-- Activity participation logs can be recorded per participant.
-- Admins/assigned hosts can record attendance and placement.
-- Year participation badges are awarded for each qualifying participation year.
-- 1st, 2nd, and 3rd place badges are awarded from placements.
-- Badge award/revoke logic is idempotent.
-- Badge data is visible in admin participant views.
-- Verified participants can optionally see their own badges.
-- Public unauthenticated endpoints do not expose membership or badge data.
-- Privacy export includes membership, participation logs, and badges.
-- Privacy erasure/anonymization handles the new data.
-- CSV exports guard against spreadsheet formula injection.
-- All new admin forms use nonces and capability checks.
-- All output is escaped and all inputs are sanitized.
-- Documentation explains that membership opt-in is not necessarily active membership.
+- Signup page can show an embedded open-source map when enabled.
+- `[pasat_venue_map]` renders an interactive map when coordinates exist.
+- Venues can be shown based on stored coordinates.
+- Admins can geocode venue addresses into coordinates.
+- Geocoding is never performed on public page load.
+- Venue cards remain available without JavaScript.
+- Map markers link to relevant public signup flows.
+- Tile URL and attribution are configurable.
+- Admin geocoding actions are nonce-protected and capability-checked.
+- Public endpoints expose only public venue/activity data.
+- Documentation explains OpenStreetMap/Nominatim usage expectations.
 
 ## Testing Plan
 
@@ -481,45 +335,39 @@ tools/check-release.sh
 
 Add or extend Docker smoke tests:
 
-1. Activate plugin and confirm new tables/columns.
-2. Enable membership opt-in.
-3. Submit signup with membership opt-in checked.
-4. Confirm participant has `membership_status = interested`.
-5. Admin changes participant to `active`; audit log records it.
-6. Create activity participation log marked `completed`; confirm year badge.
-7. Set placement `1`; confirm 1st-place badge.
-8. Change placement to `2`; confirm 1st badge revoked and 2nd badge awarded.
-9. Clear placement; confirm placement badge revoked.
-10. Run privacy export and confirm membership/log/badge data appears.
-11. Run erasure/anonymization and confirm sensitive data is removed or anonymized.
-12. Confirm assigned host cannot edit unrelated activity logs.
+1. Create venues with coordinates.
+2. Create venues with addresses but no coordinates.
+3. Render `[pasat_venue_map]` and confirm map container, venue JSON, and fallback cards.
+4. Render `[pasat_activity_signup show_map="1"]` and confirm map output appears.
+5. Confirm venues without coordinates show fallback address cards.
+6. Confirm public venue REST endpoint hides private/admin-only data.
+7. Mock geocoding response and confirm coordinates/status are saved.
+8. Confirm geocoding endpoint rejects unauthorized users.
+9. Confirm map assets enqueue only when needed.
 
-Manual review:
+Manual browser review:
 
-- admin participant list
-- participant detail/history
-- activity result entry workflow
-- verified my-signups badge display
-- mobile admin usability for check-in/result entry
+- desktop signup page
+- mobile signup page
+- no-JavaScript fallback
+- screen-reader labels
+- marker popup links
 
 ## Deferred Ideas
 
-- Public badge gallery or leaderboard.
-- Printable participant certificates.
-- Badge artwork upload and theming.
-- Points/ranking system.
-- Team/group placements.
-- Multiple heats/rounds per activity.
-- Automatic check-in QR codes per participant.
-- Membership payments or external CRM integration.
-- Annual membership renewal workflow.
-- Badge notification e-mails.
+- Route planning/directions from user's current location.
+- Clustered markers for large programs.
+- Saved map presets.
+- Per-activity map focus in activity cards.
+- Self-hosted tile server guidance.
+- Bulk geocoding queue with WP-Cron.
+- Map provider presets for OpenStreetMap-compatible commercial providers.
+- Admin drag-and-drop marker placement.
 
 ## Open Questions
 
-- Should membership mean legal organization membership, newsletter interest, or both?
-- Should minors be allowed to opt into membership without guardian fields?
-- Should placement badges be awarded for disqualified participants if an admin records historical results?
-- Should hosts be allowed to assign placements by default, or only attendance?
-- Should badges be visible in verified participant self-service by default?
-- Should annual badges require `completed`, or is `attended` enough?
+- Should maps be shown by default on signup pages, or only when `show_map="1"` is set?
+- Should the plugin bundle Leaflet locally, or register it from a CDN with integrity/fallback?
+- Which geocoding provider should be recommended for production sites with higher volume?
+- Should venues without activity assignments be public in `[pasat_venue_map source="all"]`?
+- Should organization-specific private venues be supported?
