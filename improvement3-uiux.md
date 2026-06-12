@@ -17,6 +17,7 @@ This plan focuses first on the public activity listing, venue map, signup form, 
 - Repeated maps can appear on the same page when multiple shortcodes are used.
 - Labels and status messages are technically correct but not optimized for quick decisions.
 - Mobile layout is basic rather than intentionally designed.
+- Printable activity poster PDFs are functional but not polished: long titles collide with card borders, the information block is cramped, QR placement feels detached, the direct URL wraps poorly, and the page does not yet feel print-ready for real venue signage.
 
 ## Design Direction
 
@@ -29,6 +30,7 @@ Create a calm, operational UI that works inside arbitrary WordPress themes:
 - Responsive layout that works from phone to desktop.
 - Clear status pills for open, few spots left, full, waitlist, closed, and cancelled.
 - Better empty/loading/success/error states.
+- Print-ready signup posters with strong hierarchy, resilient text fitting, prominent QR scanning, and attractive logo/organization placement.
 - No hardcoded organization, festival, or location branding.
 
 ## Phase 1: Public Layout Shell
@@ -210,7 +212,69 @@ Acceptance criteria:
 - Screen reader users receive meaningful status changes.
 - Styles do not break common WordPress themes.
 
-## Phase 7: Admin UI Cleanup
+## Phase 7: Poster PDF and QR Print UX
+
+Make the downloadable activity poster PDFs good enough to print, place at venues, and trust as first-contact signup material.
+
+Screenshot issues to address:
+
+- Long activity titles overflow into the card border and crowd the metadata.
+- The visual hierarchy does not clearly separate organization, activity, date, location, QR, and direct link.
+- The QR code is large enough, but it feels mechanically pasted in rather than intentionally composed.
+- The direct signup URL wraps in an unattractive, hard-to-type block.
+- The footer and branding feel under-designed.
+- The current fixed-position PDF layout has little resilience for long titles, long venue names, long addresses, and custom logos.
+
+Tasks:
+
+- Redesign `PASAT\Poster\ActivityPosterPdf` around a print-safe grid:
+  - A4 portrait with consistent margins and print bleed safety.
+  - Optional Letter-size support if practical.
+  - Header band for logo/organization and a concise "Scan to sign up" message.
+  - Activity information card that reserves enough room for 1-4 title lines without collision.
+  - Dedicated date/time, venue, address, capacity/status, and optional warning areas.
+  - Large centered QR block with clear scan instruction.
+  - Short fallback URL block that wraps cleanly and remains readable.
+- Add text fitting helpers for PDF rendering:
+  - measure/estimate line lengths per font size,
+  - reduce title font size for long titles,
+  - clamp or gracefully wrap venue/address/link text,
+  - avoid drawing text outside its bounding region.
+- Improve QR and link behavior:
+  - keep the QR quiet zone visually clear,
+  - include the short QR redirect URL when possible,
+  - avoid broken URL wrapping by splitting at path/query boundaries,
+  - optionally add "Open camera and scan" helper copy.
+- Improve logo handling:
+  - preserve logo aspect ratio,
+  - avoid stretching or oversized logos,
+  - support a clean no-logo fallback,
+  - document recommended logo dimensions.
+- Add poster style settings if lightweight:
+  - poster accent color,
+  - optional poster headline text,
+  - A4 vs Letter default if feasible,
+  - whether to show direct link.
+- Improve bulk ZIP export:
+  - filename should include date and sanitized activity title,
+  - ZIP should skip/flag impossible posters rather than failing all when one activity has bad data,
+  - add a small manifest text file to ZIP if practical.
+- Add an admin preview/download workflow:
+  - keep single PDF download per activity,
+  - keep ZIP download for all activity PDFs,
+  - consider a "Preview Poster" link opening inline PDF in a new tab.
+
+Acceptance criteria:
+
+- Long smoke-test activity titles do not overlap borders or metadata.
+- QR code remains scannable at normal print sizes.
+- Direct signup link is readable and does not overflow.
+- Poster looks good with and without a configured logo.
+- Poster works for long venue names and addresses.
+- Single PDF download and ZIP download still work with capability checks.
+- Generated PDFs pass smoke tests for content, logo embedding, QR content, and ZIP output.
+
+## Phase 8: Admin UI Cleanup
 
 After public UX is improved, bring wp-admin screens up to the same level.
 
@@ -240,8 +304,9 @@ Acceptance criteria:
 4. Redesign venue map/cards and map behavior.
 5. Improve my-signups, membership, and badges presentation.
 6. Add accessibility polish and responsive checks.
-7. Clean up admin dashboard and key admin pages.
-8. Rebuild release ZIP and smoke-test on `https://dev.raoul.no/wp/pasat-test-signup/`.
+7. Redesign poster PDFs and QR print workflow.
+8. Clean up admin dashboard and key admin pages.
+9. Rebuild release ZIP and smoke-test on `https://dev.raoul.no/wp/pasat-test-signup/`.
 
 ## Test Plan
 
@@ -263,6 +328,9 @@ Manual checks:
 - Confirm map markers and venue cards interact.
 - Confirm `[pasat_activity_board]` still auto-refreshes.
 - Confirm `[pasat_my_signups]` does not expose private data without verification.
+- Download several activity poster PDFs, including long-title smoke activities, and check for title/link overflow.
+- Scan at least one generated poster QR code from screen and/or printed PDF.
+- Download poster ZIP and confirm it contains all available PDFs with usable filenames.
 
 Automated/light checks:
 
@@ -285,6 +353,10 @@ If Playwright is available, capture visual screenshots for public page, signup-s
   - `signup-form.php`
   - `venue-map.php`
   - `my-signups.php`
+- Updated poster PDF renderer:
+  - `pasat/includes/Poster/ActivityPosterPdf.php`
+- Updated poster download workflow if needed:
+  - `pasat/includes/Admin/PosterDownloads.php`
 - Optional small template partials if duplication grows.
 - Updated README screenshots/testing notes if the final UI materially changes setup or shortcode recommendations.
 - Updated implementation report with UX improvements.
