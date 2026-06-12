@@ -2,6 +2,24 @@
 
 All notable PASAT repository-level changes are documented here. The WordPress.org-style plugin changelog is also maintained in `pasat/readme.txt`.
 
+## 0.1.7 - 2026-06-12
+
+Printable poster PDF redesign.
+
+### Added
+
+- Fixed poster layout zones for the header, activity details, QR block, short link, and footer.
+- Bounded text wrapping for long activity titles, venue names, addresses, organization names, and signup links.
+- PDF drawing helpers for filled and stroked layout regions plus centered text.
+
+### Changed
+
+- Reworked activity posters to make the QR code more visually dominant and print-safe.
+- Replaced the crowded dark direct-link block with a cleaner short-link card using the activity QR redirect URL.
+- Capacity copy now reads as a capacity label rather than implying all spots remain available.
+- Bumped plugin asset/runtime version to `0.1.7`.
+- Kept database schema version at `0.1.2` because this release does not alter custom tables.
+
 ## 0.1.6 - 2026-06-12
 
 Venue map and venue card UX redesign.

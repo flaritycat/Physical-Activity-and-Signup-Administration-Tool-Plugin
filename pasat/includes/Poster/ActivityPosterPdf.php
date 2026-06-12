@@ -56,50 +56,54 @@ final class ActivityPosterPdf {
 		$date         = Helpers::local_datetime( $activity['starts_at'] ?? '' );
 		$capacity     = isset( $activity['capacity'] ) && null !== $activity['capacity'] ? sprintf(
 			/* translators: %d is the activity capacity. */
-			__( '%d spots available', 'pasat' ),
+			__( 'Capacity: %d', 'pasat' ),
 			(int) $activity['capacity']
 		) : __( 'Signup required', 'pasat' );
 		$qr_url       = Helpers::activity_qr_url( (int) ( $activity['id'] ?? 0 ) );
 		$signup_url   = Helpers::public_signup_url( (int) ( $activity['id'] ?? 0 ) );
+		$short_url    = $qr_url ?: $signup_url;
 		$matrix       = QrCode::matrix( $qr_url );
 
-		$content  = "1 1 1 rg 0 0 " . self::PAGE_WIDTH . ' ' . self::PAGE_HEIGHT . " re f\n";
-		$content .= "0.054 0.137 0.224 rg 0 718 " . self::PAGE_WIDTH . " 124 re f\n";
-		$content .= "0.969 0.980 0.992 rg 0 0 " . self::PAGE_WIDTH . " 718 re f\n";
-		$content .= "0.078 0.173 0.286 rg 42 514 511 170 re f\n";
-		$content .= "1 1 1 rg 48 520 499 158 re f\n";
-		$content .= "0.054 0.137 0.224 rg 56 86 483 92 re f\n";
+		$content  = $this->rect( 0, 0, self::PAGE_WIDTH, self::PAGE_HEIGHT, array( 0.955, 0.972, 0.984 ) );
+		$content .= $this->rect( 0, 724, self::PAGE_WIDTH, 118, array( 0.054, 0.137, 0.224 ) );
+		$content .= $this->rect( 0, 718, self::PAGE_WIDTH, 6, array( 0.086, 0.361, 0.455 ) );
+		$content .= $this->rect( 46, 514, 503, 180, array( 1, 1, 1 ) );
+		$content .= $this->stroke_rect( 46, 514, 503, 180, array( 0.78, 0.84, 0.88 ), 1 );
+		$content .= $this->rect( 139, 196, 318, 286, array( 1, 1, 1 ) );
+		$content .= $this->stroke_rect( 139, 196, 318, 286, array( 0.78, 0.84, 0.88 ), 1 );
+		$content .= $this->rect( 46, 78, 503, 84, array( 1, 1, 1 ) );
+		$content .= $this->stroke_rect( 46, 78, 503, 84, array( 0.78, 0.84, 0.88 ), 1 );
 
 		if ( $logo ) {
-			$content .= $this->image( 56, 752, min( 158, (float) $logo['width'] ), min( 58, (float) $logo['height'] ), (int) $logo['width'], (int) $logo['height'] );
+			$content .= $this->image( 48, 765, 176, 46, (int) $logo['width'], (int) $logo['height'] );
 		} else {
-			$content .= $this->text( 56, 786, $organization, 18, 'F2', array( 1, 1, 1 ) );
+			$content .= $this->wrapped_text( 48, 790, $organization, 18, 21, 2, 'F2', array( 1, 1, 1 ), 250 );
 		}
 
 		$content .= $this->text( 420, 792, __( 'PASAT Signup', 'pasat' ), 13, 'F2', array( 1, 1, 1 ) );
 		$content .= $this->text( 420, 772, __( 'Scan at the venue', 'pasat' ), 11, 'F1', array( 0.86, 0.91, 0.96 ) );
-		$content .= $this->wrapped_text( 56, 660, $title, 32, 24, 3, 'F2', array( 0.054, 0.137, 0.224 ) );
-		$content .= $this->text( 56, 592, __( 'When', 'pasat' ), 11, 'F2', array( 0.35, 0.39, 0.45 ) );
-		$content .= $this->text( 56, 568, $date ?: __( 'Time to be announced', 'pasat' ), 18, 'F2', array( 0.054, 0.137, 0.224 ) );
-		$content .= $this->text( 320, 592, __( 'Where', 'pasat' ), 11, 'F2', array( 0.35, 0.39, 0.45 ) );
-		$content .= $this->wrapped_text( 320, 568, $venue ?: __( 'Venue to be announced', 'pasat' ), 18, 22, 2, 'F2', array( 0.054, 0.137, 0.224 ) );
+		$content .= $this->wrapped_text( 64, 666, $title, 25, 28, 3, 'F2', array( 0.054, 0.137, 0.224 ), 466 );
+		$content .= $this->text( 64, 584, __( 'When', 'pasat' ), 10, 'F2', array( 0.35, 0.39, 0.45 ) );
+		$content .= $this->wrapped_text( 64, 562, $date ?: __( 'Time to be announced', 'pasat' ), 16, 19, 2, 'F2', array( 0.054, 0.137, 0.224 ), 220 );
+		$content .= $this->text( 314, 584, __( 'Where', 'pasat' ), 10, 'F2', array( 0.35, 0.39, 0.45 ) );
+		$content .= $this->wrapped_text( 314, 562, $venue ?: __( 'Venue to be announced', 'pasat' ), 16, 19, 2, 'F2', array( 0.054, 0.137, 0.224 ), 210 );
 		if ( '' !== $address ) {
-			$content .= $this->wrapped_text( 320, 520, $address, 10, 13, 2, 'F1', array( 0.35, 0.39, 0.45 ) );
+			$content .= $this->wrapped_text( 314, 524, $address, 9, 12, 2, 'F1', array( 0.35, 0.39, 0.45 ), 210 );
 		}
-		$content .= $this->text( 56, 530, $capacity, 13, 'F1', array( 0.35, 0.39, 0.45 ) );
+		$content .= $this->text( 64, 524, $capacity, 11, 'F2', array( 0.35, 0.39, 0.45 ) );
 
-		$content .= "1 1 1 rg 156 230 284 284 re f\n";
-		$content .= "0.054 0.137 0.224 RG 156 230 284 284 re S\n";
+		$content .= $this->centered_text( self::PAGE_WIDTH / 2, 492, __( 'Scan to sign up', 'pasat' ), 26, 'F2', array( 0.054, 0.137, 0.224 ) );
 		if ( $matrix ) {
-			$content .= $this->qr( $matrix, 178, 252, 240 );
+			$content .= $this->qr( $matrix, 171, 220, 254 );
 		} else {
-			$content .= $this->wrapped_text( 190, 376, __( 'QR code unavailable for this URL. Use the signup link below.', 'pasat' ), 14, 18, 4, 'F2', array( 0.054, 0.137, 0.224 ) );
+			$content .= $this->wrapped_text( 174, 350, __( 'QR code unavailable for this URL. Use the signup link below.', 'pasat' ), 14, 18, 4, 'F2', array( 0.054, 0.137, 0.224 ), 246 );
 		}
+		$content .= $this->centered_text( self::PAGE_WIDTH / 2, 176, __( 'Open the camera on your phone and point it at the code.', 'pasat' ), 10, 'F1', array( 0.35, 0.39, 0.45 ) );
 
-		$content .= $this->text( 194, 204, __( 'Scan to sign up', 'pasat' ), 28, 'F2', array( 0.054, 0.137, 0.224 ) );
-		$content .= $this->text( 56, 145, __( 'Direct signup link', 'pasat' ), 11, 'F2', array( 1, 1, 1 ) );
-		$content .= $this->wrapped_text( 56, 124, $signup_url, 10, 13, 5, 'F1', array( 1, 1, 1 ) );
-		$content .= $this->text( 56, 52, sprintf(
+		$content .= $this->text( 64, 134, __( 'Direct signup link', 'pasat' ), 10, 'F2', array( 0.35, 0.39, 0.45 ) );
+		$content .= $this->wrapped_text( 64, 112, $short_url, 14, 17, 2, 'F2', array( 0.054, 0.137, 0.224 ), 460 );
+		$content .= $this->text( 64, 92, __( 'This short link opens the signup form for this activity.', 'pasat' ), 9, 'F1', array( 0.35, 0.39, 0.45 ) );
+		$content .= $this->text( 46, 44, sprintf(
 			/* translators: %s is the organization name. */
 			__( 'Powered by %s', 'pasat' ),
 			$organization
@@ -132,6 +136,33 @@ final class ActivityPosterPdf {
 		return sprintf( "q %.3F 0 0 %.3F %.3F %.3F cm /Im1 Do Q\n", $draw_width, $draw_height, $x, $y );
 	}
 
+	private function rect( float $x, float $y, float $width, float $height, array $color ): string {
+		return sprintf(
+			"%.3F %.3F %.3F rg %.3F %.3F %.3F %.3F re f\n",
+			$color[0],
+			$color[1],
+			$color[2],
+			$x,
+			$y,
+			$width,
+			$height
+		);
+	}
+
+	private function stroke_rect( float $x, float $y, float $width, float $height, array $color, float $line_width = 1 ): string {
+		return sprintf(
+			"%.3F %.3F %.3F RG %.3F w %.3F %.3F %.3F %.3F re S\n",
+			$color[0],
+			$color[1],
+			$color[2],
+			$line_width,
+			$x,
+			$y,
+			$width,
+			$height
+		);
+	}
+
 	private function text( float $x, float $y, string $text, float $size, string $font, array $color ): string {
 		return sprintf(
 			"%.3F %.3F %.3F rg BT /%s %.3F Tf %.3F %.3F Td (%s) Tj ET\n",
@@ -146,11 +177,23 @@ final class ActivityPosterPdf {
 		);
 	}
 
-	private function wrapped_text( float $x, float $y, string $text, float $size, float $line_height, int $max_lines, string $font, array $color ): string {
-		$max_chars = max( 12, (int) floor( 520 / max( 1, $size ) ) );
+	private function centered_text( float $center_x, float $y, string $text, float $size, string $font, array $color ): string {
+		$plain = $this->plain_text( $text );
+		$width = strlen( $plain ) * $size * 0.52;
+		return $this->text( $center_x - $width / 2, $y, $plain, $size, $font, $color );
+	}
+
+	private function wrapped_text( float $x, float $y, string $text, float $size, float $line_height, int $max_lines, string $font, array $color, float $max_width = 520 ): string {
+		$max_chars = max( 8, (int) floor( $max_width / max( 1, $size * 0.52 ) ) );
 		$lines     = explode( "\n", wordwrap( $this->plain_text( $text ), $max_chars, "\n", true ) );
+		$truncated = count( $lines ) > $max_lines;
 		$lines     = array_slice( $lines, 0, $max_lines );
 		$out       = '';
+
+		if ( $truncated && $lines ) {
+			$last = rtrim( (string) end( $lines ) );
+			$lines[ count( $lines ) - 1 ] = rtrim( substr( $last, 0, max( 0, $max_chars - 3 ) ) ) . '...';
+		}
 
 		foreach ( $lines as $index => $line ) {
 			$out .= $this->text( $x, $y - $index * $line_height, $line, $size, $font, $color );

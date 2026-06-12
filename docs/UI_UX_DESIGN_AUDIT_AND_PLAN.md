@@ -34,7 +34,7 @@ The modernization target should be a calm, trustworthy, operational product UI:
 | Venue map and venue cards | 6/10 | Compact public cards, hidden raw coordinates, next activity context, marker-card interaction | Needs visual QA, selected-venue polish, and cross-theme testing |
 | My signups | 4/10 | Private lookup flow exists | Membership/badges/history feel like plain data output |
 | Activity board | 6/10 | Polling, QR option, status updates | Needs kiosk/display-specific visual system and large-room readability |
-| Poster PDFs | 3/10 | QR PDF generation, logo setting, single/ZIP downloads | Layout breaks with long titles and does not look print-ready |
+| Poster PDFs | 6/10 | Fixed print zones, bounded wrapping, stronger QR hierarchy, short-link card | Needs visual QA, optional poster settings, and ZIP manifest polish |
 | Admin dashboard | 5/10 | Metrics, upcoming activities, recent signups | Needs workflow-focused dashboard, quick actions, richer status cards |
 | Admin CRUD/list screens | 4/10 | CRUD works and uses WP conventions | Dense tables, cramped inline actions, limited hierarchy |
 | Accessibility | 5/10 | Labels and focus foundation exist | Needs full keyboard, aria-live, contrast, and screen reader pass |
@@ -471,6 +471,8 @@ Acceptance criteria:
 
 ### Phase 7: Poster PDF and QR Print UX
 
+Status after `0.1.7`: Mostly implemented. PASAT now uses fixed poster zones, bounded title/link wrapping, safer logo placement, a stronger centered QR block, print-oriented helper copy, and a cleaner short-link card. Remaining items are visual QA on generated PDFs, optional poster settings, admin preview polish, and ZIP manifest handling.
+
 Priority: High
 Primary files:
 
@@ -779,19 +781,19 @@ Outcome:
 
 ## Immediate Next Recommended Work
 
-The next implementation should be Phase 7: Poster PDF and QR Print UX.
+The next implementation should be Phase 5: My Signups, Membership, and Badges UX.
 
 Reason:
 
-- The poster screenshot showed the most visible remaining design failure.
-- Venue QR posters are first-contact signup material at physical locations.
-- Long titles, URL wrapping, and QR hierarchy must be print-safe.
-- This can improve real-world signup conversion without changing the database.
+- Membership and badges exist functionally but still feel like plain data output.
+- Verified participants should get a clearer profile/history experience.
+- Badge presentation is user-facing and can make repeated participation feel rewarding.
+- The work can improve the public experience without changing the privacy model.
 
 First concrete tasks:
 
-1. Refactor poster layout to reserve fixed title, metadata, QR, and footer zones.
-2. Add title wrapping/truncation that cannot collide with borders.
-3. Make the QR block visually dominant and centered.
-4. Replace raw long URL blocks with a short, readable direct-link section.
-5. Test single poster PDFs and bulk ZIP poster generation.
+1. Redesign the verified profile summary as a compact card.
+2. Render year and placement badges as visual chips/cards instead of plain list items.
+3. Improve participation history on mobile with stacked cards.
+4. Keep private lookup messaging privacy-conscious before verification.
+5. Test verified lookup with membership, yearly badges, and placement badges.

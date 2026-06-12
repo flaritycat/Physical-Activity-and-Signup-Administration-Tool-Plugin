@@ -220,6 +220,8 @@ Acceptance criteria:
 
 ## Phase 7: Poster PDF and QR Print UX
 
+Status: addressed in `0.1.7` with fixed poster zones, bounded title/link wrapping, a stronger centered QR block, cleaner short-link card, safer logo placement, and print-oriented copy. Remaining refinements from this phase can be handled in Phase 6 visual/accessibility QA and final release smoke testing.
+
 Make the downloadable activity poster PDFs good enough to print, place at venues, and trust as first-contact signup material.
 
 Screenshot issues to address:
