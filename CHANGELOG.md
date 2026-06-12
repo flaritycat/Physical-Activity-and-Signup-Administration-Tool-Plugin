@@ -2,6 +2,21 @@
 
 All notable PASAT repository-level changes are documented here. The WordPress.org-style plugin changelog is also maintained in `pasat/readme.txt`.
 
+## 0.1.16 - 2026-06-12
+
+Assistive-technology QA execution support.
+
+### Added
+
+- Manual assistive-technology QA results template with environment matrix, flow outcomes, defect log, and signoff fields.
+- Smoke coverage for the rendered signup selected-activity summary live region and activity selector `aria-controls` relationship.
+- Smoke coverage for the activity board atomic refresh status.
+
+### Changed
+
+- Bumped plugin asset/runtime version to `0.1.16`.
+- Kept database schema version at `0.1.2` because this release does not alter custom tables.
+
 ## 0.1.15 - 2026-06-12
 
 Assistive-technology QA preparation.

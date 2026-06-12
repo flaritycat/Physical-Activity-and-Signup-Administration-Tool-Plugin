@@ -428,7 +428,7 @@ The repository also includes GitHub Actions CI in `.github/workflows/pasat-ci.ym
 
 Production release checks are documented in `docs/PRODUCTION_READINESS.md`, with a fillable signoff template in `docs/RELEASE_SIGNOFF_TEMPLATE.md`.
 
-Manual assistive-technology checks are documented in `docs/ASSISTIVE_TECH_QA.md`. Use that checklist alongside the automated contrast and public accessibility-hook checks before calling a release UI-complete.
+Manual assistive-technology checks are documented in `docs/ASSISTIVE_TECH_QA.md`, with results recorded in `docs/ASSISTIVE_TECH_QA_RESULTS.md`. Use that checklist alongside the automated contrast and public accessibility-hook checks before calling a release UI-complete.
 
 GitHub publishing and offline handoff steps are documented in `docs/GITHUB_PUBLISHING.md`. If this checkout cannot authenticate to GitHub, run `tools/export-publish-handoff.sh` to create a git bundle, patch series, manifest, and checksum file under `dist/` for transfer to an authenticated machine.
 

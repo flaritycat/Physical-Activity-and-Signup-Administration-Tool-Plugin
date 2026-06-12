@@ -167,6 +167,8 @@ foreach (
 		'membership' => '/<label class="pasat-check" for="[^"]+membership"><input id="[^"]+membership" type="checkbox" name="membership_opt_in"/',
 		'warning'    => '/<label class="pasat-check[^"]*" for="[^"]+warning"[^>]*data-pasat-warning-check[^>]*>\\s*<input id="[^"]+warning" type="checkbox" name="warning_acknowledged"/',
 		'age-note'   => '/<input id="[^"]+age" name="age"[^>]+aria-describedby="[^"]+age-note"/',
+		'summary'    => '/data-pasat-signup-summary[^>]+role="status"[^>]+aria-live="polite"[^>]+aria-atomic="true"/',
+		'activity-summary-control' => '/<select id="[^"]+activity" name="activity_id" required aria-controls="[^"]+summary"/',
 	) as $name => $pattern
 ) {
 	if ( ! preg_match( $pattern, $signup_html ) ) {

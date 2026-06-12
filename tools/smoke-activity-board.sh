@@ -133,6 +133,7 @@ $expectations = array(
 	'pasat-board-toolbar',
 	'pasat-board-items',
 	'role="status"',
+	'aria-atomic="true"',
 	'data-pasat-qr-value=',
 	'pasat-board-qr-wrap',
 	'aria-label="Signup QR code for Morning Yoga"',

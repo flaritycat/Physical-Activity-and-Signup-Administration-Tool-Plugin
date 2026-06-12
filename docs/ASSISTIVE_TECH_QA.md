@@ -2,7 +2,7 @@
 
 Date: 2026-06-12
 
-This checklist is for the manual accessibility pass that complements PASAT's automated public contrast and accessibility-hook checks.
+This checklist is for the manual accessibility pass that complements PASAT's automated public contrast and accessibility-hook checks. Record the pass in `docs/ASSISTIVE_TECH_QA_RESULTS.md`.
 
 ## Recommended Matrix
 
