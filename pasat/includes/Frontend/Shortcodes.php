@@ -49,12 +49,13 @@ final class Shortcodes {
 
 	public static function activity_signup( array $atts = array() ): string {
 		$atts        = shortcode_atts( array( 'activity_id' => 0, 'show_map' => '' ), $atts, 'pasat_activity_signup' );
+		$request_method = isset( $_SERVER['REQUEST_METHOD'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) : '';
 		$query_id    = isset( $_GET['pasat_activity_id'] ) ? absint( wp_unslash( $_GET['pasat_activity_id'] ) ) : 0;
-		$activity_id = absint( $atts['activity_id'] ?: $query_id );
+		$posted_activity_id = 'POST' === $request_method && isset( $_POST['activity_id'] ) ? absint( wp_unslash( $_POST['activity_id'] ) ) : 0;
+		$activity_id = absint( $atts['activity_id'] ?: $query_id ?: $posted_activity_id );
 		$show_map    = self::truthy_or_default( $atts['show_map'], (bool) Helpers::setting( 'show_map_on_signup', 0 ) );
 		$message     = '';
 		$error       = '';
-		$request_method = isset( $_SERVER['REQUEST_METHOD'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) : '';
 
 		if ( 'POST' === $request_method && isset( $_POST['pasat_public_signup'] ) ) {
 			if ( ! isset( $_POST['pasat_public_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['pasat_public_nonce'] ) ), 'pasat_public_signup' ) ) {
@@ -91,12 +92,13 @@ final class Shortcodes {
 		return Renderer::render(
 			'public/signup-form.php',
 			array(
-				'activities' => $activities,
-				'activity'   => $activity ?: null,
-				'message'    => $message,
-				'error'      => $error,
-				'settings'   => Helpers::settings(),
-				'map_html'   => $map_html,
+				'activities'           => $activities,
+				'activity'             => $activity ?: null,
+				'message'              => $message,
+				'error'                => $error,
+				'settings'             => Helpers::settings(),
+				'map_html'             => $map_html,
+				'selected_activity_id' => $activity_id,
 			)
 		);
 	}

@@ -1,6 +1,147 @@
 (function () {
 	'use strict';
 
+	function publicLabel(key, fallback) {
+		return window.PASAT_PUBLIC && window.PASAT_PUBLIC[key]
+			? window.PASAT_PUBLIC[key]
+			: fallback;
+	}
+
+	function selectedOption(select) {
+		return select && select.options && select.selectedIndex >= 0 ? select.options[select.selectedIndex] : null;
+	}
+
+	function setElementText(element, value) {
+		if (!element) {
+			return;
+		}
+		element.textContent = value || '';
+		element.hidden = !value;
+	}
+
+	function setSubmitState(form, submitting) {
+		var button = form.querySelector('[type="submit"]');
+		var label = button ? button.querySelector('[data-pasat-submit-text]') : null;
+		if (!button) {
+			return;
+		}
+
+		if (!button.getAttribute('data-pasat-submit-label')) {
+			button.setAttribute('data-pasat-submit-label', button.textContent);
+		}
+
+		button.disabled = submitting;
+		form.setAttribute('aria-busy', submitting ? 'true' : 'false');
+		if (label) {
+			label.textContent = submitting ? publicLabel('signupSubmitting', 'Submitting...') : button.getAttribute('data-pasat-submit-label');
+		} else {
+			button.textContent = submitting ? publicLabel('signupSubmitting', 'Submitting...') : button.getAttribute('data-pasat-submit-label');
+		}
+	}
+
+	function signupSuccessMessage(body) {
+		if (body && body.status === 'waitlisted') {
+			return publicLabel('signupWaitlisted', 'Signup received. You are on the waitlist. Please check your e-mail.');
+		}
+		if (body && body.status === 'confirmed') {
+			return publicLabel('signupConfirmed', 'Signup received. You are confirmed. Please check your e-mail.');
+		}
+		return publicLabel('signupSuccess', 'Signup received. Please check your e-mail.');
+	}
+
+	function showSignupNotice(form, ok, message) {
+		var container = form.closest('.pasat-signup') || form.parentNode;
+		var region = container.querySelector('[data-pasat-notice-region]');
+		var notice;
+		if (!region) {
+			region = document.createElement('div');
+			region.className = 'pasat-notice-region';
+			region.setAttribute('data-pasat-notice-region', '');
+			region.setAttribute('aria-live', 'polite');
+			container.insertBefore(region, container.firstChild);
+		}
+
+		notice = region.querySelector('.pasat-js-notice');
+		if (!notice) {
+			notice = document.createElement('div');
+			notice.className = 'pasat-js-notice pasat-notice';
+			region.appendChild(notice);
+		}
+
+		notice.classList.toggle('pasat-notice--success', ok);
+		notice.classList.toggle('pasat-notice--error', !ok);
+		notice.setAttribute('role', ok ? 'status' : 'alert');
+		notice.textContent = message;
+	}
+
+	function updateAckSection(section) {
+		if (!section) {
+			return;
+		}
+
+		var visible = Array.prototype.some.call(section.querySelectorAll('.pasat-check'), function (check) {
+			return !check.classList.contains('pasat-is-hidden');
+		});
+		section.classList.toggle('pasat-is-hidden', !visible);
+	}
+
+	function updateSignupSummary(form) {
+		var select = form.querySelector('[name="activity_id"]');
+		var option = selectedOption(select);
+		var container = form.closest('.pasat-signup') || form.parentNode;
+		var summary = container.querySelector('[data-pasat-signup-summary]');
+		var warning = form.querySelector('[data-pasat-warning-check]');
+		var warningInput = warning ? warning.querySelector('input') : null;
+		var warningText = warning ? warning.querySelector('[data-pasat-warning-text]') : null;
+		var ackSection = form.querySelector('[data-pasat-ack-section]');
+		var ageNote = form.querySelector('[data-pasat-age-note]');
+		var hasActivity = option && option.value;
+		var warningValue = hasActivity ? option.getAttribute('data-pasat-warning') || '' : (warning ? warning.getAttribute('data-pasat-default-warning') || '' : '');
+		var warningRequired = hasActivity && option.getAttribute('data-pasat-warning-required') === '1';
+
+		if (summary) {
+			summary.classList.toggle('pasat-signup-summary--empty', !hasActivity);
+			setElementText(summary.querySelector('[data-pasat-summary-title]'), hasActivity ? option.getAttribute('data-pasat-title') : summary.getAttribute('data-pasat-empty-title'));
+			setElementText(summary.querySelector('[data-pasat-summary-date]'), hasActivity ? option.getAttribute('data-pasat-date') : '');
+			setElementText(summary.querySelector('[data-pasat-summary-venue]'), hasActivity ? option.getAttribute('data-pasat-venue') : '');
+			setElementText(summary.querySelector('[data-pasat-summary-type]'), hasActivity ? option.getAttribute('data-pasat-type') : '');
+			setElementText(summary.querySelector('[data-pasat-summary-age]'), hasActivity ? option.getAttribute('data-pasat-age-note') : '');
+			setElementText(summary.querySelector('[data-pasat-summary-description]'), hasActivity ? option.getAttribute('data-pasat-description') : '');
+			setElementText(summary.querySelector('[data-pasat-summary-capacity]'), hasActivity ? option.getAttribute('data-pasat-capacity') : summary.getAttribute('data-pasat-empty-meta'));
+
+			var status = summary.querySelector('[data-pasat-summary-status]');
+			if (status) {
+				status.className = hasActivity
+					? 'pasat-status pasat-status--' + (option.getAttribute('data-pasat-status-key') || 'open')
+					: 'pasat-status pasat-is-hidden';
+				status.textContent = hasActivity ? option.getAttribute('data-pasat-status') || '' : '';
+			}
+		}
+
+		setElementText(ageNote, hasActivity ? option.getAttribute('data-pasat-age-note') : '');
+
+		if (warning && warningInput && warningText) {
+			warning.classList.toggle('pasat-is-hidden', !warningValue);
+			warningInput.required = !!(warningValue && warningRequired);
+			warningInput.setAttribute('aria-required', warningInput.required ? 'true' : 'false');
+			if (!warningValue) {
+				warningInput.checked = false;
+			}
+			warningText.textContent = warningValue;
+		}
+		updateAckSection(ackSection);
+	}
+
+	function initSignupForm(form) {
+		var select = form.querySelector('[name="activity_id"]');
+		updateSignupSummary(form);
+		if (select) {
+			select.addEventListener('change', function () {
+				updateSignupSummary(form);
+			});
+		}
+	}
+
 	document.addEventListener('submit', function (event) {
 		var form = event.target;
 		if (!form || !form.matches('[data-pasat-signup-form]') || !window.fetch || !window.PASAT_PUBLIC) {
@@ -10,9 +151,12 @@
 		event.preventDefault();
 		var data = new FormData(form);
 		var payload = {};
+		var selectedActivity = form.querySelector('[name="activity_id"]') ? form.querySelector('[name="activity_id"]').value : '';
 		data.forEach(function (value, key) {
 			payload[key] = value;
 		});
+
+		setSubmitState(form, true);
 
 		fetch(window.PASAT_PUBLIC.restUrl + '/signups', {
 			method: 'POST',
@@ -22,24 +166,30 @@
 			},
 			body: JSON.stringify(payload)
 		}).then(function (response) {
-			return response.json().then(function (body) {
+			return response.json().catch(function () {
+				return {};
+			}).then(function (body) {
 				return { ok: response.ok, body: body };
 			});
 		}).then(function (result) {
-			var notice = form.parentNode.querySelector('.pasat-js-notice');
-			if (!notice) {
-				notice = document.createElement('div');
-				notice.className = 'pasat-js-notice pasat-notice';
-				form.parentNode.insertBefore(notice, form);
-			}
-			notice.classList.toggle('pasat-notice--success', result.ok);
-			notice.classList.toggle('pasat-notice--error', !result.ok);
-			notice.textContent = result.ok
-				? window.PASAT_PUBLIC.signupSuccess
-				: (result.body && result.body.message ? result.body.message : window.PASAT_PUBLIC.signupFailed);
+			showSignupNotice(
+				form,
+				result.ok,
+				result.ok
+					? signupSuccessMessage(result.body)
+					: (result.body && result.body.message ? result.body.message : publicLabel('signupFailed', 'Signup failed.'))
+			);
 			if (result.ok) {
 				form.reset();
+				if (selectedActivity && form.querySelector('[name="activity_id"]')) {
+					form.querySelector('[name="activity_id"]').value = selectedActivity;
+				}
+				updateSignupSummary(form);
 			}
+		}).catch(function () {
+			showSignupNotice(form, false, publicLabel('signupNetworkError', 'Signup could not be submitted. Please try again.'));
+		}).then(function () {
+			setSubmitState(form, false);
 		});
 	});
 
@@ -482,6 +632,8 @@
 			}
 		});
 	}
+
+	document.querySelectorAll('[data-pasat-signup-form]').forEach(initSignupForm);
 
 	document.querySelectorAll('[data-pasat-activity-filters]').forEach(initActivityFilters);
 

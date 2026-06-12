@@ -95,6 +95,8 @@ Acceptance criteria:
 
 ## Phase 3: Signup Form Redesign
 
+Status: addressed in `0.1.5` with a selected activity summary, sectioned signup form, styled optional/helper labels, activity-specific age and warning context, accessible AJAX notices, disabled submit state, and POST fallback preservation of the chosen activity after validation errors. Remaining refinements from this phase are now covered by Phase 6 visual/accessibility QA.
+
 Turn the form into a guided signup panel.
 
 Tasks:

@@ -2,6 +2,23 @@
 
 All notable PASAT repository-level changes are documented here. The WordPress.org-style plugin changelog is also maintained in `pasat/readme.txt`.
 
+## 0.1.5 - 2026-06-12
+
+Public signup form redesign.
+
+### Added
+
+- Selected activity summary panel above the public signup form with status, date, venue, capacity, activity type, age limits, and short description.
+- Grouped public signup sections for activity, participant, contact, and confirmations.
+- Dynamic activity-specific warning acknowledgement and age-limit context when the selected activity changes.
+- Accessible AJAX notice region with success/error roles and a disabled submitting state.
+
+### Changed
+
+- Public signup POST fallback now preserves the submitted activity after validation errors, including warning acknowledgement retries.
+- Bumped plugin asset/runtime version to `0.1.5`.
+- Kept database schema version at `0.1.2` because this release does not alter custom tables.
+
 ## 0.1.4 - 2026-06-12
 
 Public activity list redesign.

@@ -15,11 +15,15 @@ final class Assets {
 			'pasat-public',
 			'PASAT_PUBLIC',
 			array(
-				'restUrl'       => esc_url_raw( rest_url( 'pasat/v1' ) ),
-				'nonce'         => wp_create_nonce( 'wp_rest' ),
-				'signupSuccess' => __( 'Signup received. Please check your e-mail.', 'pasat' ),
-				'signupFailed'  => __( 'Signup failed.', 'pasat' ),
-				'map'           => array(
+				'restUrl'            => esc_url_raw( rest_url( 'pasat/v1' ) ),
+				'nonce'              => wp_create_nonce( 'wp_rest' ),
+				'signupSuccess'      => __( 'Signup received. Please check your e-mail.', 'pasat' ),
+				'signupConfirmed'    => __( 'Signup received. You are confirmed. Please check your e-mail.', 'pasat' ),
+				'signupFailed'       => __( 'Signup failed.', 'pasat' ),
+				'signupNetworkError' => __( 'Signup could not be submitted. Please try again.', 'pasat' ),
+				'signupSubmitting'   => __( 'Submitting...', 'pasat' ),
+				'signupWaitlisted'   => __( 'Signup received. You are on the waitlist. Please check your e-mail.', 'pasat' ),
+				'map'                => array(
 					'tileUrl'     => sanitize_text_field( (string) \PASAT\Helpers::setting( 'map_tile_url', 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' ) ),
 					'attribution' => wp_kses_post( (string) \PASAT\Helpers::setting( 'map_tile_attribution', __( '&copy; OpenStreetMap contributors', 'pasat' ) ) ),
 					'zoom'        => max( 1, min( 20, absint( \PASAT\Helpers::setting( 'map_default_zoom', 13 ) ) ) ),

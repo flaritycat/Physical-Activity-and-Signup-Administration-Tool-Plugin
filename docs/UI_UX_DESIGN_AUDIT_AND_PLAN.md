@@ -30,7 +30,7 @@ The modernization target should be a calm, trustworthy, operational product UI:
 | Area | Current Maturity | What Works | Main Gap |
 | --- | ---: | --- | --- |
 | Public activity list | 7/10 | Modern cards, filters, status pills, date blocks | Needs richer sort/date filters and visual QA across themes |
-| Public signup form | 5/10 | Functional, validated, styled controls | Not yet guided; lacks selected activity summary and refined feedback |
+| Public signup form | 7/10 | Guided sections, selected activity summary, dynamic warning/age context, accessible AJAX feedback | Needs visual QA, first-invalid-field focus, and broader theme testing |
 | Venue map and venue cards | 4/10 | Leaflet/OpenStreetMap works; fallback cards exist | Map dominates, raw coordinates show, no marker-card interaction |
 | My signups | 4/10 | Private lookup flow exists | Membership/badges/history feel like plain data output |
 | Activity board | 6/10 | Polling, QR option, status updates | Needs kiosk/display-specific visual system and large-room readability |
@@ -300,6 +300,8 @@ Principles:
 ## Detailed Improvement Roadmap
 
 ### Phase 3: Signup Form Redesign
+
+Status after `0.1.5`: Mostly implemented. PASAT now has a selected activity summary, grouped form sections, optional/helper labels, dynamic warning and age context, accessible AJAX notices, disabled submit state, and non-JavaScript POST fallback preservation of the selected activity. Remaining items are visual QA, first-invalid-field focus, and cross-theme testing.
 
 Priority: High
 Primary files:
@@ -775,19 +777,19 @@ Outcome:
 
 ## Immediate Next Recommended Work
 
-The next implementation should be Phase 3: Signup Form Redesign.
+The next implementation should be Phase 4: Venue Map and Venue Cards.
 
 Reason:
 
-- It is the central conversion flow.
-- It directly affects every public user.
-- It builds on the already-improved activity list.
-- It can be implemented with existing data and limited schema/API changes.
+- The signup page can still feel map-heavy when `show_map` is enabled.
+- Venue cards expose raw coordinate details that are not useful to most participants.
+- Better marker-card interaction will make venue discovery feel intentional.
+- The work can be done without database changes by improving markup, CSS, and existing map JavaScript.
 
 First concrete tasks:
 
-1. Add a selected activity summary card in `signup-form.php`.
-2. Add section wrappers around participant/contact/consent groups.
-3. Add loading/disabled submit state in `public.js`.
-4. Add `aria-live` to signup notices.
-5. Sync to `dev.raoul.no/wp` and test one confirmed signup and one validation error.
+1. Hide raw coordinates by default in public venue cards.
+2. Redesign venue cards around name, address, venue type/capacity, activity count, and next activity.
+3. Add card-to-marker and marker-to-card highlighting in `public.js`.
+4. Add a compact signup-page map variant with better spacing.
+5. Test standalone `[pasat_venue_map]` and `[pasat_activity_signup show_map="1"]` paths.
