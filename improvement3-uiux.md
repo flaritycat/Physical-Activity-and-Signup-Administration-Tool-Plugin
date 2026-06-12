@@ -137,6 +137,8 @@ Acceptance criteria:
 
 ## Phase 4: Venue Map and Venue Cards
 
+Status: addressed in `0.1.6` with redesigned public venue cards, hidden raw coordinates by default, venue chips, next-activity context, participant-friendly actions, compact activity-scoped maps, popup directions links, and card-to-marker highlighting. Remaining refinements from this phase can be handled in Phase 6 visual/accessibility QA.
+
 Make the map useful without letting it overpower signup.
 
 Tasks:

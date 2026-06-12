@@ -31,7 +31,7 @@ The modernization target should be a calm, trustworthy, operational product UI:
 | --- | ---: | --- | --- |
 | Public activity list | 7/10 | Modern cards, filters, status pills, date blocks | Needs richer sort/date filters and visual QA across themes |
 | Public signup form | 7/10 | Guided sections, selected activity summary, dynamic warning/age context, accessible AJAX feedback | Needs visual QA, first-invalid-field focus, and broader theme testing |
-| Venue map and venue cards | 4/10 | Leaflet/OpenStreetMap works; fallback cards exist | Map dominates, raw coordinates show, no marker-card interaction |
+| Venue map and venue cards | 6/10 | Compact public cards, hidden raw coordinates, next activity context, marker-card interaction | Needs visual QA, selected-venue polish, and cross-theme testing |
 | My signups | 4/10 | Private lookup flow exists | Membership/badges/history feel like plain data output |
 | Activity board | 6/10 | Polling, QR option, status updates | Needs kiosk/display-specific visual system and large-room readability |
 | Poster PDFs | 3/10 | QR PDF generation, logo setting, single/ZIP downloads | Layout breaks with long titles and does not look print-ready |
@@ -353,6 +353,8 @@ Acceptance criteria:
 - Server and AJAX error messages are accessible.
 
 ### Phase 4: Venue Map and Venue Cards
+
+Status after `0.1.6`: Mostly implemented. PASAT now hides raw coordinates by default, renders compact participant-friendly venue cards, shows venue chips and next activity context, adds directions actions, uses compact activity-scoped map styling, and connects cards with Leaflet markers. Remaining items are visual QA, optional shortcode attributes for alternate map modes, and deeper selected-venue polish.
 
 Priority: High
 Primary files:
@@ -777,19 +779,19 @@ Outcome:
 
 ## Immediate Next Recommended Work
 
-The next implementation should be Phase 4: Venue Map and Venue Cards.
+The next implementation should be Phase 7: Poster PDF and QR Print UX.
 
 Reason:
 
-- The signup page can still feel map-heavy when `show_map` is enabled.
-- Venue cards expose raw coordinate details that are not useful to most participants.
-- Better marker-card interaction will make venue discovery feel intentional.
-- The work can be done without database changes by improving markup, CSS, and existing map JavaScript.
+- The poster screenshot showed the most visible remaining design failure.
+- Venue QR posters are first-contact signup material at physical locations.
+- Long titles, URL wrapping, and QR hierarchy must be print-safe.
+- This can improve real-world signup conversion without changing the database.
 
 First concrete tasks:
 
-1. Hide raw coordinates by default in public venue cards.
-2. Redesign venue cards around name, address, venue type/capacity, activity count, and next activity.
-3. Add card-to-marker and marker-to-card highlighting in `public.js`.
-4. Add a compact signup-page map variant with better spacing.
-5. Test standalone `[pasat_venue_map]` and `[pasat_activity_signup show_map="1"]` paths.
+1. Refactor poster layout to reserve fixed title, metadata, QR, and footer zones.
+2. Add title wrapping/truncation that cannot collide with borders.
+3. Make the QR block visually dominant and centered.
+4. Replace raw long URL blocks with a short, readable direct-link section.
+5. Test single poster PDFs and bulk ZIP poster generation.

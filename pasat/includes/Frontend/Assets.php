@@ -29,6 +29,7 @@ final class Assets {
 					'zoom'        => max( 1, min( 20, absint( \PASAT\Helpers::setting( 'map_default_zoom', 13 ) ) ) ),
 					'activity'    => __( 'Activity', 'pasat' ),
 					'activities'  => __( 'Activities', 'pasat' ),
+					'directions'  => __( 'Directions', 'pasat' ),
 					'signUp'      => __( 'Sign up', 'pasat' ),
 				),
 				'board'         => array(

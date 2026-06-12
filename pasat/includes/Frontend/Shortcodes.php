@@ -307,8 +307,9 @@ final class Shortcodes {
 			array(
 				'venues'  => $venues,
 				'options' => array(
-					'height'     => $height,
-					'show_cards' => ! empty( $args['show_cards'] ),
+					'activity_id' => absint( $args['activity_id'] ?? 0 ),
+					'height'      => $height,
+					'show_cards'  => ! empty( $args['show_cards'] ),
 					'interactive' => ! empty( Helpers::setting( 'map_enabled', 1 ) ),
 				),
 			)

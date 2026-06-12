@@ -2,6 +2,24 @@
 
 All notable PASAT repository-level changes are documented here. The WordPress.org-style plugin changelog is also maintained in `pasat/readme.txt`.
 
+## 0.1.6 - 2026-06-12
+
+Venue map and venue card UX redesign.
+
+### Added
+
+- Compact public venue cards with venue type/capacity/activity chips, address, description excerpt, next activity, and action buttons.
+- Card-to-marker and marker-to-card highlighting for interactive Leaflet maps.
+- Directions links inside map popups.
+- Activity-scoped map styling for compact signup-page maps.
+
+### Changed
+
+- Raw latitude/longitude values are no longer shown in public venue cards by default.
+- Venue cards now show participant-friendly map status and actions instead of implementation details.
+- Bumped plugin asset/runtime version to `0.1.6`.
+- Kept database schema version at `0.1.2` because this release does not alter custom tables.
+
 ## 0.1.5 - 2026-06-12
 
 Public signup form redesign.

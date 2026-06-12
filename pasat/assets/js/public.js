@@ -661,6 +661,7 @@
 
 	function venuePopup(venue) {
 		var wrapper = document.createElement('div');
+		wrapper.className = 'pasat-map-popup';
 		var title = appendText(wrapper, 'strong', 'pasat-map-popup__title', venue.name);
 		var activities = Array.isArray(venue.activities) ? venue.activities : [];
 		if (title) {
@@ -683,6 +684,15 @@
 				list.appendChild(item);
 			});
 			wrapper.appendChild(list);
+		}
+		if (venue.map_url) {
+			var directions = document.createElement('a');
+			directions.className = 'pasat-map-popup__directions';
+			directions.href = venue.map_url;
+			directions.target = '_blank';
+			directions.rel = 'noopener noreferrer';
+			directions.textContent = mapLabel('directions', 'Directions');
+			wrapper.appendChild(directions);
 		}
 		return wrapper;
 	}
@@ -712,6 +722,34 @@
 			scrollWheelZoom: false
 		});
 		var bounds = [];
+		var cards = Array.prototype.slice.call(mapElement.querySelectorAll('[data-pasat-venue-card]'));
+		var markers = {};
+
+		function activateVenue(venueId, options) {
+			var id = String(venueId || '');
+			var marker = markers[id];
+			var activeCard = null;
+			options = options || {};
+
+			cards.forEach(function (card) {
+				var active = card.getAttribute('data-pasat-venue-id') === id;
+				card.classList.toggle('pasat-venue-card--active', active);
+				if (active) {
+					activeCard = card;
+				}
+			});
+
+			if (marker && options.openMarker) {
+				map.panTo(marker.getLatLng());
+				marker.openPopup();
+			}
+
+			if (activeCard && options.revealCard) {
+				activeCard.scrollIntoView({
+					block: 'nearest'
+				});
+			}
+		}
 
 		window.L.tileLayer(config.tileUrl || 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 			attribution: config.attribution || '&copy; OpenStreetMap contributors',
@@ -727,6 +765,31 @@
 			bounds.push(latLng);
 			marker = window.L.marker(latLng).addTo(map);
 			marker.bindPopup(venuePopup(venue));
+			markers[String(venue.id)] = marker;
+			marker.on('click', function () {
+				activateVenue(venue.id, {
+					revealCard: true
+				});
+			});
+			marker.on('popupopen', function () {
+				activateVenue(venue.id, {
+					revealCard: true
+				});
+			});
+		});
+
+		cards.forEach(function (card) {
+			var venueId = card.getAttribute('data-pasat-venue-id');
+			var focusButton = card.querySelector('[data-pasat-map-focus]');
+			if (!focusButton || !markers[String(venueId)]) {
+				return;
+			}
+
+			focusButton.addEventListener('click', function () {
+				activateVenue(venueId, {
+					openMarker: true
+				});
+			});
 		});
 
 		if (bounds.length === 1) {

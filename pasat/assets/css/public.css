@@ -446,6 +446,10 @@
 	max-width: 100%;
 }
 
+.pasat-venue-map--activity {
+	gap: 0.85rem;
+}
+
 .pasat-venue-map__canvas {
 	aspect-ratio: 16 / 9;
 	background: #e9f1f4;
@@ -463,6 +467,11 @@
 	min-height: 260px !important;
 }
 
+.pasat-venue-map--activity .pasat-venue-map__canvas {
+	aspect-ratio: 16 / 6;
+	max-height: 300px;
+}
+
 .pasat-venue-map__cards {
 	display: grid;
 	gap: 0.85rem;
@@ -473,17 +482,29 @@
 }
 
 .pasat-venue-card {
-	align-items: center;
+	align-items: start;
 	display: grid;
 	gap: 0.9rem;
-	grid-template-columns: 1.5rem minmax(0, 1fr) auto;
+	grid-template-columns: 1.4rem minmax(0, 1fr) auto;
 	padding: 1rem;
+	transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
 }
 
-.pasat-venue-card__pin {
+.pasat-venue-card--active {
+	border-color: rgba(22, 90, 114, 0.55);
+	box-shadow: 0 0 0 3px rgba(22, 90, 114, 0.1), var(--pasat-shadow-soft);
+}
+
+.pasat-venue-card:focus-within {
+	border-color: rgba(22, 90, 114, 0.45);
+	box-shadow: 0 0 0 3px rgba(22, 90, 114, 0.08), var(--pasat-shadow-soft);
+}
+
+.pasat-venue-card__marker {
 	background: var(--pasat-brand);
 	border-radius: 999px 999px 999px 0;
 	height: 1rem;
+	margin-top: 0.35rem;
 	transform: rotate(-45deg);
 	width: 1rem;
 }
@@ -492,46 +513,95 @@
 	min-width: 0;
 }
 
+.pasat-venue-card__header {
+	align-items: start;
+	display: grid;
+	gap: 0.5rem;
+	grid-template-columns: minmax(0, 1fr);
+}
+
 .pasat-venue-card__title {
 	font-size: 1.04rem;
 	line-height: 1.3;
-	margin: 0 0 0.28rem;
+	margin: 0;
 }
 
-.pasat-venue-card__meta,
-.pasat-venue-card__coordinates {
+.pasat-venue-card__chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+}
+
+.pasat-venue-card__chips .pasat-chip {
+	margin: 0;
+}
+
+.pasat-venue-card__address,
+.pasat-venue-card__meta {
 	color: var(--pasat-muted);
 	font-size: 0.93rem;
-	margin: 0.12rem 0;
+	margin: 0.45rem 0 0;
 }
 
-.pasat-venue-card__coordinates {
-	font-size: 0.86rem;
+.pasat-venue-card__address {
+	color: #334850;
+	font-weight: 600;
 }
 
 .pasat-venue-card__description {
 	color: #2f424b;
 	font-size: 0.94rem;
-	margin-top: 0.55rem;
+	margin: 0.55rem 0 0;
 }
 
-.pasat-venue-card__description p {
-	margin: 0.35rem 0 0;
-}
-
-.pasat-venue-card__activities {
-	color: var(--pasat-muted);
+.pasat-venue-card__next {
+	background: var(--pasat-surface-alt);
+	border: 1px solid var(--pasat-border);
+	border-radius: 8px;
+	display: grid;
 	font-size: 0.92rem;
-	margin: 0.55rem 0 0 1rem;
+	gap: 0.16rem;
+	margin-top: 0.7rem;
+	padding: 0.65rem 0.75rem;
+}
+
+.pasat-venue-card__next a {
+	font-weight: 800;
+}
+
+.pasat-venue-card__next span:not(.pasat-venue-card__label) {
+	color: var(--pasat-muted);
+}
+
+.pasat-venue-card__label {
+	color: var(--pasat-muted);
+	font-size: 0.76rem;
+	font-weight: 800;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+}
+
+.pasat-venue-card__actions {
+	align-items: stretch;
+	display: flex;
+	flex-direction: column;
+	gap: 0.55rem;
+	justify-content: center;
+	min-width: 8.5rem;
 }
 
 .pasat-venue-card__link {
 	white-space: nowrap;
 }
 
+.pasat-map-popup {
+	min-width: 12rem;
+}
+
 .pasat-map-popup__title {
 	display: block;
 	margin-bottom: 0.25rem;
+	color: var(--pasat-text);
 }
 
 .pasat-map-popup__meta,
@@ -546,6 +616,12 @@
 .pasat-map-popup__activities {
 	margin: 0.35rem 0 0 1rem;
 	padding: 0;
+}
+
+.pasat-map-popup__directions {
+	display: inline-block;
+	font-weight: 800;
+	margin-top: 0.45rem;
 }
 
 .pasat-signup-summary {
@@ -898,8 +974,14 @@
 		min-height: 240px !important;
 	}
 
-	.pasat-venue-card__pin {
+	.pasat-venue-card__marker {
 		display: none;
+	}
+
+	.pasat-venue-card__actions {
+		flex-direction: row;
+		justify-content: flex-start;
+		min-width: 0;
 	}
 
 	.pasat-venue-card__link {
@@ -943,6 +1025,10 @@
 
 	.pasat-card__details span + span::before {
 		display: none;
+	}
+
+	.pasat-venue-card__actions {
+		flex-direction: column;
 	}
 }
 
