@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 ?>
-<div class="pasat-my-signups">
+<div class="pasat-public pasat-public--my-signups pasat-my-signups">
 	<?php if ( ! empty( $pasat['error'] ) ) : ?>
 		<div class="pasat-notice pasat-notice--error"><?php echo esc_html( $pasat['error'] ); ?></div>
 	<?php endif; ?>

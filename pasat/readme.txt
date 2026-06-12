@@ -4,7 +4,7 @@ Tags: activities, signup, events, waitlist, administration
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.1
-Stable tag: 0.1.2
+Stable tag: 0.1.3
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -68,6 +68,10 @@ No. The public checkbox records membership interest. Administrators can manually
 2. Public activity list and signup form.
 
 == Changelog ==
+
+= 0.1.3 =
+
+Adds a public UI foundation with scoped PASAT design tokens, public template wrappers, improved activity/form/venue surfaces, styled form controls, status pills, notices, focus states, and responsive spacing.
 
 = 0.1.2 =
 

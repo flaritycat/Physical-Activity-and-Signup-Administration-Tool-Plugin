@@ -19,7 +19,7 @@ $pasat_canvas_venues = array_values(
 	)
 );
 ?>
-<div class="pasat-venue-map" data-pasat-venue-map data-pasat-map-enabled="<?php echo ! empty( $pasat_options['interactive'] ) ? '1' : '0'; ?>" data-venues="<?php echo esc_attr( wp_json_encode( $pasat_canvas_venues ) ); ?>">
+<div class="pasat-public pasat-public--venue-map pasat-venue-map" data-pasat-venue-map data-pasat-map-enabled="<?php echo ! empty( $pasat_options['interactive'] ) ? '1' : '0'; ?>" data-venues="<?php echo esc_attr( wp_json_encode( $pasat_canvas_venues ) ); ?>">
 	<?php if ( $pasat_canvas_venues && ! empty( $pasat_options['interactive'] ) ) : ?>
 		<div
 			class="pasat-venue-map__canvas"

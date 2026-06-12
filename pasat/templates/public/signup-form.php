@@ -12,7 +12,7 @@ $pasat_selected         = $pasat_activity ? (int) $pasat_activity['id'] : ( isse
 $pasat_warning_text     = $pasat_activity && ! empty( $pasat_activity['warning_text'] ) ? $pasat_activity['warning_text'] : ( $pasat_settings['default_warning_text'] ?? '' );
 $pasat_warning_required = $pasat_activity && ! empty( $pasat_activity['requires_warning_ack'] );
 ?>
-<div id="pasat-signup" class="pasat-signup">
+<div id="pasat-signup" class="pasat-public pasat-public--signup pasat-signup">
 	<?php if ( ! empty( $_GET['pasat_cancelled'] ) ) : ?>
 		<div class="pasat-notice pasat-notice--success"><?php esc_html_e( 'Your signup has been cancelled.', 'pasat' ); ?></div>
 	<?php endif; ?>

@@ -2,6 +2,26 @@
 
 All notable PASAT repository-level changes are documented here. The WordPress.org-style plugin changelog is also maintained in `pasat/readme.txt`.
 
+## 0.1.3 - 2026-06-12
+
+Public UI/UX foundation.
+
+### Added
+
+- Scoped `.pasat-public` wrappers for public activity list, signup, venue map, and my-signups templates.
+- Public CSS design tokens for PASAT colors, surfaces, borders, spacing, shadows, status states, and focus states.
+- Polished default public styling for activity cards, venue cards, signup forms, notices, buttons, status pills, tables, and map containers.
+- Responsive public layout rules for mobile, tablet, and desktop widths.
+
+### Changed
+
+- Bumped plugin asset/runtime version to `0.1.3`.
+- Kept database schema version at `0.1.2` because this release does not alter custom tables.
+
+### Deferred
+
+- Full activity-card redesign with filters, selected-activity summary, map/card interaction, my-signups badge redesign, and admin UI cleanup remain in `improvement3-uiux.md`.
+
 ## 0.1.2 - 2026-06-10
 
 Membership, participation logs, placements, and badges.

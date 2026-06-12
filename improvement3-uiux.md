@@ -33,6 +33,8 @@ Create a calm, operational UI that works inside arbitrary WordPress themes:
 
 ## Phase 1: Public Layout Shell
 
+Status: addressed in `0.1.3` with scoped public wrappers, CSS design tokens, polished base surfaces, controls, notices, status pills, focus states, and responsive spacing. Remaining refinements from this phase can be folded into the later component-specific phases.
+
 Create a consistent public wrapper and layout vocabulary.
 
 Tasks:

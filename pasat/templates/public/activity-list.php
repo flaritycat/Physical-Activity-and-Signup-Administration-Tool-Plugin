@@ -79,7 +79,7 @@ $pasat_board_status = static function ( array $pasat_activity, array $pasat_capa
 	);
 };
 ?>
-<div class="pasat-activity-list<?php echo $pasat_board ? ' pasat-activity-board' : ''; ?><?php echo $pasat_board && 'kiosk' === $pasat_board_options['mode'] ? ' pasat-activity-board--kiosk' : ''; ?>"<?php foreach ( $pasat_board_attrs as $pasat_attr => $pasat_value ) : ?> <?php echo esc_attr( $pasat_attr ); ?><?php echo '' !== $pasat_value ? '="' . esc_attr( $pasat_value ) . '"' : ''; ?><?php endforeach; ?>>
+<div class="pasat-public pasat-public--activities pasat-activity-list<?php echo $pasat_board ? ' pasat-activity-board' : ''; ?><?php echo $pasat_board && 'kiosk' === $pasat_board_options['mode'] ? ' pasat-activity-board--kiosk' : ''; ?>"<?php foreach ( $pasat_board_attrs as $pasat_attr => $pasat_value ) : ?> <?php echo esc_attr( $pasat_attr ); ?><?php echo '' !== $pasat_value ? '="' . esc_attr( $pasat_value ) . '"' : ''; ?><?php endforeach; ?>>
 	<?php foreach ( $pasat_activities as $pasat_activity ) : ?>
 		<?php
 		$pasat_capacity    = $pasat_signups ? $pasat_signups->capacity_snapshot( $pasat_activity ) : array( 'capacity' => null, 'confirmed' => 0, 'waitlisted' => 0, 'remaining' => null, 'is_full' => false );
