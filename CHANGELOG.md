@@ -2,6 +2,24 @@
 
 All notable PASAT repository-level changes are documented here. The WordPress.org-style plugin changelog is also maintained in `pasat/readme.txt`.
 
+## 0.1.15 - 2026-06-12
+
+Assistive-technology QA preparation.
+
+### Added
+
+- Manual assistive-technology QA checklist covering public signup, My Signups, activity filters, venue map, and activity board flows.
+- Public accessibility preflight coverage for the dynamic selected-activity summary and activity selector relationship.
+
+### Fixed
+
+- Made the selected-activity signup summary a polite atomic live region and connected the activity selector to it with `aria-controls`.
+
+### Changed
+
+- Bumped plugin asset/runtime version to `0.1.15`.
+- Kept database schema version at `0.1.2` because this release does not alter custom tables.
+
 ## 0.1.14 - 2026-06-12
 
 Public screen-reader QA hardening.

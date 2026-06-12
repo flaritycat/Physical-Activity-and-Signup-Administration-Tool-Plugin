@@ -15,6 +15,7 @@ $pasat_signups_repo     = new PASAT\Database\SignupsRepository();
 $pasat_default_warning  = (string) ( $pasat_settings['default_warning_text'] ?? '' );
 $pasat_form_id          = wp_unique_id( 'pasat-signup-' );
 $pasat_age_note_id      = $pasat_form_id . 'age-note';
+$pasat_summary_id       = $pasat_form_id . 'summary';
 
 $pasat_format_date = static function ( array $activity ): string {
 	if ( empty( $activity['starts_at'] ) ) {
@@ -168,7 +169,7 @@ $pasat_has_static_checks = ! empty( $pasat_settings['require_consent'] ) || ! em
 	<?php if ( empty( $pasat_activities ) ) : ?>
 		<p class="pasat-empty"><?php esc_html_e( 'No activities are currently open for signup.', 'pasat' ); ?></p>
 	<?php else : ?>
-		<div class="pasat-signup-summary<?php echo $pasat_selected_summary ? '' : ' pasat-signup-summary--empty'; ?>" data-pasat-signup-summary data-pasat-empty-title="<?php esc_attr_e( 'No activity selected', 'pasat' ); ?>" data-pasat-empty-meta="<?php esc_attr_e( 'Select an activity before submitting.', 'pasat' ); ?>">
+		<div id="<?php echo esc_attr( $pasat_summary_id ); ?>" class="pasat-signup-summary<?php echo $pasat_selected_summary ? '' : ' pasat-signup-summary--empty'; ?>" data-pasat-signup-summary data-pasat-empty-title="<?php esc_attr_e( 'No activity selected', 'pasat' ); ?>" data-pasat-empty-meta="<?php esc_attr_e( 'Select an activity before submitting.', 'pasat' ); ?>" role="status" aria-live="polite" aria-atomic="true">
 			<div class="pasat-signup-summary__body">
 				<span class="pasat-signup-summary__eyebrow"><?php esc_html_e( 'Selected activity', 'pasat' ); ?></span>
 				<h2 class="pasat-signup-summary__title" data-pasat-summary-title><?php echo esc_html( $pasat_selected_summary['title'] ?? __( 'No activity selected', 'pasat' ) ); ?></h2>
@@ -194,7 +195,7 @@ $pasat_has_static_checks = ! empty( $pasat_settings['require_consent'] ) || ! em
 				<legend><?php esc_html_e( 'Activity', 'pasat' ); ?></legend>
 				<label class="pasat-field" for="<?php echo esc_attr( $pasat_form_id ); ?>activity">
 					<span><?php esc_html_e( 'Activity', 'pasat' ); ?></span>
-					<select id="<?php echo esc_attr( $pasat_form_id ); ?>activity" name="activity_id" required>
+					<select id="<?php echo esc_attr( $pasat_form_id ); ?>activity" name="activity_id" required aria-controls="<?php echo esc_attr( $pasat_summary_id ); ?>">
 						<option value=""><?php esc_html_e( 'Choose activity', 'pasat' ); ?></option>
 						<?php foreach ( $pasat_activities as $pasat_item ) : ?>
 							<?php

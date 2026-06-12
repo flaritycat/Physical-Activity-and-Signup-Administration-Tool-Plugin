@@ -1,7 +1,7 @@
 # PASAT UI/UX Design Audit and Modernization Plan
 
 Date: 2026-06-12
-Plugin version audited: 0.1.14
+Plugin version audited: 0.1.15
 Scope: public shortcodes, activity board, venue map, signup flow, participant lookup, membership/badges, poster PDFs, and PASAT wp-admin screens.
 
 ## Executive Summary
@@ -22,6 +22,7 @@ The UI/UX has moved beyond raw MVP in recent public-facing steps:
 - `0.1.12` added automated public contrast checks to release preflight.
 - `0.1.13` improved keyboard accessibility for activity filters, venue-map controls, and auto-refreshing board signup links.
 - `0.1.14` added automated public accessibility hook checks, atomic board refresh announcements, and venue-specific map popup direction labels.
+- `0.1.15` added a manual assistive-technology QA checklist and made the selected-activity signup summary a live announced region.
 
 However, the plugin is not yet consistently modern across all surfaces. The strongest current areas are the public activity list, signup form, venue cards, activity board, poster PDFs, and verified participant profile. The weakest remaining areas are admin information architecture and full cross-theme accessibility QA.
 
@@ -795,7 +796,7 @@ Outcome:
 
 ## Accessibility Status
 
-Status after `0.1.14`: In progress. PASAT now announces signup validation errors in the public notice region, focuses AJAX signup results, marks invalid signup fields visually, adds explicit confirmation checkbox labels, associates age guidance with the age field, improves My Signups notice roles/labeling, gives repeated signup/map/board actions contextual accessible names, has automated contrast checks for core public UI states, announces activity-filter counts, exposes active venue-map controls, preserves board signup-link focus during auto-refresh, keeps board refresh announcements atomic, and audits key public accessibility hooks during release preflight. Remaining work is a manual assistive-technology pass and cross-theme visual QA.
+Status after `0.1.15`: In progress. PASAT now announces signup validation errors in the public notice region, focuses AJAX signup results, marks invalid signup fields visually, adds explicit confirmation checkbox labels, associates age guidance with the age field, announces selected-activity summary changes, improves My Signups notice roles/labeling, gives repeated signup/map/board actions contextual accessible names, has automated contrast checks for core public UI states, announces activity-filter counts, exposes active venue-map controls, preserves board signup-link focus during auto-refresh, keeps board refresh announcements atomic, audits key public accessibility hooks during release preflight, and has a repeatable manual assistive-technology QA checklist. Remaining work is executing that manual pass and cross-theme visual QA.
 
 ## Immediate Next Recommended Work
 
@@ -809,7 +810,7 @@ Reason:
 
 First concrete tasks:
 
-1. Run a manual assistive-technology pass for signup validation, lookup notices, board refresh status, filter counts, and map action controls.
+1. Execute `docs/ASSISTIVE_TECH_QA.md` with NVDA/VoiceOver on the dev site.
 2. Check mobile and desktop layouts in a block theme and a classic theme.
 3. Fix text overflow, focus, and spacing issues found during the pass.
 4. Continue manual keyboard testing across the dev site after each public UI change.

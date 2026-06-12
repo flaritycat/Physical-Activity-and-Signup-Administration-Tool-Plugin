@@ -10,6 +10,16 @@ $checks = array(
 		'pattern' => '/data-pasat-notice-region[^>]+aria-live="polite"[^>]+aria-atomic="true"/',
 	),
 	array(
+		'file'    => 'pasat/templates/public/signup-form.php',
+		'label'   => 'Signup activity summary live region',
+		'pattern' => '/data-pasat-signup-summary.*?role="status".*?aria-live="polite".*?aria-atomic="true"/s',
+	),
+	array(
+		'file'    => 'pasat/templates/public/signup-form.php',
+		'label'   => 'Signup activity select controls summary',
+		'pattern' => '/name="activity_id" required aria-controls="\<\?php echo esc_attr\( \$pasat_summary_id \); \?>"/',
+	),
+	array(
 		'file'    => 'pasat/assets/js/public.js',
 		'label'   => 'AJAX-created signup notice live region',
 		'pattern' => '/region\.setAttribute\(\s*[\'"]aria-live[\'"],\s*[\'"]polite[\'"]\s*\).*region\.setAttribute\(\s*[\'"]aria-atomic[\'"],\s*[\'"]true[\'"]\s*\)/s',
