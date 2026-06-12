@@ -1896,3 +1896,11 @@ msgstr ""
 #: templates/public/venue-map.php:84
 msgid "No public venue map information is currently available."
 msgstr ""
+
+#: templates/public/activity-list.php:135
+msgid "Display Board"
+msgstr ""
+
+#: templates/public/activity-list.php:136
+msgid "Activity Board"
+msgstr ""

@@ -1,7 +1,7 @@
 # PASAT UI/UX Design Audit and Modernization Plan
 
 Date: 2026-06-12
-Plugin version audited: 0.1.8
+Plugin version audited: 0.1.9
 Scope: public shortcodes, activity board, venue map, signup flow, participant lookup, membership/badges, poster PDFs, and PASAT wp-admin screens.
 
 ## Executive Summary
@@ -16,8 +16,9 @@ The UI/UX has moved beyond raw MVP in recent public-facing steps:
 - `0.1.6` redesigned venue map cards and marker/card interactions.
 - `0.1.7` improved printable activity poster PDFs and QR hierarchy.
 - `0.1.8` redesigned verified My Signups membership, badges, and participation history.
+- `0.1.9` improved activity board list/grid/kiosk presentation and refresh status behavior.
 
-However, the plugin is not yet consistently modern across all surfaces. The strongest current areas are the public activity list, signup form, venue cards, poster PDFs, and verified participant profile. The weakest remaining areas are activity board display polish, admin information architecture, and full cross-theme accessibility QA.
+However, the plugin is not yet consistently modern across all surfaces. The strongest current areas are the public activity list, signup form, venue cards, activity board, poster PDFs, and verified participant profile. The weakest remaining areas are admin information architecture and full cross-theme accessibility QA.
 
 The modernization target should be a calm, trustworthy, operational product UI:
 
@@ -37,7 +38,7 @@ The modernization target should be a calm, trustworthy, operational product UI:
 | Public signup form | 7/10 | Guided sections, selected activity summary, dynamic warning/age context, accessible AJAX feedback | Needs visual QA, first-invalid-field focus, and broader theme testing |
 | Venue map and venue cards | 6/10 | Compact public cards, hidden raw coordinates, next activity context, marker-card interaction | Needs visual QA, selected-venue polish, and cross-theme testing |
 | My signups | 7/10 | Private profile, membership card, badge gallery, responsive history | Needs visual QA with real participant data and broader theme testing |
-| Activity board | 6/10 | Polling, QR option, status updates | Needs kiosk/display-specific visual system and large-room readability |
+| Activity board | 7/10 | Polling, QR option, list/grid/kiosk modes, stable refresh status | Needs visual QA on real displays and offline-state testing |
 | Poster PDFs | 6/10 | Fixed print zones, bounded wrapping, stronger QR hierarchy, short-link card | Needs visual QA, optional poster settings, and ZIP manifest polish |
 | Admin dashboard | 5/10 | Metrics, upcoming activities, recent signups | Needs workflow-focused dashboard, quick actions, richer status cards |
 | Admin CRUD/list screens | 4/10 | CRUD works and uses WP conventions | Dense tables, cramped inline actions, limited hierarchy |
@@ -442,6 +443,8 @@ Acceptance criteria:
 
 ### Phase 6: Activity Board Display UX
 
+Status after `0.1.9`: Implemented for the public board experience. PASAT now supports explicit list/grid/kiosk modes, a stable board toolbar, `aria-live` refresh status, dedicated refresh item container, grouped QR actions, and stronger kiosk readability. Remaining items are real-device visual QA and longer offline/refresh testing.
+
 Priority: Medium
 Primary files:
 
@@ -787,18 +790,18 @@ Outcome:
 
 ## Immediate Next Recommended Work
 
-The next implementation should be Phase 6: Activity Board Display UX.
+The next implementation should be Accessibility and Theme Compatibility QA.
 
 Reason:
 
-- The board exists and auto-refreshes, but it still shares too much visual language with normal activity cards.
-- Display-board users need large-room readability, stable refresh behavior, and clearer offline/updated state.
-- The work can improve venue/day-of-use workflows without changing the signup data model.
+- The main public experiences now have modern structure, but they still need a pass across real themes, screen sizes, keyboard navigation, and contrast.
+- This work reduces risk before deeper admin redesign.
+- It can catch layout regressions introduced by the recent activity list, signup, venue, poster, My Signups, and board improvements.
 
 First concrete tasks:
 
-1. Separate activity board card styling from regular activity-list cards.
-2. Add larger kiosk typography and high-contrast status/readability rules.
-3. Improve QR mode composition for board cards.
-4. Add clearer last-updated/offline refresh feedback.
-5. Test board layout on desktop display and mobile/tablet fallback widths.
+1. Keyboard-test activity list, signup, venue map, My Signups, and activity board controls.
+2. Verify contrast for buttons, status pills, notices, muted text, and board refresh states.
+3. Confirm `aria-live` behavior for signup notices and board refresh status.
+4. Check mobile and desktop layouts in a block theme and a classic theme.
+5. Fix text overflow, focus, and spacing issues found during the pass.

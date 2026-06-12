@@ -316,7 +316,7 @@ Acceptance criteria:
 6. Add accessibility polish and responsive checks.
 7. Redesign poster PDFs and QR print workflow. Mostly completed in `0.1.7`; keep visual QA and ZIP manifest refinements.
 8. Clean up admin dashboard and key admin pages.
-9. Improve activity board display/kiosk readability and refresh feedback.
+9. Improve activity board display/kiosk readability and refresh feedback. Completed in `0.1.9`.
 10. Rebuild release ZIP and smoke-test on `https://dev.raoul.no/wp/pasat-test-signup/`.
 
 ## Test Plan

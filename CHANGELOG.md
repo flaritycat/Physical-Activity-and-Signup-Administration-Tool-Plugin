@@ -2,6 +2,25 @@
 
 All notable PASAT repository-level changes are documented here. The WordPress.org-style plugin changelog is also maintained in `pasat/readme.txt`.
 
+## 0.1.9 - 2026-06-12
+
+Activity board display and kiosk UX polish.
+
+### Added
+
+- Activity board toolbar with stable refresh status, `role="status"`, and polite live-region updates.
+- Dedicated board item container so AJAX refreshes update activity cards without replacing the board status/header region.
+- Explicit `[pasat_activity_board mode="list|grid|kiosk"]` handling.
+- Grid-mode smoke coverage for the activity board shortcode.
+
+### Changed
+
+- Reworked board card styling to separate display-board layouts from normal public activity cards.
+- Improved kiosk readability with larger title/status/date treatment and reduced detail density.
+- Improved QR display composition with a grouped QR/sign-up action area on first render and after polling refreshes.
+- Bumped plugin asset/runtime version to `0.1.9`.
+- Kept database schema version at `0.1.2` because this release does not alter custom tables.
+
 ## 0.1.8 - 2026-06-12
 
 My Signups, membership, and badge UX redesign.

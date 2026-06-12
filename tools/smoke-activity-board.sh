@@ -128,8 +128,13 @@ $html = do_shortcode(
 
 $expectations = array(
 	'pasat-activity-board--kiosk',
+	'data-pasat-mode="kiosk"',
 	'data-pasat-show-qr="1"',
+	'pasat-board-toolbar',
+	'pasat-board-items',
+	'role="status"',
 	'data-pasat-qr-value=',
+	'pasat-board-qr-wrap',
 	'Morning Yoga',
 	'Starting soon',
 	'Updated just now',
@@ -139,6 +144,20 @@ $expectations = array(
 foreach ( $expectations as $expected ) {
 	if ( false === strpos( $html, $expected ) ) {
 		fwrite( STDERR, "Missing board markup: {$expected}\n" );
+		exit( 1 );
+	}
+}
+
+$grid_html = do_shortcode(
+	sprintf(
+		'[pasat_activity_board mode="grid" show_qr="0" venue_id="%d" activity_type="yoga" refresh="15000" limit="5"]',
+		$venue_a
+	)
+);
+
+foreach ( array( 'pasat-activity-board--grid', 'data-pasat-mode="grid"', 'pasat-board-items', 'Morning Yoga' ) as $expected ) {
+	if ( false === strpos( $grid_html, $expected ) ) {
+		fwrite( STDERR, "Missing grid board markup: {$expected}\n" );
 		exit( 1 );
 	}
 }

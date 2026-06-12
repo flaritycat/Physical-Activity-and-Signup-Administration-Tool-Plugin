@@ -19,6 +19,8 @@ $pasat_board_options = wp_parse_args(
 		'few_spots'     => 3,
 	)
 );
+$pasat_board_mode = sanitize_key( (string) $pasat_board_options['mode'] );
+$pasat_board_mode = in_array( $pasat_board_mode, array( 'grid', 'kiosk', 'list' ), true ) ? $pasat_board_mode : 'list';
 $pasat_activity_repo = new PASAT\Database\ActivitiesRepository();
 $pasat_board_attrs   = array();
 $pasat_selected_id   = isset( $_GET['pasat_activity_id'] ) ? absint( wp_unslash( $_GET['pasat_activity_id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only public preselection.
@@ -35,7 +37,7 @@ if ( $pasat_board ) {
 		'data-pasat-host-id'             => (string) absint( $pasat_board_options['host_id'] ),
 		'data-pasat-show-qr'             => ! empty( $pasat_board_options['show_qr'] ) ? '1' : '0',
 		'data-pasat-few-spots-threshold' => (string) max( 1, absint( $pasat_board_options['few_spots'] ) ),
-		'data-pasat-mode'                => (string) $pasat_board_options['mode'],
+		'data-pasat-mode'                => $pasat_board_mode,
 	);
 }
 
@@ -95,7 +97,7 @@ $pasat_board_status = static function ( array $pasat_activity, array $pasat_capa
 	);
 };
 ?>
-<div class="pasat-public pasat-public--activities pasat-activity-list<?php echo $pasat_board ? ' pasat-activity-board' : ''; ?><?php echo $pasat_board && 'kiosk' === $pasat_board_options['mode'] ? ' pasat-activity-board--kiosk' : ''; ?>"<?php foreach ( $pasat_board_attrs as $pasat_attr => $pasat_value ) : ?> <?php echo esc_attr( $pasat_attr ); ?><?php echo '' !== $pasat_value ? '="' . esc_attr( $pasat_value ) . '"' : ''; ?><?php endforeach; ?>>
+<div class="pasat-public pasat-public--activities pasat-activity-list<?php echo $pasat_board ? ' pasat-activity-board pasat-activity-board--' . esc_attr( $pasat_board_mode ) : ''; ?>"<?php foreach ( $pasat_board_attrs as $pasat_attr => $pasat_value ) : ?> <?php echo esc_attr( $pasat_attr ); ?><?php echo '' !== $pasat_value ? '="' . esc_attr( $pasat_value ) . '"' : ''; ?><?php endforeach; ?>>
 	<?php if ( ! $pasat_board && count( $pasat_activities ) > 5 ) : ?>
 		<div class="pasat-activity-list__tools" data-pasat-activity-filters>
 			<label class="pasat-filter-field">
@@ -127,6 +129,16 @@ $pasat_board_status = static function ( array $pasat_activity, array $pasat_capa
 			<button type="button" class="pasat-button pasat-button--secondary" data-pasat-filter-reset><?php esc_html_e( 'Reset', 'pasat' ); ?></button>
 		</div>
 	<?php endif; ?>
+	<?php if ( $pasat_board ) : ?>
+		<div class="pasat-board-toolbar">
+			<div>
+				<p class="pasat-section-kicker"><?php esc_html_e( 'Display Board', 'pasat' ); ?></p>
+				<h2 class="pasat-board-title"><?php esc_html_e( 'Activity Board', 'pasat' ); ?></h2>
+			</div>
+			<p class="pasat-board-updated" data-pasat-board-updated role="status" aria-live="polite"><?php esc_html_e( 'Updated just now', 'pasat' ); ?></p>
+		</div>
+		<div class="pasat-board-items" data-pasat-board-items>
+	<?php endif; ?>
 	<?php foreach ( $pasat_activities as $pasat_activity ) : ?>
 		<?php
 		$pasat_capacity    = $pasat_signups ? $pasat_signups->capacity_snapshot( $pasat_activity ) : array( 'capacity' => null, 'confirmed' => 0, 'waitlisted' => 0, 'remaining' => null, 'is_full' => false );
@@ -150,7 +162,7 @@ $pasat_board_status = static function ( array $pasat_activity, array $pasat_capa
 		);
 		?>
 		<article
-			class="pasat-card<?php echo $pasat_selected_id === (int) $pasat_activity['id'] ? ' pasat-card--selected' : ''; ?>"
+			class="pasat-card<?php echo $pasat_board ? ' pasat-board-card' : ''; ?><?php echo $pasat_selected_id === (int) $pasat_activity['id'] ? ' pasat-card--selected' : ''; ?>"
 			data-pasat-activity-card
 			data-pasat-activity-id="<?php echo esc_attr( (string) $pasat_activity['id'] ); ?>"
 			data-pasat-search="<?php echo esc_attr( $pasat_search_text ); ?>"
@@ -229,14 +241,16 @@ $pasat_board_status = static function ( array $pasat_activity, array $pasat_capa
 						?>
 					</span>
 					<?php if ( ! empty( $pasat_board_options['show_qr'] ) ) : ?>
-						<span class="pasat-board-qr" data-pasat-qr-value="<?php echo esc_attr( $pasat_qr_link ); ?>" aria-label="<?php echo esc_attr( sprintf(
-							/* translators: %s is activity title. */
-							__( 'Signup QR code for %s', 'pasat' ),
-							$pasat_activity['title']
-						) ); ?>">
-							<span class="pasat-board-qr__fallback"><?php esc_html_e( 'Signup QR', 'pasat' ); ?></span>
-						</span>
-						<a class="pasat-board-qr-link" href="<?php echo esc_url( $pasat_link ); ?>"><?php esc_html_e( 'Sign up', 'pasat' ); ?></a>
+						<div class="pasat-board-qr-wrap">
+							<span class="pasat-board-qr" data-pasat-qr-value="<?php echo esc_attr( $pasat_qr_link ); ?>" aria-label="<?php echo esc_attr( sprintf(
+								/* translators: %s is activity title. */
+								__( 'Signup QR code for %s', 'pasat' ),
+								$pasat_activity['title']
+							) ); ?>">
+								<span class="pasat-board-qr__fallback"><?php esc_html_e( 'Signup QR', 'pasat' ); ?></span>
+							</span>
+							<a class="pasat-board-qr-link" href="<?php echo esc_url( $pasat_link ); ?>"><?php esc_html_e( 'Sign up', 'pasat' ); ?></a>
+						</div>
 					<?php endif; ?>
 				<?php else : ?>
 					<a class="pasat-button" href="<?php echo esc_url( $pasat_link ); ?>"><?php esc_html_e( 'Sign Up', 'pasat' ); ?></a>
@@ -244,13 +258,16 @@ $pasat_board_status = static function ( array $pasat_activity, array $pasat_capa
 			</div>
 		</article>
 	<?php endforeach; ?>
+	<?php if ( $pasat_board ) : ?>
+		<?php if ( ! $pasat_activities ) : ?>
+			<p class="pasat-empty"><?php esc_html_e( 'No public activities are currently available.', 'pasat' ); ?></p>
+		<?php endif; ?>
+		</div>
+	<?php endif; ?>
 	<?php if ( ! $pasat_board && count( $pasat_activities ) > 5 ) : ?>
 		<p class="pasat-empty pasat-activity-list__no-results" data-pasat-filter-empty hidden><?php esc_html_e( 'No activities match those filters.', 'pasat' ); ?></p>
 	<?php endif; ?>
-	<?php if ( ! $pasat_activities ) : ?>
+	<?php if ( ! $pasat_board && ! $pasat_activities ) : ?>
 		<p class="pasat-empty"><?php esc_html_e( 'No public activities are currently available.', 'pasat' ); ?></p>
-	<?php endif; ?>
-	<?php if ( $pasat_board ) : ?>
-		<p class="pasat-board-updated" data-pasat-board-updated><?php esc_html_e( 'Updated just now', 'pasat' ); ?></p>
 	<?php endif; ?>
 </div>

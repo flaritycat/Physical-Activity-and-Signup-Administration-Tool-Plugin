@@ -229,6 +229,8 @@ Displays a read-only board of upcoming activities and refreshes public capacity 
 Useful board options:
 
 ```text
+[pasat_activity_board mode="list"]
+[pasat_activity_board mode="grid"]
 [pasat_activity_board mode="kiosk"]
 [pasat_activity_board show_qr="1"]
 [pasat_activity_board venue_id="3"]
@@ -238,7 +240,7 @@ Useful board options:
 [pasat_activity_board limit="10"]
 ```
 
-The board supports kiosk styling, visible refresh/connection status, clearer status labels, change highlights, optional local QR signup codes, and venue/type/host filtering. The board remains polling-based rather than realtime; `refresh` is in milliseconds and is clamped to a minimum of 15 seconds.
+The board supports list, grid, and kiosk styling, a stable refresh/connection status toolbar, clearer status labels, change highlights, optional local QR signup codes, and venue/type/host filtering. The board remains polling-based rather than realtime; `refresh` is in milliseconds and is clamped to a minimum of 15 seconds.
 
 ## Public Signup Behavior
 
@@ -394,7 +396,7 @@ Optional Activity Board smoke test for release maintainers with Docker:
 tools/smoke-activity-board.sh
 ```
 
-This development-only script installs the packaged plugin into disposable WordPress/MariaDB containers, creates sample venues and activities, renders `[pasat_activity_board mode="kiosk" show_qr="1"]`, checks venue/type filtering, verifies QR signup markup, and confirms the public REST response exposes only public activity fields.
+This development-only script installs the packaged plugin into disposable WordPress/MariaDB containers, creates sample venues and activities, renders `[pasat_activity_board mode="kiosk" show_qr="1"]` and a grid-mode board, checks venue/type filtering, verifies QR signup markup, and confirms the public REST response exposes only public activity fields.
 
 Optional Activity Poster smoke test for release maintainers with Docker:
 

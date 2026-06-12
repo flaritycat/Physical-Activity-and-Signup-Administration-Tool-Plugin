@@ -210,7 +210,8 @@ final class Shortcodes {
 			'pasat_activity_board'
 		);
 
-		$mode          = 'kiosk' === sanitize_key( (string) $atts['mode'] ) ? 'kiosk' : '';
+		$mode          = sanitize_key( (string) $atts['mode'] );
+		$mode          = in_array( $mode, array( 'grid', 'kiosk', 'list' ), true ) ? $mode : 'list';
 		$show_qr       = in_array( strtolower( (string) $atts['show_qr'] ), array( '1', 'true', 'yes', 'on' ), true );
 		$venue_id      = absint( $atts['venue_id'] );
 		$activity_type = sanitize_text_field( (string) $atts['activity_type'] );

@@ -395,6 +395,7 @@
 			fewSpotsThreshold: parseInt(board.getAttribute('data-pasat-few-spots-threshold'), 10) || 3,
 			hostId: parseInt(board.getAttribute('data-pasat-host-id'), 10) || 0,
 			limit: parseInt(board.getAttribute('data-pasat-limit'), 10) || 20,
+			mode: board.getAttribute('data-pasat-mode') || 'list',
 			showQr: board.getAttribute('data-pasat-show-qr') === '1',
 			venueId: parseInt(board.getAttribute('data-pasat-venue-id'), 10) || 0
 		};
@@ -471,6 +472,8 @@
 		if (!updated) {
 			updated = appendText(board, 'p', 'pasat-board-updated', '');
 			updated.setAttribute('data-pasat-board-updated', '');
+			updated.setAttribute('role', 'status');
+			updated.setAttribute('aria-live', 'polite');
 		}
 
 		board.setAttribute('data-pasat-refresh-state', mode);
@@ -500,11 +503,12 @@
 
 	function renderBoard(board, activities) {
 		var options = boardOptions(board);
+		var list = board.querySelector('[data-pasat-board-items]') || board;
 		var nextStates = {};
-		board.textContent = '';
+		list.textContent = '';
 
 		if (!activities.length) {
-			appendText(board, 'p', 'pasat-empty', boardLabel('noActivities', 'No public activities are currently available.'));
+			appendText(list, 'p', 'pasat-empty', boardLabel('noActivities', 'No public activities are currently available.'));
 			board._pasatStates = {};
 			board._pasatLastUpdated = Date.now();
 			board._pasatFailures = 0;
@@ -517,7 +521,7 @@
 			var statusKey = boardStatusKey(activity, options);
 			var signature = stateSignature(activity, statusKey);
 			var previous = board._pasatStates ? board._pasatStates[activity.id] : null;
-			card.className = 'pasat-card';
+			card.className = 'pasat-card pasat-board-card';
 			card.setAttribute('data-pasat-activity-id', activity.id);
 			card.setAttribute('data-pasat-board-state', signature);
 			nextStates[activity.id] = signature;
@@ -566,21 +570,25 @@
 
 			if (options.showQr && (activity.qr_url || activity.signup_url)) {
 				var qrValue = activity.qr_url || activity.signup_url;
-				var qr = appendText(aside, 'span', 'pasat-board-qr', boardLabel('qrFallback', 'Signup QR'));
-				var link = appendText(aside, 'a', 'pasat-board-qr-link', boardLabel('signUp', 'Sign up'));
+				var qrWrap = document.createElement('div');
+				qrWrap.className = 'pasat-board-qr-wrap';
+				var qr = appendText(qrWrap, 'span', 'pasat-board-qr', boardLabel('qrFallback', 'Signup QR'));
+				var link = appendText(qrWrap, 'a', 'pasat-board-qr-link', boardLabel('signUp', 'Sign up'));
 				if (qr) {
 					qr.setAttribute('data-pasat-qr-value', qrValue);
+					qr.setAttribute('aria-label', boardLabel('qrFallback', 'Signup QR'));
 					renderQr(qr, qrValue);
 				}
 				if (link) {
 					link.setAttribute('href', activity.signup_url);
 				}
+				aside.appendChild(qrWrap);
 			}
 
 			card.appendChild(dateBlock);
 			card.appendChild(body);
 			card.appendChild(aside);
-			board.appendChild(card);
+			list.appendChild(card);
 		});
 
 		board._pasatStates = nextStates;
