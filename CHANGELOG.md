@@ -2,6 +2,20 @@
 
 All notable PASAT repository-level changes are documented here. The WordPress.org-style plugin changelog is also maintained in `pasat/readme.txt`.
 
+## 0.1.12 - 2026-06-12
+
+Public contrast QA automation.
+
+### Added
+
+- Public UI contrast audit script covering core text, muted text, buttons, status pills, board refresh states, notices, and badge styles.
+- Release preflight hook for the contrast audit when PHP is available.
+
+### Changed
+
+- Bumped plugin asset/runtime version to `0.1.12`.
+- Kept database schema version at `0.1.2` because this release does not alter custom tables.
+
 ## 0.1.11 - 2026-06-12
 
 Public action accessible-name hardening.

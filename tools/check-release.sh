@@ -31,6 +31,13 @@ else
 	skip "php is not available"
 fi
 
+log "Checking public UI contrast"
+if command -v php >/dev/null 2>&1; then
+	php "${ROOT_DIR}/tools/check-public-contrast.php" >/dev/null
+else
+	skip "php is not available"
+fi
+
 log "Checking JavaScript syntax"
 if command -v node >/dev/null 2>&1; then
 	while IFS= read -r -d '' file; do

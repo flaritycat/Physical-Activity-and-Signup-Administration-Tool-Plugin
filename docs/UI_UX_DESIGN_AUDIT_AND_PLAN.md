@@ -1,7 +1,7 @@
 # PASAT UI/UX Design Audit and Modernization Plan
 
 Date: 2026-06-12
-Plugin version audited: 0.1.11
+Plugin version audited: 0.1.12
 Scope: public shortcodes, activity board, venue map, signup flow, participant lookup, membership/badges, poster PDFs, and PASAT wp-admin screens.
 
 ## Executive Summary
@@ -19,6 +19,7 @@ The UI/UX has moved beyond raw MVP in recent public-facing steps:
 - `0.1.9` improved activity board list/grid/kiosk presentation and refresh status behavior.
 - `0.1.10` started public accessibility hardening for signup validation and lookup notices.
 - `0.1.11` added contextual accessible names for repeated public action controls.
+- `0.1.12` added automated public contrast checks to release preflight.
 
 However, the plugin is not yet consistently modern across all surfaces. The strongest current areas are the public activity list, signup form, venue cards, activity board, poster PDFs, and verified participant profile. The weakest remaining areas are admin information architecture and full cross-theme accessibility QA.
 
@@ -792,7 +793,7 @@ Outcome:
 
 ## Accessibility Status
 
-Status after `0.1.11`: In progress. PASAT now announces signup validation errors in the public notice region, focuses AJAX signup results, marks invalid signup fields visually, adds explicit confirmation checkbox labels, associates age guidance with the age field, improves My Signups notice roles/labeling, and gives repeated signup/map/board actions contextual accessible names. Remaining work is a full keyboard, screen-reader, contrast, and cross-theme pass.
+Status after `0.1.12`: In progress. PASAT now announces signup validation errors in the public notice region, focuses AJAX signup results, marks invalid signup fields visually, adds explicit confirmation checkbox labels, associates age guidance with the age field, improves My Signups notice roles/labeling, gives repeated signup/map/board actions contextual accessible names, and has automated contrast checks for core public UI states. Remaining work is a full keyboard, screen-reader, and cross-theme pass.
 
 ## Immediate Next Recommended Work
 
@@ -806,8 +807,7 @@ Reason:
 
 First concrete tasks:
 
-1. Verify contrast for buttons, status pills, notices, muted text, invalid states, and board refresh states.
-2. Keyboard-test activity list filters, venue map cards, My Signups lookup, and activity board links.
-3. Screen-reader-check signup validation, lookup notices, board refresh status, and map action controls.
-4. Check mobile and desktop layouts in a block theme and a classic theme.
-5. Fix text overflow, focus, and spacing issues found during the pass.
+1. Keyboard-test activity list filters, venue map cards, My Signups lookup, and activity board links.
+2. Screen-reader-check signup validation, lookup notices, board refresh status, and map action controls.
+3. Check mobile and desktop layouts in a block theme and a classic theme.
+4. Fix text overflow, focus, and spacing issues found during the pass.
