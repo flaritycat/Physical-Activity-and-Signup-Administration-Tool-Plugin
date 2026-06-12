@@ -14,6 +14,7 @@ $pasat_activity_repo    = new PASAT\Database\ActivitiesRepository();
 $pasat_signups_repo     = new PASAT\Database\SignupsRepository();
 $pasat_default_warning  = (string) ( $pasat_settings['default_warning_text'] ?? '' );
 $pasat_form_id          = wp_unique_id( 'pasat-signup-' );
+$pasat_age_note_id      = $pasat_form_id . 'age-note';
 
 $pasat_format_date = static function ( array $activity ): string {
 	if ( empty( $activity['starts_at'] ) ) {
@@ -147,7 +148,7 @@ $pasat_warning_visible   = '' !== trim( $pasat_warning_text );
 $pasat_has_static_checks = ! empty( $pasat_settings['require_consent'] ) || ! empty( $pasat_settings['membership_enabled'] );
 ?>
 <div id="pasat-signup" class="pasat-public pasat-public--signup pasat-signup">
-	<div class="pasat-notice-region" data-pasat-notice-region aria-live="polite">
+	<div class="pasat-notice-region" data-pasat-notice-region aria-live="polite" aria-atomic="true">
 		<?php if ( ! empty( $_GET['pasat_cancelled'] ) ) : ?>
 			<div class="pasat-notice pasat-notice--success" role="status"><?php esc_html_e( 'Your signup has been cancelled.', 'pasat' ); ?></div>
 		<?php endif; ?>
@@ -228,7 +229,7 @@ $pasat_has_static_checks = ! empty( $pasat_settings['require_consent'] ) || ! em
 				</div>
 				<div class="pasat-grid">
 					<label class="pasat-field" for="<?php echo esc_attr( $pasat_form_id ); ?>nickname"><span><?php esc_html_e( 'Nickname', 'pasat' ); ?> <small><?php esc_html_e( 'Optional', 'pasat' ); ?></small></span><input id="<?php echo esc_attr( $pasat_form_id ); ?>nickname" name="nickname" autocomplete="nickname"></label>
-					<label class="pasat-field" for="<?php echo esc_attr( $pasat_form_id ); ?>age"><span><?php esc_html_e( 'Age', 'pasat' ); ?> <small><?php esc_html_e( 'Optional', 'pasat' ); ?></small></span><input id="<?php echo esc_attr( $pasat_form_id ); ?>age" name="age" type="number" min="0" max="130" inputmode="numeric"><small class="pasat-field-note" data-pasat-age-note<?php echo empty( $pasat_selected_summary['age_note'] ) ? ' hidden' : ''; ?>><?php echo esc_html( $pasat_selected_summary['age_note'] ?? '' ); ?></small></label>
+					<label class="pasat-field" for="<?php echo esc_attr( $pasat_form_id ); ?>age"><span><?php esc_html_e( 'Age', 'pasat' ); ?> <small><?php esc_html_e( 'Optional', 'pasat' ); ?></small></span><input id="<?php echo esc_attr( $pasat_form_id ); ?>age" name="age" type="number" min="0" max="130" inputmode="numeric" aria-describedby="<?php echo esc_attr( $pasat_age_note_id ); ?>"><small id="<?php echo esc_attr( $pasat_age_note_id ); ?>" class="pasat-field-note" data-pasat-age-note<?php echo empty( $pasat_selected_summary['age_note'] ) ? ' hidden' : ''; ?>><?php echo esc_html( $pasat_selected_summary['age_note'] ?? '' ); ?></small></label>
 				</div>
 			</fieldset>
 
@@ -243,13 +244,13 @@ $pasat_has_static_checks = ! empty( $pasat_settings['require_consent'] ) || ! em
 			<fieldset class="pasat-form__section pasat-form__section--checks<?php echo ( $pasat_has_static_checks || $pasat_warning_visible ) ? '' : ' pasat-is-hidden'; ?>" data-pasat-ack-section>
 				<legend><?php esc_html_e( 'Confirmations', 'pasat' ); ?></legend>
 				<?php if ( ! empty( $pasat_settings['require_consent'] ) ) : ?>
-					<label class="pasat-check"><input type="checkbox" name="consent_given" value="1" required> <span><?php echo esc_html( $pasat_settings['consent_text'] ); ?></span></label>
+					<label class="pasat-check" for="<?php echo esc_attr( $pasat_form_id ); ?>consent"><input id="<?php echo esc_attr( $pasat_form_id ); ?>consent" type="checkbox" name="consent_given" value="1" required> <span><?php echo esc_html( $pasat_settings['consent_text'] ); ?></span></label>
 				<?php endif; ?>
 				<?php if ( ! empty( $pasat_settings['membership_enabled'] ) ) : ?>
-					<label class="pasat-check"><input type="checkbox" name="membership_opt_in" value="1"> <span><?php echo esc_html( $pasat_settings['membership_opt_in_text'] ); ?></span></label>
+					<label class="pasat-check" for="<?php echo esc_attr( $pasat_form_id ); ?>membership"><input id="<?php echo esc_attr( $pasat_form_id ); ?>membership" type="checkbox" name="membership_opt_in" value="1"> <span><?php echo esc_html( $pasat_settings['membership_opt_in_text'] ); ?></span></label>
 				<?php endif; ?>
-				<label class="pasat-check<?php echo $pasat_warning_visible ? '' : ' pasat-is-hidden'; ?>" data-pasat-warning-check data-pasat-default-warning="<?php echo esc_attr( $pasat_default_warning ); ?>">
-					<input type="checkbox" name="warning_acknowledged" value="1" <?php echo $pasat_warning_required ? 'required' : ''; ?>>
+				<label class="pasat-check<?php echo $pasat_warning_visible ? '' : ' pasat-is-hidden'; ?>" for="<?php echo esc_attr( $pasat_form_id ); ?>warning" data-pasat-warning-check data-pasat-default-warning="<?php echo esc_attr( $pasat_default_warning ); ?>">
+					<input id="<?php echo esc_attr( $pasat_form_id ); ?>warning" type="checkbox" name="warning_acknowledged" value="1" <?php echo $pasat_warning_required ? 'required' : ''; ?>>
 					<span data-pasat-warning-text><?php echo esc_html( $pasat_warning_text ); ?></span>
 				</label>
 			</fieldset>

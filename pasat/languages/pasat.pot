@@ -1904,3 +1904,7 @@ msgstr ""
 #: templates/public/activity-list.php:136
 msgid "Activity Board"
 msgstr ""
+
+#: includes/Frontend/Assets.php:26
+msgid "Please complete the highlighted field."
+msgstr ""

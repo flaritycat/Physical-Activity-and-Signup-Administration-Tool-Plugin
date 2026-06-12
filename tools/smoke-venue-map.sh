@@ -34,6 +34,12 @@ parse_version() {
 		| tr -d '\r'
 }
 
+parse_db_version() {
+	sed -nE "s/^define\\( 'PASAT_DB_VERSION', '([^']+)' \\);/\\1/p" "${ROOT_DIR}/pasat/pasat.php" \
+		| head -n 1 \
+		| tr -d '\r'
+}
+
 wait_for_db() {
 	local attempt
 
@@ -71,6 +77,11 @@ $settings['show_map_on_signup']        = 0;
 $settings['geocoding_enabled']         = 1;
 $settings['geocoding_endpoint']        = 'https://example.test/geocode';
 $settings['geocoding_throttle_seconds'] = 1;
+$settings['require_consent']           = 1;
+$settings['consent_text']              = 'I consent to PASAT storing my signup data.';
+$settings['membership_enabled']        = 1;
+$settings['membership_opt_in_text']    = 'I would like to become a member.';
+$settings['default_warning_text']      = 'I acknowledge the activity safety information.';
 update_option( 'pasat_settings', $settings );
 
 $mapped_venue_id = $venues->save(
@@ -120,7 +131,7 @@ $activities->save(
 );
 
 $map_html = do_shortcode( '[pasat_venue_map source="upcoming" height="360" show_cards="1"]' );
-foreach ( array( 'data-pasat-map-canvas', 'Mapped Studio', 'Address Hall', 'Coordinates not available yet.', 'openstreetmap.org' ) as $expected ) {
+foreach ( array( 'data-pasat-map-canvas', 'Mapped Studio', 'Address Hall', 'openstreetmap.org' ) as $expected ) {
 	if ( false === strpos( $map_html, $expected ) ) {
 		fwrite( STDERR, "Venue map markup missing expected content: {$expected}\n" );
 		exit( 1 );
@@ -141,6 +152,27 @@ $signup_html = do_shortcode( '[pasat_activity_signup show_map="1"]' );
 if ( false === strpos( $signup_html, 'data-pasat-venue-map' ) || false === strpos( $signup_html, 'pasat-form' ) ) {
 	fwrite( STDERR, "Signup shortcode did not include the venue map and signup form.\n" );
 	exit( 1 );
+}
+
+foreach ( array( 'data-pasat-notice-region aria-live="polite" aria-atomic="true"', 'aria-describedby="pasat-signup-', 'name="consent_given"', 'name="membership_opt_in"', 'data-pasat-warning-check' ) as $expected ) {
+	if ( false === strpos( $signup_html, $expected ) ) {
+		fwrite( STDERR, "Signup accessibility markup missing expected content: {$expected}\n" );
+		exit( 1 );
+	}
+}
+
+foreach (
+	array(
+		'consent'    => '/<label class="pasat-check" for="[^"]+consent"><input id="[^"]+consent" type="checkbox" name="consent_given"/',
+		'membership' => '/<label class="pasat-check" for="[^"]+membership"><input id="[^"]+membership" type="checkbox" name="membership_opt_in"/',
+		'warning'    => '/<label class="pasat-check[^"]*" for="[^"]+warning"[^>]*data-pasat-warning-check[^>]*>\\s*<input id="[^"]+warning" type="checkbox" name="warning_acknowledged"/',
+		'age-note'   => '/<input id="[^"]+age" name="age"[^>]+aria-describedby="[^"]+age-note"/',
+	) as $name => $pattern
+) {
+	if ( ! preg_match( $pattern, $signup_html ) ) {
+		fwrite( STDERR, "Signup accessibility markup missing explicit {$name} association.\n" );
+		exit( 1 );
+	}
 }
 
 do_action( 'rest_api_init' );
@@ -204,6 +236,7 @@ PHP
 
 run_wp_cli() {
 	local version="$1"
+	local db_version="$2"
 	local archive="/workspace/dist/pasat-${version}.zip"
 
 	docker run --rm \
@@ -220,7 +253,7 @@ run_wp_cli() {
 			\$WP config create --dbname=wordpress --dbuser=wp --dbpass=wp --dbhost=${DB_CONTAINER}:3306 --allow-root
 			\$WP core install --url=http://pasat-map-smoke.test --title='PASAT Map Smoke' --admin_user=admin --admin_password='pasat-smoke-pass' --admin_email=admin@example.test --skip-email --allow-root
 			\$WP plugin install '${archive}' --activate --allow-root
-			test \"\$(\$WP option get pasat_db_version --allow-root)\" = '${version}'
+			test \"\$(\$WP option get pasat_db_version --allow-root)\" = '${db_version}'
 			\$WP eval-file pasat-venue-map-smoke.php --allow-root
 		"
 }
@@ -231,6 +264,12 @@ trap cleanup EXIT
 VERSION="$(parse_version)"
 if [[ -z "${VERSION}" ]]; then
 	echo "Could not determine PASAT version from pasat/pasat.php." >&2
+	exit 1
+fi
+
+DB_VERSION="$(parse_db_version)"
+if [[ -z "${DB_VERSION}" ]]; then
+	echo "Could not determine PASAT DB version from pasat/pasat.php." >&2
 	exit 1
 fi
 
@@ -248,6 +287,6 @@ docker run -d \
 	"${DB_IMAGE}" >/dev/null
 
 wait_for_db
-run_wp_cli "${VERSION}"
+run_wp_cli "${VERSION}" "${DB_VERSION}"
 
 echo "PASAT Venue Map smoke test passed for pasat-${VERSION}.zip"

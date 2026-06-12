@@ -23,6 +23,7 @@ final class Assets {
 				'signupNetworkError' => __( 'Signup could not be submitted. Please try again.', 'pasat' ),
 				'signupSubmitting'   => __( 'Submitting...', 'pasat' ),
 				'signupWaitlisted'   => __( 'Signup received. You are on the waitlist. Please check your e-mail.', 'pasat' ),
+				'formInvalid'        => __( 'Please complete the highlighted field.', 'pasat' ),
 				'map'                => array(
 					'tileUrl'     => sanitize_text_field( (string) \PASAT\Helpers::setting( 'map_tile_url', 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' ) ),
 					'attribution' => wp_kses_post( (string) \PASAT\Helpers::setting( 'map_tile_attribution', __( '&copy; OpenStreetMap contributors', 'pasat' ) ) ),

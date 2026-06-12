@@ -19,6 +19,18 @@
 		element.hidden = !value;
 	}
 
+	function focusElement(element) {
+		if (!element || typeof element.focus !== 'function') {
+			return;
+		}
+
+		try {
+			element.focus({ preventScroll: false });
+		} catch (error) {
+			element.focus();
+		}
+	}
+
 	function setSubmitState(form, submitting) {
 		var button = form.querySelector('[type="submit"]');
 		var label = button ? button.querySelector('[data-pasat-submit-text]') : null;
@@ -58,6 +70,7 @@
 			region.className = 'pasat-notice-region';
 			region.setAttribute('data-pasat-notice-region', '');
 			region.setAttribute('aria-live', 'polite');
+			region.setAttribute('aria-atomic', 'true');
 			container.insertBefore(region, container.firstChild);
 		}
 
@@ -71,7 +84,42 @@
 		notice.classList.toggle('pasat-notice--success', ok);
 		notice.classList.toggle('pasat-notice--error', !ok);
 		notice.setAttribute('role', ok ? 'status' : 'alert');
+		notice.setAttribute('tabindex', '-1');
 		notice.textContent = message;
+		focusElement(notice);
+	}
+
+	function invalidControlMessage(control) {
+		return control && control.validationMessage
+			? control.validationMessage
+			: publicLabel('formInvalid', 'Please complete the highlighted field.');
+	}
+
+	function setControlInvalid(control, invalid) {
+		var field = control ? control.closest('.pasat-field, .pasat-check') : null;
+		if (!control) {
+			return;
+		}
+
+		if (invalid) {
+			control.setAttribute('aria-invalid', 'true');
+		} else {
+			control.removeAttribute('aria-invalid');
+		}
+
+		if (field) {
+			field.classList.toggle('pasat-field--invalid', invalid);
+		}
+	}
+
+	function clearValidControl(control) {
+		if (!control || !control.closest('[data-pasat-signup-form]')) {
+			return;
+		}
+
+		if (!control.validity || control.validity.valid) {
+			setControlInvalid(control, false);
+		}
 	}
 
 	function updateAckSection(section) {
@@ -191,6 +239,34 @@
 		}).then(function () {
 			setSubmitState(form, false);
 		});
+	});
+
+	document.addEventListener('invalid', function (event) {
+		var control = event.target;
+		var form = control && control.closest ? control.closest('[data-pasat-signup-form]') : null;
+		if (!form) {
+			return;
+		}
+
+		setControlInvalid(control, true);
+		if (form._pasatInvalidAnnounced) {
+			return;
+		}
+
+		form._pasatInvalidAnnounced = true;
+		showSignupNotice(form, false, invalidControlMessage(control));
+		window.setTimeout(function () {
+			form._pasatInvalidAnnounced = false;
+			focusElement(control);
+		}, 0);
+	}, true);
+
+	document.addEventListener('input', function (event) {
+		clearValidControl(event.target);
+	});
+
+	document.addEventListener('change', function (event) {
+		clearValidControl(event.target);
 	});
 
 	function boardLabel(key, fallback) {

@@ -10,6 +10,7 @@ $pasat_badges        = is_array( $pasat['badges'] ?? null ) ? $pasat['badges'] :
 $pasat_participation = is_array( $pasat['participation'] ?? null ) ? $pasat['participation'] : array();
 $pasat_email         = sanitize_email( (string) ( $pasat['email'] ?? '' ) );
 $pasat_membership_on = ! empty( PASAT\Helpers::setting( 'membership_enabled', 0 ) );
+$pasat_lookup_id     = wp_unique_id( 'pasat-lookup-' );
 $pasat_name_parts    = array_filter(
 	array(
 		(string) ( $pasat_profile['first_name'] ?? '' ),
@@ -36,12 +37,12 @@ $pasat_badge_classes = static function ( array $badge ): string {
 };
 ?>
 <div class="pasat-public pasat-public--my-signups pasat-my-signups">
-	<div class="pasat-notice-region" aria-live="polite">
+	<div class="pasat-notice-region" aria-live="polite" aria-atomic="true">
 		<?php if ( ! empty( $pasat['error'] ) ) : ?>
-			<div class="pasat-notice pasat-notice--error"><?php echo esc_html( $pasat['error'] ); ?></div>
+			<div class="pasat-notice pasat-notice--error" role="alert"><?php echo esc_html( $pasat['error'] ); ?></div>
 		<?php endif; ?>
 		<?php if ( ! empty( $pasat['notice'] ) ) : ?>
-			<div class="pasat-notice pasat-notice--success"><?php echo esc_html( $pasat['notice'] ); ?></div>
+			<div class="pasat-notice pasat-notice--success" role="status"><?php echo esc_html( $pasat['notice'] ); ?></div>
 		<?php endif; ?>
 	</div>
 
@@ -235,7 +236,7 @@ $pasat_badge_classes = static function ( array $badge ): string {
 		<form class="pasat-form pasat-form--inline" method="post">
 			<?php wp_nonce_field( 'pasat_my_signups', 'pasat_my_signups_nonce' ); ?>
 			<input type="hidden" name="pasat_my_signups" value="1">
-			<label><span><?php esc_html_e( 'E-mail', 'pasat' ); ?></span><input type="email" name="email" required autocomplete="email"></label>
+			<label for="<?php echo esc_attr( $pasat_lookup_id ); ?>"><span><?php esc_html_e( 'E-mail', 'pasat' ); ?></span><input id="<?php echo esc_attr( $pasat_lookup_id ); ?>" type="email" name="email" required autocomplete="email"></label>
 			<button class="pasat-button" type="submit"><?php esc_html_e( 'Send Private Link', 'pasat' ); ?></button>
 		</form>
 	</section>

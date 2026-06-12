@@ -2,6 +2,26 @@
 
 All notable PASAT repository-level changes are documented here. The WordPress.org-style plugin changelog is also maintained in `pasat/readme.txt`.
 
+## 0.1.10 - 2026-06-12
+
+Public accessibility hardening, first pass.
+
+### Added
+
+- Client-side signup validation announcements in the PASAT notice region when required fields are missing.
+- Visible invalid-field styling for signup inputs, selects, textareas, and checkbox rows.
+- Smoke coverage for explicit signup checkbox labels, age guidance association, and live notice markup.
+
+### Changed
+
+- Signup AJAX notices now receive focus after success or failure so keyboard and screen-reader users are taken to the result.
+- Confirmation checkboxes now use explicit `id`/`for` label associations.
+- Signup age guidance now uses `aria-describedby`.
+- My Signups lookup notices now include `role="status"` or `role="alert"` and `aria-atomic`.
+- My Signups lookup e-mail field now has an explicit label association.
+- Bumped plugin asset/runtime version to `0.1.10`.
+- Kept database schema version at `0.1.2` because this release does not alter custom tables.
+
 ## 0.1.9 - 2026-06-12
 
 Activity board display and kiosk UX polish.

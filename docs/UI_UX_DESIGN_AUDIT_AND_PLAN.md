@@ -1,7 +1,7 @@
 # PASAT UI/UX Design Audit and Modernization Plan
 
 Date: 2026-06-12
-Plugin version audited: 0.1.9
+Plugin version audited: 0.1.10
 Scope: public shortcodes, activity board, venue map, signup flow, participant lookup, membership/badges, poster PDFs, and PASAT wp-admin screens.
 
 ## Executive Summary
@@ -17,6 +17,7 @@ The UI/UX has moved beyond raw MVP in recent public-facing steps:
 - `0.1.7` improved printable activity poster PDFs and QR hierarchy.
 - `0.1.8` redesigned verified My Signups membership, badges, and participation history.
 - `0.1.9` improved activity board list/grid/kiosk presentation and refresh status behavior.
+- `0.1.10` started public accessibility hardening for signup validation and lookup notices.
 
 However, the plugin is not yet consistently modern across all surfaces. The strongest current areas are the public activity list, signup form, venue cards, activity board, poster PDFs, and verified participant profile. The weakest remaining areas are admin information architecture and full cross-theme accessibility QA.
 
@@ -42,7 +43,7 @@ The modernization target should be a calm, trustworthy, operational product UI:
 | Poster PDFs | 6/10 | Fixed print zones, bounded wrapping, stronger QR hierarchy, short-link card | Needs visual QA, optional poster settings, and ZIP manifest polish |
 | Admin dashboard | 5/10 | Metrics, upcoming activities, recent signups | Needs workflow-focused dashboard, quick actions, richer status cards |
 | Admin CRUD/list screens | 4/10 | CRUD works and uses WP conventions | Dense tables, cramped inline actions, limited hierarchy |
-| Accessibility | 5/10 | Labels and focus foundation exist | Needs full keyboard, aria-live, contrast, and screen reader pass |
+| Accessibility | 6/10 | Labels, focused notices, invalid-field styling, key live regions | Needs full keyboard, contrast, screen reader, and theme pass |
 | Theme compatibility | 6/10 | Scoped `.pasat-` CSS improved | Needs cross-theme visual testing and conflict hardening |
 
 ## What PASAT Already Does Well
@@ -788,9 +789,13 @@ Outcome:
 - Keep map provider attribution visible and configurable.
 - Poster PDF improvements should avoid external PDF libraries unless absolutely necessary for hosting compatibility.
 
+## Accessibility Status
+
+Status after `0.1.10`: Started. PASAT now announces signup validation errors in the public notice region, focuses AJAX signup results, marks invalid signup fields visually, adds explicit confirmation checkbox labels, associates age guidance with the age field, and improves My Signups notice roles/labeling. Remaining work is a full keyboard, screen-reader, contrast, and cross-theme pass.
+
 ## Immediate Next Recommended Work
 
-The next implementation should be Accessibility and Theme Compatibility QA.
+The next implementation should continue Accessibility and Theme Compatibility QA.
 
 Reason:
 
@@ -800,8 +805,8 @@ Reason:
 
 First concrete tasks:
 
-1. Keyboard-test activity list, signup, venue map, My Signups, and activity board controls.
-2. Verify contrast for buttons, status pills, notices, muted text, and board refresh states.
-3. Confirm `aria-live` behavior for signup notices and board refresh status.
+1. Keyboard-test activity list filters, venue map cards, My Signups lookup, and activity board links.
+2. Verify contrast for buttons, status pills, notices, muted text, invalid states, and board refresh states.
+3. Add or verify accessible names for map controls and QR/link actions.
 4. Check mobile and desktop layouts in a block theme and a classic theme.
 5. Fix text overflow, focus, and spacing issues found during the pass.
