@@ -134,6 +134,34 @@
 		return isNaN(date.getTime()) ? value : date.toLocaleString();
 	}
 
+	function activityDateParts(value) {
+		if (!value) {
+			return {
+				day: '-',
+				label: '',
+				month: 'Date',
+				time: 'TBA'
+			};
+		}
+
+		var date = new Date(String(value).replace(' ', 'T') + 'Z');
+		if (isNaN(date.getTime())) {
+			return {
+				day: '-',
+				label: value,
+				month: 'Date',
+				time: value
+			};
+		}
+
+		return {
+			day: date.toLocaleDateString(undefined, { day: 'numeric' }),
+			label: date.toLocaleString(),
+			month: date.toLocaleDateString(undefined, { month: 'short' }),
+			time: date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
+		};
+	}
+
 	function appendText(parent, tag, className, text) {
 		if (!text && text !== 0) {
 			return null;
@@ -146,6 +174,69 @@
 		element.textContent = text;
 		parent.appendChild(element);
 		return element;
+	}
+
+	function normalizeFilterValue(value) {
+		return String(value || '').toLowerCase().trim();
+	}
+
+	function initActivityFilters(filterBar) {
+		var list = filterBar.closest('.pasat-activity-list');
+		if (!list) {
+			return;
+		}
+
+		var cards = Array.prototype.slice.call(list.querySelectorAll('[data-pasat-activity-card]'));
+		var search = filterBar.querySelector('[data-pasat-filter-search]');
+		var type = filterBar.querySelector('[data-pasat-filter-type]');
+		var venue = filterBar.querySelector('[data-pasat-filter-venue]');
+		var reset = filterBar.querySelector('[data-pasat-filter-reset]');
+		var empty = list.querySelector('[data-pasat-filter-empty]');
+
+		function applyFilters() {
+			var searchValue = normalizeFilterValue(search ? search.value : '');
+			var typeValue = type ? type.value : '';
+			var venueValue = venue ? venue.value : '';
+			var visible = 0;
+
+			cards.forEach(function (card) {
+				var matchesSearch = !searchValue || normalizeFilterValue(card.getAttribute('data-pasat-search')).indexOf(searchValue) !== -1;
+				var matchesType = !typeValue || card.getAttribute('data-pasat-type') === typeValue;
+				var matchesVenue = !venueValue || card.getAttribute('data-pasat-venue') === venueValue;
+				var shown = matchesSearch && matchesType && matchesVenue;
+				card.hidden = !shown;
+				if (shown) {
+					visible += 1;
+				}
+			});
+
+			if (empty) {
+				empty.hidden = visible !== 0;
+			}
+		}
+
+		[search, type, venue].forEach(function (control) {
+			if (control) {
+				control.addEventListener('input', applyFilters);
+				control.addEventListener('change', applyFilters);
+			}
+		});
+
+		if (reset) {
+			reset.addEventListener('click', function () {
+				if (search) {
+					search.value = '';
+					search.focus();
+				}
+				if (type) {
+					type.value = '';
+				}
+				if (venue) {
+					venue.value = '';
+				}
+				applyFilters();
+			});
+		}
 	}
 
 	function boardOptions(board) {
@@ -288,11 +379,25 @@
 				}, 2600);
 			}
 
+			var parts = activityDateParts(activity.starts_at);
+			var dateBlock = document.createElement('div');
+			dateBlock.className = 'pasat-card__date';
+			dateBlock.setAttribute('aria-label', parts.label || boardLabel('dateTba', 'Date to be announced'));
+			appendText(dateBlock, 'span', 'pasat-card__date-month', parts.month);
+			appendText(dateBlock, 'span', 'pasat-card__date-day', parts.day);
+			appendText(dateBlock, 'span', 'pasat-card__date-time', parts.time);
+
 			var body = document.createElement('div');
 			body.className = 'pasat-card__body';
+			appendText(body, 'span', 'pasat-chip', activity.activity_type);
 			appendText(body, 'h3', 'pasat-card__title', activity.title);
-			appendText(body, 'p', 'pasat-card__meta', formatActivityDate(activity.starts_at));
-			appendText(body, 'p', 'pasat-card__meta', activity.venue_name);
+			var details = document.createElement('div');
+			details.className = 'pasat-card__details';
+			appendText(details, 'span', '', formatActivityDate(activity.starts_at));
+			appendText(details, 'span', '', activity.venue_name);
+			if (details.childNodes.length) {
+				body.appendChild(details);
+			}
 			appendText(body, 'p', 'pasat-card__description', activity.description);
 
 			var aside = document.createElement('div');
@@ -322,6 +427,7 @@
 				}
 			}
 
+			card.appendChild(dateBlock);
 			card.appendChild(body);
 			card.appendChild(aside);
 			board.appendChild(card);
@@ -376,6 +482,8 @@
 			}
 		});
 	}
+
+	document.querySelectorAll('[data-pasat-activity-filters]').forEach(initActivityFilters);
 
 	document.querySelectorAll('[data-pasat-activity-board]').forEach(function (board) {
 		var interval = parseInt(board.getAttribute('data-pasat-poll-interval'), 10) || 60000;

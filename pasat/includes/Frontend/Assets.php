@@ -30,6 +30,7 @@ final class Assets {
 				'board'         => array(
 					'cancelled'    => __( 'Cancelled', 'pasat' ),
 					'connectionLost' => __( 'Connection lost. Showing last saved board.', 'pasat' ),
+					'dateTba'       => __( 'Date to be announced', 'pasat' ),
 					/* translators: %d is the number of confirmed signups for an activity. */
 					'confirmed'    => __( '%d confirmed', 'pasat' ),
 					'fewSpots'     => __( 'Few spots left', 'pasat' ),

@@ -75,9 +75,47 @@
 	align-items: stretch;
 	display: grid;
 	gap: 1rem;
-	grid-template-columns: minmax(0, 1fr) minmax(160px, auto);
+	grid-template-columns: minmax(74px, 0.16fr) minmax(0, 1fr) minmax(160px, auto);
 	margin: 0 0 0.85rem;
 	padding: 1rem;
+}
+
+.pasat-card--selected {
+	border-color: rgba(22, 90, 114, 0.48);
+	box-shadow: 0 0 0 3px rgba(22, 90, 114, 0.1), var(--pasat-shadow-soft);
+}
+
+.pasat-card__date {
+	align-self: start;
+	background: var(--pasat-surface-alt);
+	border: 1px solid var(--pasat-border);
+	border-radius: 9px;
+	color: var(--pasat-brand);
+	display: grid;
+	justify-items: center;
+	line-height: 1.05;
+	min-height: 5.4rem;
+	padding: 0.6rem 0.45rem;
+	text-align: center;
+}
+
+.pasat-card__date-month {
+	font-size: 0.75rem;
+	font-weight: 800;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+}
+
+.pasat-card__date-day {
+	color: var(--pasat-text);
+	font-size: 1.8rem;
+	font-weight: 800;
+}
+
+.pasat-card__date-time {
+	color: var(--pasat-muted);
+	font-size: 0.78rem;
+	font-weight: 700;
 }
 
 .pasat-card__body {
@@ -89,6 +127,43 @@
 	font-size: 1.12rem;
 	line-height: 1.28;
 	margin: 0 0 0.45rem;
+}
+
+.pasat-chip {
+	background: #edf5f7;
+	border: 1px solid rgba(22, 90, 114, 0.14);
+	border-radius: 999px;
+	color: var(--pasat-brand);
+	display: inline-flex;
+	font-size: 0.78rem;
+	font-weight: 800;
+	line-height: 1.2;
+	margin: 0 0 0.5rem;
+	padding: 0.28rem 0.58rem;
+	text-transform: capitalize;
+}
+
+.pasat-card__details {
+	color: var(--pasat-muted);
+	display: flex;
+	flex-wrap: wrap;
+	font-size: 0.94rem;
+	gap: 0.35rem 0.85rem;
+	margin: 0.1rem 0 0;
+}
+
+.pasat-card__details span {
+	align-items: center;
+	display: inline-flex;
+	gap: 0.35rem;
+}
+
+.pasat-card__details span + span::before {
+	background: var(--pasat-border-strong);
+	border-radius: 999px;
+	content: "";
+	height: 0.35rem;
+	width: 0.35rem;
 }
 
 .pasat-card__meta {
@@ -105,6 +180,13 @@
 
 .pasat-card__description p {
 	margin: 0.45rem 0 0;
+}
+
+.pasat-card__count {
+	color: var(--pasat-muted);
+	font-size: 0.88rem;
+	font-weight: 700;
+	margin: 0.6rem 0 0;
 }
 
 .pasat-card__aside {
@@ -192,12 +274,74 @@
 	transform: translateY(1px);
 }
 
+.pasat-button--secondary {
+	background: #fff;
+	border-color: var(--pasat-border-strong);
+	color: var(--pasat-brand);
+}
+
+.pasat-button--secondary:hover,
+.pasat-button--secondary:focus {
+	background: #edf5f7;
+	border-color: var(--pasat-brand);
+	color: var(--pasat-brand-dark);
+}
+
+.pasat-activity-list__tools {
+	align-items: end;
+	background: var(--pasat-surface);
+	border: 1px solid var(--pasat-border);
+	border-radius: 10px;
+	box-shadow: var(--pasat-shadow-soft);
+	display: grid;
+	gap: 0.85rem;
+	grid-template-columns: minmax(220px, 1.35fr) minmax(140px, 0.8fr) minmax(160px, 0.9fr) auto;
+	margin: 0 0 1rem;
+	padding: 1rem;
+}
+
+.pasat-filter-field {
+	display: block;
+	min-width: 0;
+}
+
+.pasat-filter-field span {
+	color: var(--pasat-text);
+	display: block;
+	font-size: 0.86rem;
+	font-weight: 700;
+	margin: 0 0 0.3rem;
+}
+
+.pasat-filter-field input,
+.pasat-filter-field select {
+	background: #fff;
+	border: 1px solid var(--pasat-border-strong);
+	border-radius: 8px;
+	color: var(--pasat-text);
+	font: inherit;
+	min-height: 2.55rem;
+	padding: 0.58rem 0.7rem;
+	width: 100%;
+}
+
+.pasat-filter-field input:focus,
+.pasat-filter-field select:focus {
+	border-color: var(--pasat-focus);
+	box-shadow: 0 0 0 4px rgba(43, 125, 154, 0.14);
+	outline: 0;
+}
+
+.pasat-activity-list__no-results[hidden] {
+	display: none;
+}
+
 .pasat-activity-board {
 	max-width: 1100px;
 }
 
 .pasat-activity-board .pasat-card {
-	grid-template-columns: minmax(0, 1fr) minmax(170px, auto);
+	grid-template-columns: minmax(84px, 0.16fr) minmax(0, 1fr) minmax(170px, auto);
 }
 
 .pasat-activity-board--kiosk {
@@ -208,13 +352,21 @@
 .pasat-activity-board--kiosk .pasat-card {
 	border-width: 2px;
 	gap: 1.4rem;
-	grid-template-columns: minmax(0, 1fr) minmax(220px, auto);
+	grid-template-columns: minmax(110px, 0.18fr) minmax(0, 1fr) minmax(220px, auto);
 	margin-bottom: 1.35rem;
 	padding: 1.35rem;
 }
 
 .pasat-activity-board--kiosk .pasat-card__title {
 	font-size: 1.7rem;
+}
+
+.pasat-activity-board--kiosk .pasat-card__date {
+	min-height: 6.4rem;
+}
+
+.pasat-activity-board--kiosk .pasat-card__date-day {
+	font-size: 2.25rem;
 }
 
 .pasat-activity-board--kiosk .pasat-status {
@@ -545,6 +697,11 @@
 		margin: 1rem auto;
 	}
 
+	.pasat-activity-list__tools {
+		align-items: stretch;
+		grid-template-columns: 1fr;
+	}
+
 	.pasat-card,
 	.pasat-grid,
 	.pasat-venue-card,
@@ -563,6 +720,19 @@
 
 	.pasat-status {
 		white-space: normal;
+	}
+
+	.pasat-card__date {
+		align-items: center;
+		display: flex;
+		gap: 0.55rem;
+		justify-content: flex-start;
+		min-height: 0;
+		padding: 0.65rem 0.75rem;
+	}
+
+	.pasat-card__date-day {
+		font-size: 1.45rem;
 	}
 
 	.pasat-signup .pasat-venue-map__canvas,
@@ -599,6 +769,15 @@
 	.pasat-card__aside {
 		flex-direction: column;
 		width: 100%;
+	}
+
+	.pasat-card__details {
+		display: grid;
+		gap: 0.2rem;
+	}
+
+	.pasat-card__details span + span::before {
+		display: none;
 	}
 }
 

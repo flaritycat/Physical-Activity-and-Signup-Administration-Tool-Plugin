@@ -63,6 +63,8 @@ Acceptance criteria:
 
 ## Phase 2: Activity Listing Redesign
 
+Status: addressed in `0.1.4` with redesigned card structure, date blocks, activity type chips, compact metadata, capacity/count summaries, selected activity highlighting, and lightweight client-side search/type/venue filters.
+
 Make activity cards easier to scan when 20+ activities exist.
 
 Tasks:

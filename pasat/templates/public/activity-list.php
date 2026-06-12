@@ -19,8 +19,11 @@ $pasat_board_options = wp_parse_args(
 		'few_spots'     => 3,
 	)
 );
-$pasat_activity_repo = $pasat_board ? new PASAT\Database\ActivitiesRepository() : null;
+$pasat_activity_repo = new PASAT\Database\ActivitiesRepository();
 $pasat_board_attrs   = array();
+$pasat_selected_id   = isset( $_GET['pasat_activity_id'] ) ? absint( wp_unslash( $_GET['pasat_activity_id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only public preselection.
+$pasat_types         = array();
+$pasat_venues        = array();
 
 if ( $pasat_board ) {
 	$pasat_board_attrs = array(
@@ -34,6 +37,19 @@ if ( $pasat_board ) {
 		'data-pasat-few-spots-threshold' => (string) max( 1, absint( $pasat_board_options['few_spots'] ) ),
 		'data-pasat-mode'                => (string) $pasat_board_options['mode'],
 	);
+}
+
+if ( ! $pasat_board ) {
+	foreach ( $pasat_activities as $pasat_filter_activity ) {
+		if ( ! empty( $pasat_filter_activity['activity_type'] ) ) {
+			$pasat_types[ (string) $pasat_filter_activity['activity_type'] ] = (string) $pasat_filter_activity['activity_type'];
+		}
+		if ( ! empty( $pasat_filter_activity['venue_name'] ) ) {
+			$pasat_venues[ (string) $pasat_filter_activity['venue_name'] ] = (string) $pasat_filter_activity['venue_name'];
+		}
+	}
+	natcasesort( $pasat_types );
+	natcasesort( $pasat_venues );
 }
 
 $pasat_board_status = static function ( array $pasat_activity, array $pasat_capacity, bool $pasat_signup_open, int $pasat_few_spots ): array {
@@ -80,13 +96,49 @@ $pasat_board_status = static function ( array $pasat_activity, array $pasat_capa
 };
 ?>
 <div class="pasat-public pasat-public--activities pasat-activity-list<?php echo $pasat_board ? ' pasat-activity-board' : ''; ?><?php echo $pasat_board && 'kiosk' === $pasat_board_options['mode'] ? ' pasat-activity-board--kiosk' : ''; ?>"<?php foreach ( $pasat_board_attrs as $pasat_attr => $pasat_value ) : ?> <?php echo esc_attr( $pasat_attr ); ?><?php echo '' !== $pasat_value ? '="' . esc_attr( $pasat_value ) . '"' : ''; ?><?php endforeach; ?>>
+	<?php if ( ! $pasat_board && count( $pasat_activities ) > 5 ) : ?>
+		<div class="pasat-activity-list__tools" data-pasat-activity-filters>
+			<label class="pasat-filter-field">
+				<span><?php esc_html_e( 'Search activities', 'pasat' ); ?></span>
+				<input type="search" data-pasat-filter-search placeholder="<?php esc_attr_e( 'Name, venue, or description', 'pasat' ); ?>" autocomplete="off">
+			</label>
+			<?php if ( $pasat_types ) : ?>
+				<label class="pasat-filter-field">
+					<span><?php esc_html_e( 'Type', 'pasat' ); ?></span>
+					<select data-pasat-filter-type>
+						<option value=""><?php esc_html_e( 'All types', 'pasat' ); ?></option>
+						<?php foreach ( $pasat_types as $pasat_type ) : ?>
+							<option value="<?php echo esc_attr( sanitize_title( $pasat_type ) ); ?>"><?php echo esc_html( $pasat_type ); ?></option>
+						<?php endforeach; ?>
+					</select>
+				</label>
+			<?php endif; ?>
+			<?php if ( $pasat_venues ) : ?>
+				<label class="pasat-filter-field">
+					<span><?php esc_html_e( 'Venue', 'pasat' ); ?></span>
+					<select data-pasat-filter-venue>
+						<option value=""><?php esc_html_e( 'All venues', 'pasat' ); ?></option>
+						<?php foreach ( $pasat_venues as $pasat_venue ) : ?>
+							<option value="<?php echo esc_attr( sanitize_title( $pasat_venue ) ); ?>"><?php echo esc_html( $pasat_venue ); ?></option>
+						<?php endforeach; ?>
+					</select>
+				</label>
+			<?php endif; ?>
+			<button type="button" class="pasat-button pasat-button--secondary" data-pasat-filter-reset><?php esc_html_e( 'Reset', 'pasat' ); ?></button>
+		</div>
+	<?php endif; ?>
 	<?php foreach ( $pasat_activities as $pasat_activity ) : ?>
 		<?php
 		$pasat_capacity    = $pasat_signups ? $pasat_signups->capacity_snapshot( $pasat_activity ) : array( 'capacity' => null, 'confirmed' => 0, 'waitlisted' => 0, 'remaining' => null, 'is_full' => false );
 		$pasat_link        = PASAT\Helpers::public_signup_url( absint( $pasat_activity['id'] ) );
 		$pasat_qr_link     = PASAT\Helpers::activity_qr_url( absint( $pasat_activity['id'] ) );
-		$pasat_signup_open = $pasat_activity_repo ? $pasat_activity_repo->is_public_signup_open( $pasat_activity ) : true;
+		$pasat_signup_open = $pasat_activity_repo->is_public_signup_open( $pasat_activity );
 		$pasat_status      = $pasat_board_status( $pasat_activity, $pasat_capacity, $pasat_signup_open, (int) $pasat_board_options['few_spots'] );
+		$pasat_timestamp   = ! empty( $pasat_activity['starts_at'] ) ? strtotime( $pasat_activity['starts_at'] . ' UTC' ) : false;
+		$pasat_type        = (string) ( $pasat_activity['activity_type'] ?? '' );
+		$pasat_venue_name  = (string) ( $pasat_activity['venue_name'] ?? '' );
+		$pasat_description = wp_trim_words( wp_strip_all_tags( (string) ( $pasat_activity['description'] ?? '' ) ), 24 );
+		$pasat_search_text = strtolower( trim( $pasat_activity['title'] . ' ' . $pasat_type . ' ' . $pasat_venue_name . ' ' . $pasat_description ) );
 		$pasat_state       = wp_json_encode(
 			array(
 				'status'    => $pasat_status[0],
@@ -97,17 +149,68 @@ $pasat_board_status = static function ( array $pasat_activity, array $pasat_capa
 			)
 		);
 		?>
-		<article class="pasat-card"<?php echo $pasat_board ? ' data-pasat-activity-id="' . esc_attr( (string) $pasat_activity['id'] ) . '" data-pasat-board-state="' . esc_attr( (string) $pasat_state ) . '"' : ''; ?>>
+		<article
+			class="pasat-card<?php echo $pasat_selected_id === (int) $pasat_activity['id'] ? ' pasat-card--selected' : ''; ?>"
+			data-pasat-activity-card
+			data-pasat-activity-id="<?php echo esc_attr( (string) $pasat_activity['id'] ); ?>"
+			data-pasat-search="<?php echo esc_attr( $pasat_search_text ); ?>"
+			data-pasat-type="<?php echo esc_attr( sanitize_title( $pasat_type ) ); ?>"
+			data-pasat-venue="<?php echo esc_attr( sanitize_title( $pasat_venue_name ) ); ?>"
+			<?php echo $pasat_board ? ' data-pasat-board-state="' . esc_attr( (string) $pasat_state ) . '"' : ''; ?>
+		>
+			<div class="pasat-card__date" aria-label="<?php echo esc_attr( $pasat_timestamp ? PASAT\Helpers::local_datetime( $pasat_activity['starts_at'] ) : __( 'Date to be announced', 'pasat' ) ); ?>">
+				<?php if ( $pasat_timestamp ) : ?>
+					<span class="pasat-card__date-month"><?php echo esc_html( wp_date( 'M', $pasat_timestamp ) ); ?></span>
+					<span class="pasat-card__date-day"><?php echo esc_html( wp_date( 'j', $pasat_timestamp ) ); ?></span>
+					<span class="pasat-card__date-time"><?php echo esc_html( wp_date( get_option( 'time_format' ), $pasat_timestamp ) ); ?></span>
+				<?php else : ?>
+					<span class="pasat-card__date-month"><?php esc_html_e( 'Date', 'pasat' ); ?></span>
+					<span class="pasat-card__date-day">-</span>
+					<span class="pasat-card__date-time"><?php esc_html_e( 'TBA', 'pasat' ); ?></span>
+				<?php endif; ?>
+			</div>
 			<div class="pasat-card__body">
+				<?php if ( $pasat_type ) : ?>
+					<span class="pasat-chip"><?php echo esc_html( $pasat_type ); ?></span>
+				<?php endif; ?>
 				<h3 class="pasat-card__title"><?php echo esc_html( $pasat_activity['title'] ); ?></h3>
-				<?php if ( ! empty( $pasat_activity['starts_at'] ) ) : ?>
-					<p class="pasat-card__meta"><?php echo esc_html( PASAT\Helpers::local_datetime( $pasat_activity['starts_at'] ) ); ?></p>
+				<div class="pasat-card__details">
+					<?php if ( $pasat_timestamp ) : ?>
+						<span><?php echo esc_html( PASAT\Helpers::local_datetime( $pasat_activity['starts_at'] ) ); ?></span>
+					<?php endif; ?>
+					<?php if ( $pasat_venue_name ) : ?>
+						<span><?php echo esc_html( $pasat_venue_name ); ?></span>
+					<?php endif; ?>
+				</div>
+				<?php if ( $pasat_description ) : ?>
+					<p class="pasat-card__description"><?php echo esc_html( $pasat_description ); ?></p>
 				<?php endif; ?>
-				<?php if ( ! empty( $pasat_activity['venue_name'] ) ) : ?>
-					<p class="pasat-card__meta"><?php echo esc_html( $pasat_activity['venue_name'] ); ?></p>
-				<?php endif; ?>
-				<?php if ( ! empty( $pasat_activity['description'] ) ) : ?>
-					<div class="pasat-card__description"><?php echo wp_kses_post( wpautop( $pasat_activity['description'] ) ); ?></div>
+				<?php if ( ! $pasat_board ) : ?>
+					<p class="pasat-card__count">
+						<?php
+						if ( null !== $pasat_capacity['capacity'] ) {
+							printf(
+								/* translators: 1: confirmed signup count, 2: capacity. */
+								esc_html__( '%1$d confirmed of %2$d spots', 'pasat' ),
+								(int) $pasat_capacity['confirmed'],
+								(int) $pasat_capacity['capacity']
+							);
+						} else {
+							printf(
+								/* translators: %d is the confirmed signup count. */
+								esc_html__( '%d confirmed', 'pasat' ),
+								(int) $pasat_capacity['confirmed']
+							);
+						}
+						if ( ! empty( $pasat_capacity['waitlisted'] ) ) {
+							printf(
+								/* translators: %d is the waitlisted signup count. */
+								esc_html__( ', %d waitlisted', 'pasat' ),
+								(int) $pasat_capacity['waitlisted']
+							);
+						}
+						?>
+					</p>
 				<?php endif; ?>
 			</div>
 			<div class="pasat-card__aside">
@@ -141,6 +244,9 @@ $pasat_board_status = static function ( array $pasat_activity, array $pasat_capa
 			</div>
 		</article>
 	<?php endforeach; ?>
+	<?php if ( ! $pasat_board && count( $pasat_activities ) > 5 ) : ?>
+		<p class="pasat-empty pasat-activity-list__no-results" data-pasat-filter-empty hidden><?php esc_html_e( 'No activities match those filters.', 'pasat' ); ?></p>
+	<?php endif; ?>
 	<?php if ( ! $pasat_activities ) : ?>
 		<p class="pasat-empty"><?php esc_html_e( 'No public activities are currently available.', 'pasat' ); ?></p>
 	<?php endif; ?>

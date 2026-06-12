@@ -2,6 +2,22 @@
 
 All notable PASAT repository-level changes are documented here. The WordPress.org-style plugin changelog is also maintained in `pasat/readme.txt`.
 
+## 0.1.4 - 2026-06-12
+
+Public activity list redesign.
+
+### Added
+
+- Activity list filter controls for search, activity type, and venue when enough activities are rendered.
+- Activity card date blocks, activity type chips, selected activity highlighting, compact metadata rows, and signup/capacity count summaries.
+- Matching upgraded card structure for auto-refreshed activity board cards.
+
+### Changed
+
+- Bumped plugin asset/runtime version to `0.1.4`.
+- Normal public activity cards now respect activity signup windows when displaying status.
+- Kept database schema version at `0.1.2` because this release does not alter custom tables.
+
 ## 0.1.3 - 2026-06-12
 
 Public UI/UX foundation.
