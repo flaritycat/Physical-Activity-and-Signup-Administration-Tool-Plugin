@@ -577,6 +577,7 @@
 			updated.setAttribute('data-pasat-board-updated', '');
 			updated.setAttribute('role', 'status');
 			updated.setAttribute('aria-live', 'polite');
+			updated.setAttribute('aria-atomic', 'true');
 		}
 
 		board.setAttribute('data-pasat-refresh-state', mode);
@@ -837,6 +838,7 @@
 			directions.href = venue.map_url;
 			directions.target = '_blank';
 			directions.rel = 'noopener noreferrer';
+			directions.setAttribute('aria-label', templateLabel(mapLabel('directionsToVenue', 'Directions to %s'), venue.name));
 			directions.textContent = mapLabel('directions', 'Directions');
 			wrapper.appendChild(directions);
 		}

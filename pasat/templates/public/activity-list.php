@@ -155,7 +155,7 @@ $pasat_board_status = static function ( array $pasat_activity, array $pasat_capa
 				<p class="pasat-section-kicker"><?php esc_html_e( 'Display Board', 'pasat' ); ?></p>
 				<h2 class="pasat-board-title"><?php esc_html_e( 'Activity Board', 'pasat' ); ?></h2>
 			</div>
-			<p class="pasat-board-updated" data-pasat-board-updated role="status" aria-live="polite"><?php esc_html_e( 'Updated just now', 'pasat' ); ?></p>
+			<p class="pasat-board-updated" data-pasat-board-updated role="status" aria-live="polite" aria-atomic="true"><?php esc_html_e( 'Updated just now', 'pasat' ); ?></p>
 		</div>
 		<div class="pasat-board-items" data-pasat-board-items>
 	<?php endif; ?>

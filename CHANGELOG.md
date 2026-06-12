@@ -2,6 +2,25 @@
 
 All notable PASAT repository-level changes are documented here. The WordPress.org-style plugin changelog is also maintained in `pasat/readme.txt`.
 
+## 0.1.14 - 2026-06-12
+
+Public screen-reader QA hardening.
+
+### Added
+
+- Public accessibility hook audit script covering signup notices, activity filter announcements, board refresh status, venue map status, map button state, popup direction labels, and My Signups notices.
+- Release preflight hook for the public accessibility audit when PHP is available.
+- Venue-specific accessible names for dynamically generated venue-map popup direction links.
+
+### Fixed
+
+- Made the activity board refresh status atomic in both server-rendered and JavaScript-created states.
+
+### Changed
+
+- Bumped plugin asset/runtime version to `0.1.14`.
+- Kept database schema version at `0.1.2` because this release does not alter custom tables.
+
 ## 0.1.13 - 2026-06-12
 
 Public keyboard accessibility hardening.

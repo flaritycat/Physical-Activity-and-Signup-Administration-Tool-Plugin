@@ -32,6 +32,8 @@ final class Assets {
 					'activities'  => __( 'Activities', 'pasat' ),
 					'directions'  => __( 'Directions', 'pasat' ),
 					/* translators: %s is venue name. */
+					'directionsToVenue' => __( 'Directions to %s', 'pasat' ),
+					/* translators: %s is venue name. */
 					'showingVenue' => __( 'Showing %s on the map.', 'pasat' ),
 					'signUp'      => __( 'Sign up', 'pasat' ),
 				),
