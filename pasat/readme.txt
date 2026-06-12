@@ -4,7 +4,7 @@ Tags: activities, signup, events, waitlist, administration
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.1
-Stable tag: 0.1.10
+Stable tag: 0.1.11
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -68,6 +68,10 @@ No. The public checkbox records membership interest. Administrators can manually
 2. Public activity list and signup form.
 
 == Changelog ==
+
+= 0.1.11 =
+
+Adds contextual accessible labels for repeated signup, activity board QR/signup, and venue map action controls, plus smoke coverage for the new public action labels.
 
 = 0.1.10 =
 

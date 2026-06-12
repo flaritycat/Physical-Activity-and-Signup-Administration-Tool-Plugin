@@ -1908,3 +1908,23 @@ msgstr ""
 #: includes/Frontend/Assets.php:26
 msgid "Please complete the highlighted field."
 msgstr ""
+
+#: templates/public/activity-list.php:250 includes/Frontend/Assets.php:54
+#, php-format
+msgid "Sign up for %s"
+msgstr ""
+
+#: includes/Frontend/Assets.php:51 templates/public/activity-list.php:243
+#, php-format
+msgid "Signup QR code for %s"
+msgstr ""
+
+#: templates/public/venue-map.php:97
+#, php-format
+msgid "Show %s on map"
+msgstr ""
+
+#: templates/public/venue-map.php:104
+#, php-format
+msgid "Directions to %s"
+msgstr ""

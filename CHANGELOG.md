@@ -2,6 +2,22 @@
 
 All notable PASAT repository-level changes are documented here. The WordPress.org-style plugin changelog is also maintained in `pasat/readme.txt`.
 
+## 0.1.11 - 2026-06-12
+
+Public action accessible-name hardening.
+
+### Added
+
+- Contextual accessible labels for repeated public activity signup links.
+- Contextual accessible labels for activity board QR and signup actions on first render and after polling refreshes.
+- Contextual accessible labels for venue map "Show on map" and "Directions" actions.
+- Smoke coverage for activity board and venue map action labels.
+
+### Changed
+
+- Bumped plugin asset/runtime version to `0.1.11`.
+- Kept database schema version at `0.1.2` because this release does not alter custom tables.
+
 ## 0.1.10 - 2026-06-12
 
 Public accessibility hardening, first pass.

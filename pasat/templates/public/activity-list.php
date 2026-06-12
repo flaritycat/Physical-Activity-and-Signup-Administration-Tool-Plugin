@@ -249,11 +249,19 @@ $pasat_board_status = static function ( array $pasat_activity, array $pasat_capa
 							) ); ?>">
 								<span class="pasat-board-qr__fallback"><?php esc_html_e( 'Signup QR', 'pasat' ); ?></span>
 							</span>
-							<a class="pasat-board-qr-link" href="<?php echo esc_url( $pasat_link ); ?>"><?php esc_html_e( 'Sign up', 'pasat' ); ?></a>
+							<a class="pasat-board-qr-link" href="<?php echo esc_url( $pasat_link ); ?>" aria-label="<?php echo esc_attr( sprintf(
+								/* translators: %s is activity title. */
+								__( 'Sign up for %s', 'pasat' ),
+								$pasat_activity['title']
+							) ); ?>"><?php esc_html_e( 'Sign up', 'pasat' ); ?></a>
 						</div>
 					<?php endif; ?>
 				<?php else : ?>
-					<a class="pasat-button" href="<?php echo esc_url( $pasat_link ); ?>"><?php esc_html_e( 'Sign Up', 'pasat' ); ?></a>
+					<a class="pasat-button" href="<?php echo esc_url( $pasat_link ); ?>" aria-label="<?php echo esc_attr( sprintf(
+						/* translators: %s is activity title. */
+						__( 'Sign up for %s', 'pasat' ),
+						$pasat_activity['title']
+					) ); ?>"><?php esc_html_e( 'Sign Up', 'pasat' ); ?></a>
 				<?php endif; ?>
 			</div>
 		</article>

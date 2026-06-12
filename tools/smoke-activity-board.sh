@@ -135,6 +135,8 @@ $expectations = array(
 	'role="status"',
 	'data-pasat-qr-value=',
 	'pasat-board-qr-wrap',
+	'aria-label="Signup QR code for Morning Yoga"',
+	'aria-label="Sign up for Morning Yoga"',
 	'Morning Yoga',
 	'Starting soon',
 	'Updated just now',

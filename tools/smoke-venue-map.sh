@@ -131,7 +131,7 @@ $activities->save(
 );
 
 $map_html = do_shortcode( '[pasat_venue_map source="upcoming" height="360" show_cards="1"]' );
-foreach ( array( 'data-pasat-map-canvas', 'Mapped Studio', 'Address Hall', 'openstreetmap.org' ) as $expected ) {
+foreach ( array( 'data-pasat-map-canvas', 'Mapped Studio', 'Address Hall', 'aria-label="Show Mapped Studio on map"', 'aria-label="Directions to Mapped Studio"', 'openstreetmap.org' ) as $expected ) {
 	if ( false === strpos( $map_html, $expected ) ) {
 		fwrite( STDERR, "Venue map markup missing expected content: {$expected}\n" );
 		exit( 1 );

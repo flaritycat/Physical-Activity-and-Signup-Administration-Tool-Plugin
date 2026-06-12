@@ -93,10 +93,18 @@ $pasat_is_activity_map = ! empty( $pasat_options['activity_id'] );
 					</div>
 					<div class="pasat-venue-card__actions">
 						<?php if ( ! empty( $pasat_venue['has_coordinates'] ) && ! empty( $pasat_options['interactive'] ) ) : ?>
-							<button class="pasat-button pasat-button--secondary pasat-venue-card__link" type="button" data-pasat-map-focus="<?php echo esc_attr( (string) $pasat_venue['id'] ); ?>"><?php esc_html_e( 'Show on map', 'pasat' ); ?></button>
+							<button class="pasat-button pasat-button--secondary pasat-venue-card__link" type="button" data-pasat-map-focus="<?php echo esc_attr( (string) $pasat_venue['id'] ); ?>" aria-label="<?php echo esc_attr( sprintf(
+								/* translators: %s is venue name. */
+								__( 'Show %s on map', 'pasat' ),
+								$pasat_venue['name']
+							) ); ?>"><?php esc_html_e( 'Show on map', 'pasat' ); ?></button>
 						<?php endif; ?>
 						<?php if ( ! empty( $pasat_venue['map_url'] ) ) : ?>
-							<a class="pasat-button pasat-venue-card__link" href="<?php echo esc_url( $pasat_venue['map_url'] ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Directions', 'pasat' ); ?></a>
+							<a class="pasat-button pasat-venue-card__link" href="<?php echo esc_url( $pasat_venue['map_url'] ); ?>" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr( sprintf(
+								/* translators: %s is venue name. */
+								__( 'Directions to %s', 'pasat' ),
+								$pasat_venue['name']
+							) ); ?>"><?php esc_html_e( 'Directions', 'pasat' ); ?></a>
 						<?php endif; ?>
 					</div>
 				</article>

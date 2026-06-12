@@ -44,8 +44,12 @@ final class Assets {
 					'noActivities' => __( 'No public activities are currently available.', 'pasat' ),
 					'open'         => __( 'Open', 'pasat' ),
 					'qrFallback'   => __( 'Signup QR', 'pasat' ),
+					/* translators: %s is activity title. */
+					'qrForActivity' => __( 'Signup QR code for %s', 'pasat' ),
 					'refreshing'   => __( 'Refreshing...', 'pasat' ),
 					'signUp'       => __( 'Sign up', 'pasat' ),
+					/* translators: %s is activity title. */
+					'signUpForActivity' => __( 'Sign up for %s', 'pasat' ),
 					'signupClosed' => __( 'Signup closed', 'pasat' ),
 					/* translators: %d is the number of remaining confirmed signup spots. */
 					'spotsLeft'    => __( '%d spots left', 'pasat' ),

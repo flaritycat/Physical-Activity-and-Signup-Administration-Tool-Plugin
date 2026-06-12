@@ -279,6 +279,10 @@
 		return String(template).replace('%d', value);
 	}
 
+	function templateLabel(template, value) {
+		return String(template).replace('%s', value || '');
+	}
+
 	function activityStartsSoon(activity) {
 		if (!activity.starts_at) {
 			return false;
@@ -652,11 +656,12 @@
 				var link = appendText(qrWrap, 'a', 'pasat-board-qr-link', boardLabel('signUp', 'Sign up'));
 				if (qr) {
 					qr.setAttribute('data-pasat-qr-value', qrValue);
-					qr.setAttribute('aria-label', boardLabel('qrFallback', 'Signup QR'));
+					qr.setAttribute('aria-label', templateLabel(boardLabel('qrForActivity', 'Signup QR code for %s'), activity.title));
 					renderQr(qr, qrValue);
 				}
 				if (link) {
 					link.setAttribute('href', activity.signup_url);
+					link.setAttribute('aria-label', templateLabel(boardLabel('signUpForActivity', 'Sign up for %s'), activity.title));
 				}
 				aside.appendChild(qrWrap);
 			}
