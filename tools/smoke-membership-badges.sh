@@ -34,6 +34,12 @@ parse_version() {
 		| tr -d '\r'
 }
 
+parse_db_version() {
+	sed -nE "s/^define\\( 'PASAT_DB_VERSION', '([^']+)' \\);/\\1/p" "${ROOT_DIR}/pasat/pasat.php" \
+		| head -n 1 \
+		| tr -d '\r'
+}
+
 wait_for_db() {
 	local attempt
 
@@ -66,6 +72,7 @@ use PASAT\Helpers;
 use PASAT\Privacy\Eraser;
 use PASAT\Privacy\Exporter;
 use PASAT\REST\PublicSignupController;
+use PASAT\Security\Tokens;
 
 global $wpdb;
 
@@ -248,6 +255,23 @@ if ( ! in_array( '2026 Participant', $labels, true ) || ! in_array( '3rd Place',
 	exit( 1 );
 }
 
+$lookup_token = wp_generate_password( 48, false, false );
+set_transient( 'pasat_lookup_' . Tokens::hash( $lookup_token ), 'member-runner@example.test', 30 * MINUTE_IN_SECONDS );
+$_GET['pasat_lookup_token'] = $lookup_token;
+$rendered = do_shortcode( '[pasat_my_signups]' );
+unset( $_GET['pasat_lookup_token'] );
+delete_transient( 'pasat_lookup_' . Tokens::hash( $lookup_token ) );
+foreach ( array( 'pasat-profile-summary', 'pasat-membership-card', 'pasat-badge-grid', 'pasat-participation-card', '2026 Participant', '3rd Place' ) as $expected ) {
+	if ( false === strpos( $rendered, $expected ) ) {
+		fwrite( STDERR, "Rendered My Signups output missing {$expected}.\n" );
+		exit( 1 );
+	}
+}
+if ( false !== strpos( $rendered, 'Final result' ) ) {
+	fwrite( STDERR, "Rendered My Signups output exposed private participation notes.\n" );
+	exit( 1 );
+}
+
 $export = Exporter::export( 'member-runner@example.test' );
 $export_json = wp_json_encode( $export['data'] );
 foreach ( array( 'Membership status', 'PASAT Participation', 'Badge label', '3rd Place' ) as $expected ) {
@@ -307,6 +331,7 @@ PHP
 
 run_wp_cli() {
 	local version="$1"
+	local db_version="$2"
 	local archive="/workspace/dist/pasat-${version}.zip"
 
 	docker run --rm \
@@ -323,7 +348,7 @@ run_wp_cli() {
 			\$WP config create --dbname=wordpress --dbuser=wp --dbpass=wp --dbhost=${DB_CONTAINER}:3306 --allow-root
 			\$WP core install --url=http://pasat-membership-smoke.test --title='PASAT Membership Smoke' --admin_user=admin --admin_password='pasat-smoke-pass' --admin_email=admin@example.test --skip-email --allow-root
 			\$WP plugin install '${archive}' --activate --allow-root
-			test \"\$(\$WP option get pasat_db_version --allow-root)\" = '${version}'
+			test \"\$(\$WP option get pasat_db_version --allow-root)\" = '${db_version}'
 			\$WP eval-file pasat-membership-badges-smoke.php --allow-root
 		"
 }
@@ -334,6 +359,12 @@ trap cleanup EXIT
 VERSION="$(parse_version)"
 if [[ -z "${VERSION}" ]]; then
 	echo "Could not determine PASAT version from pasat/pasat.php." >&2
+	exit 1
+fi
+
+DB_VERSION="$(parse_db_version)"
+if [[ -z "${DB_VERSION}" ]]; then
+	echo "Could not determine PASAT DB version from pasat/pasat.php." >&2
 	exit 1
 fi
 
@@ -351,6 +382,6 @@ docker run -d \
 	"${DB_IMAGE}" >/dev/null
 
 wait_for_db
-run_wp_cli "${VERSION}"
+run_wp_cli "${VERSION}" "${DB_VERSION}"
 
 echo "PASAT Membership/Badges smoke test passed for pasat-${VERSION}.zip"

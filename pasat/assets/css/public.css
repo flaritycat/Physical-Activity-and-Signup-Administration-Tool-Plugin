@@ -64,6 +64,10 @@
 .pasat-venue-card,
 .pasat-profile-summary,
 .pasat-badges,
+.pasat-membership-card,
+.pasat-my-signups__section,
+.pasat-participation,
+.pasat-lookup-card,
 .pasat-my-signups__table {
 	background: var(--pasat-surface);
 	border: 1px solid var(--pasat-border);
@@ -241,6 +245,18 @@
 	background: #e9f4f7;
 	border-color: rgba(22, 90, 114, 0.22);
 	color: var(--pasat-brand);
+}
+
+.pasat-status--confirmed {
+	background: var(--pasat-success-bg);
+	border-color: rgba(20, 99, 59, 0.2);
+	color: var(--pasat-success);
+}
+
+.pasat-status--waitlisted {
+	background: var(--pasat-warning-bg);
+	border-color: rgba(119, 84, 0, 0.22);
+	color: var(--pasat-warning);
 }
 
 .pasat-button {
@@ -883,21 +899,285 @@
 	display: none !important;
 }
 
-.pasat-profile-summary,
-.pasat-badges {
-	margin: 1rem 0;
+.pasat-my-signups {
+	display: grid;
+	gap: 1rem;
+}
+
+.pasat-profile-summary {
+	align-items: stretch;
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: minmax(0, 1fr) minmax(230px, auto);
+	margin: 0;
+	overflow: hidden;
+	padding: 1.1rem;
+	position: relative;
+}
+
+.pasat-profile-summary::before {
+	background: linear-gradient(180deg, var(--pasat-brand), #2d7d63);
+	content: "";
+	inset: 0 auto 0 0;
+	position: absolute;
+	width: 0.38rem;
+}
+
+.pasat-profile-summary__main {
+	min-width: 0;
+	padding-left: 0.35rem;
+}
+
+.pasat-profile-summary__eyebrow,
+.pasat-section-kicker {
+	color: var(--pasat-brand);
+	font-size: 0.78rem;
+	font-weight: 800;
+	letter-spacing: 0.04em;
+	margin: 0 0 0.24rem;
+	text-transform: uppercase;
+}
+
+.pasat-profile-summary__title,
+.pasat-section-heading h3,
+.pasat-membership-card h3,
+.pasat-signup-mini-card h4,
+.pasat-participation-card h4,
+.pasat-badge-card h4 {
+	color: var(--pasat-text);
+	line-height: 1.25;
+	margin: 0;
+}
+
+.pasat-profile-summary__title {
+	font-size: 1.45rem;
+}
+
+.pasat-profile-summary__meta {
+	color: var(--pasat-muted);
+	font-weight: 700;
+	margin: 0.25rem 0 0;
+	word-break: break-word;
+}
+
+.pasat-profile-summary__stats {
+	display: grid;
+	gap: 0.6rem;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.pasat-profile-summary__stats div {
+	background: var(--pasat-surface-alt);
+	border: 1px solid var(--pasat-border);
+	border-radius: 9px;
+	min-width: 0;
+	padding: 0.72rem;
+	text-align: center;
+}
+
+.pasat-profile-summary__stats strong {
+	color: var(--pasat-brand);
+	display: block;
+	font-size: 1.32rem;
+	line-height: 1.1;
+}
+
+.pasat-profile-summary__stats span {
+	color: var(--pasat-muted);
+	display: block;
+	font-size: 0.78rem;
+	font-weight: 800;
+	margin-top: 0.24rem;
+	text-transform: uppercase;
+}
+
+.pasat-section-heading {
+	align-items: flex-start;
+	display: flex;
+	gap: 1rem;
+	justify-content: space-between;
+	margin: 0 0 0.9rem;
+}
+
+.pasat-section-heading > span {
+	align-items: center;
+	background: var(--pasat-surface-alt);
+	border: 1px solid var(--pasat-border);
+	border-radius: 999px;
+	color: var(--pasat-brand);
+	display: inline-flex;
+	font-weight: 800;
+	justify-content: center;
+	min-height: 2rem;
+	min-width: 2rem;
+	padding: 0.2rem 0.68rem;
+}
+
+.pasat-badges,
+.pasat-membership-card,
+.pasat-my-signups__section,
+.pasat-participation,
+.pasat-lookup-card {
+	margin: 0;
 	padding: 1rem;
 }
 
-.pasat-badge-list,
+.pasat-membership-card {
+	align-items: center;
+	background: linear-gradient(135deg, #fff, #f4fbf7);
+	display: flex;
+	gap: 1rem;
+	justify-content: space-between;
+}
+
+.pasat-membership-card p,
+.pasat-lookup-card p,
+.pasat-signup-mini-card p,
+.pasat-participation-card p,
+.pasat-badge-card p {
+	color: var(--pasat-muted);
+	margin: 0.28rem 0 0;
+}
+
+.pasat-membership-card__number {
+	background: #fff;
+	border: 1px solid rgba(20, 99, 59, 0.22);
+	border-radius: 999px;
+	color: var(--pasat-success);
+	display: inline-flex;
+	font-weight: 800;
+	min-height: 2.25rem;
+	padding: 0.45rem 0.8rem;
+	white-space: nowrap;
+}
+
+.pasat-badge-grid {
+	display: grid;
+	gap: 0.75rem;
+	grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.pasat-badge-card {
+	align-items: center;
+	background: linear-gradient(135deg, #fff, var(--pasat-surface-alt));
+	border: 1px solid var(--pasat-border);
+	border-radius: 10px;
+	display: grid;
+	gap: 0.75rem;
+	grid-template-columns: 3.35rem minmax(0, 1fr);
+	min-height: 5rem;
+	padding: 0.8rem;
+}
+
+.pasat-badge-card__mark {
+	align-items: center;
+	aspect-ratio: 1;
+	background: #e9f4f7;
+	border: 1px solid rgba(22, 90, 114, 0.18);
+	border-radius: 999px;
+	color: var(--pasat-brand);
+	display: flex;
+	font-weight: 900;
+	justify-content: center;
+	text-align: center;
+}
+
+.pasat-badge-card--year_participation .pasat-badge-card__mark {
+	background: var(--pasat-success-bg);
+	border-color: rgba(20, 99, 59, 0.2);
+	color: var(--pasat-success);
+}
+
+.pasat-badge-card--placement .pasat-badge-card__mark,
+.pasat-badge-card--place-1 .pasat-badge-card__mark {
+	background: #fff5d6;
+	border-color: rgba(155, 105, 0, 0.24);
+	color: #6e4a00;
+}
+
+.pasat-badge-card--place-2 .pasat-badge-card__mark {
+	background: #eef3f6;
+	border-color: rgba(91, 107, 115, 0.24);
+	color: #4f626b;
+}
+
+.pasat-badge-card--place-3 .pasat-badge-card__mark {
+	background: #f7efe7;
+	border-color: rgba(126, 87, 41, 0.24);
+	color: #77512f;
+}
+
+.pasat-my-signups__cards {
+	display: none;
+}
+
+.pasat-signup-mini-card,
+.pasat-participation-card {
+	align-items: flex-start;
+	background: var(--pasat-surface-alt);
+	border: 1px solid var(--pasat-border);
+	border-radius: 10px;
+	display: flex;
+	gap: 0.85rem;
+	justify-content: space-between;
+	padding: 0.85rem;
+}
+
+.pasat-signup-mini-card > div,
+.pasat-participation-card > div:first-child {
+	min-width: 0;
+}
+
 .pasat-participation-list {
-	margin-left: 1.25rem;
+	display: grid;
+	gap: 0.75rem;
+	margin: 0;
+}
+
+.pasat-participation-card__meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.45rem;
+	justify-content: flex-end;
+	max-width: 46%;
+}
+
+.pasat-participation-card__meta span {
+	background: #fff;
+	border: 1px solid var(--pasat-border);
+	border-radius: 999px;
+	color: var(--pasat-brand);
+	display: inline-flex;
+	font-size: 0.84rem;
+	font-weight: 800;
+	line-height: 1.2;
+	padding: 0.35rem 0.58rem;
+	white-space: nowrap;
+}
+
+.pasat-form--inline {
+	box-shadow: none;
+	display: grid;
+	gap: 0.8rem;
+	grid-template-columns: minmax(0, 1fr) auto;
+	margin: 0.9rem 0 0;
+	padding: 0;
+}
+
+.pasat-form--inline label {
+	margin: 0;
+}
+
+.pasat-form--inline .pasat-button {
+	align-self: end;
+	margin-bottom: 0;
+	min-width: 11rem;
 }
 
 .pasat-my-signups__table {
 	border-collapse: separate;
 	border-spacing: 0;
-	margin: 0 0 1rem;
+	margin: 0;
 	overflow: hidden;
 	width: 100%;
 }
@@ -988,6 +1268,37 @@
 		justify-self: start;
 		white-space: normal;
 	}
+
+	.pasat-profile-summary {
+		grid-template-columns: 1fr;
+	}
+
+	.pasat-profile-summary__stats {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	.pasat-my-signups__table {
+		display: none;
+	}
+
+	.pasat-my-signups__cards {
+		display: grid;
+		gap: 0.75rem;
+	}
+
+	.pasat-form--inline {
+		grid-template-columns: 1fr;
+	}
+
+	.pasat-form--inline .pasat-button {
+		justify-self: start;
+		min-width: 0;
+	}
+
+	.pasat-participation-card__meta {
+		justify-content: flex-start;
+		max-width: none;
+	}
 }
 
 @media (max-width: 480px) {
@@ -995,9 +1306,39 @@
 	.pasat-signup-summary,
 	.pasat-venue-card,
 	.pasat-profile-summary,
-	.pasat-badges {
+	.pasat-badges,
+	.pasat-membership-card,
+	.pasat-my-signups__section,
+	.pasat-participation,
+	.pasat-lookup-card {
 		border-radius: 8px;
 		padding: 0.9rem;
+	}
+
+	.pasat-profile-summary__stats {
+		grid-template-columns: 1fr;
+	}
+
+	.pasat-membership-card,
+	.pasat-signup-mini-card,
+	.pasat-participation-card {
+		align-items: stretch;
+		flex-direction: column;
+	}
+
+	.pasat-membership-card__number {
+		align-self: flex-start;
+		white-space: normal;
+	}
+
+	.pasat-badge-card {
+		grid-template-columns: 2.9rem minmax(0, 1fr);
+	}
+
+	.pasat-section-heading {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 0.5rem;
 	}
 
 	.pasat-form {

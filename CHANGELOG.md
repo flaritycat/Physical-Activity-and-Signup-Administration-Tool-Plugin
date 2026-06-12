@@ -2,6 +2,25 @@
 
 All notable PASAT repository-level changes are documented here. The WordPress.org-style plugin changelog is also maintained in `pasat/readme.txt`.
 
+## 0.1.8 - 2026-06-12
+
+My Signups, membership, and badge UX redesign.
+
+### Added
+
+- Verified participant profile header for `[pasat_my_signups]` with private-view messaging and summary counts.
+- Membership card with status, opt-in date, and membership number when membership features are enabled.
+- Visual badge gallery for yearly participation and placement badges.
+- Responsive mobile cards for signups and participation history.
+- Privacy-conscious lookup card with `aria-live` feedback for private lookup notices.
+
+### Changed
+
+- Reworked the My Signups template from raw table/list output into a participant portal-style view.
+- Updated the membership/badges smoke test so UI-only releases validate the declared PASAT DB schema version separately from the plugin package version.
+- Bumped plugin asset/runtime version to `0.1.8`.
+- Kept database schema version at `0.1.2` because this release does not alter custom tables.
+
 ## 0.1.7 - 2026-06-12
 
 Printable poster PDF redesign.

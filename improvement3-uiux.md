@@ -175,6 +175,8 @@ Acceptance criteria:
 
 ## Phase 5: My Signups and Badges UX
 
+Status: addressed in `0.1.8` with a verified participant profile header, membership status card, visual badge gallery, responsive signup/history cards, privacy-conscious lookup copy, and `aria-live` lookup notices. Remaining refinements from this phase are visual QA with larger real datasets and cross-theme checks.
+
 Make membership and badges feel rewarding without exposing private data.
 
 Tasks:
@@ -310,11 +312,12 @@ Acceptance criteria:
 2. Redesign activity cards/list.
 3. Redesign signup form and notices.
 4. Redesign venue map/cards and map behavior.
-5. Improve my-signups, membership, and badges presentation.
+5. Improve my-signups, membership, and badges presentation. Completed in `0.1.8`.
 6. Add accessibility polish and responsive checks.
-7. Redesign poster PDFs and QR print workflow.
+7. Redesign poster PDFs and QR print workflow. Mostly completed in `0.1.7`; keep visual QA and ZIP manifest refinements.
 8. Clean up admin dashboard and key admin pages.
-9. Rebuild release ZIP and smoke-test on `https://dev.raoul.no/wp/pasat-test-signup/`.
+9. Improve activity board display/kiosk readability and refresh feedback.
+10. Rebuild release ZIP and smoke-test on `https://dev.raoul.no/wp/pasat-test-signup/`.
 
 ## Test Plan
 

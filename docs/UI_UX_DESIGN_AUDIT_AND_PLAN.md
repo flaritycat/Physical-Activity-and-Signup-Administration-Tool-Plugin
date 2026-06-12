@@ -1,19 +1,23 @@
 # PASAT UI/UX Design Audit and Modernization Plan
 
 Date: 2026-06-12
-Plugin version audited: 0.1.4
+Plugin version audited: 0.1.8
 Scope: public shortcodes, activity board, venue map, signup flow, participant lookup, membership/badges, poster PDFs, and PASAT wp-admin screens.
 
 ## Executive Summary
 
 PASAT is functionally strong for a WordPress-native activity signup plugin. The major workflows exist: activity listing, signup, capacity/waitlist, cancellation, venue maps, activity board, membership opt-in, badges, poster PDFs, privacy tooling, and admin management.
 
-The UI/UX has moved beyond raw MVP in two recent steps:
+The UI/UX has moved beyond raw MVP in recent public-facing steps:
 
 - `0.1.3` added scoped public design tokens, surfaces, status pills, better buttons/forms/notices, and responsive spacing.
 - `0.1.4` redesigned activity cards with date blocks, chips, capacity summaries, selected states, and client-side filters.
+- `0.1.5` redesigned the public signup form with guided sections, selected-activity context, and accessible AJAX notices.
+- `0.1.6` redesigned venue map cards and marker/card interactions.
+- `0.1.7` improved printable activity poster PDFs and QR hierarchy.
+- `0.1.8` redesigned verified My Signups membership, badges, and participation history.
 
-However, the plugin is not yet consistently modern across all surfaces. The strongest current area is the public activity list. The weakest current areas are the signup form composition, venue map/card experience, participant badge presentation, poster PDFs, and admin information architecture.
+However, the plugin is not yet consistently modern across all surfaces. The strongest current areas are the public activity list, signup form, venue cards, poster PDFs, and verified participant profile. The weakest remaining areas are activity board display polish, admin information architecture, and full cross-theme accessibility QA.
 
 The modernization target should be a calm, trustworthy, operational product UI:
 
@@ -32,7 +36,7 @@ The modernization target should be a calm, trustworthy, operational product UI:
 | Public activity list | 7/10 | Modern cards, filters, status pills, date blocks | Needs richer sort/date filters and visual QA across themes |
 | Public signup form | 7/10 | Guided sections, selected activity summary, dynamic warning/age context, accessible AJAX feedback | Needs visual QA, first-invalid-field focus, and broader theme testing |
 | Venue map and venue cards | 6/10 | Compact public cards, hidden raw coordinates, next activity context, marker-card interaction | Needs visual QA, selected-venue polish, and cross-theme testing |
-| My signups | 4/10 | Private lookup flow exists | Membership/badges/history feel like plain data output |
+| My signups | 7/10 | Private profile, membership card, badge gallery, responsive history | Needs visual QA with real participant data and broader theme testing |
 | Activity board | 6/10 | Polling, QR option, status updates | Needs kiosk/display-specific visual system and large-room readability |
 | Poster PDFs | 6/10 | Fixed print zones, bounded wrapping, stronger QR hierarchy, short-link card | Needs visual QA, optional poster settings, and ZIP manifest polish |
 | Admin dashboard | 5/10 | Metrics, upcoming activities, recent signups | Needs workflow-focused dashboard, quick actions, richer status cards |
@@ -399,6 +403,8 @@ Acceptance criteria:
 - Marker/card interaction works with mouse and keyboard.
 
 ### Phase 5: My Signups, Membership, and Badges UX
+
+Status after `0.1.8`: Implemented for the public verified lookup experience. PASAT now renders a participant profile header, membership card, visual badge gallery, responsive signup/history cards, private lookup messaging, and `aria-live` notice feedback. Remaining items are visual QA with richer badge data and cross-theme/mobile checks.
 
 Priority: Medium-High
 Primary files:
@@ -781,19 +787,18 @@ Outcome:
 
 ## Immediate Next Recommended Work
 
-The next implementation should be Phase 5: My Signups, Membership, and Badges UX.
+The next implementation should be Phase 6: Activity Board Display UX.
 
 Reason:
 
-- Membership and badges exist functionally but still feel like plain data output.
-- Verified participants should get a clearer profile/history experience.
-- Badge presentation is user-facing and can make repeated participation feel rewarding.
-- The work can improve the public experience without changing the privacy model.
+- The board exists and auto-refreshes, but it still shares too much visual language with normal activity cards.
+- Display-board users need large-room readability, stable refresh behavior, and clearer offline/updated state.
+- The work can improve venue/day-of-use workflows without changing the signup data model.
 
 First concrete tasks:
 
-1. Redesign the verified profile summary as a compact card.
-2. Render year and placement badges as visual chips/cards instead of plain list items.
-3. Improve participation history on mobile with stacked cards.
-4. Keep private lookup messaging privacy-conscious before verification.
-5. Test verified lookup with membership, yearly badges, and placement badges.
+1. Separate activity board card styling from regular activity-list cards.
+2. Add larger kiosk typography and high-contrast status/readability rules.
+3. Improve QR mode composition for board cards.
+4. Add clearer last-updated/offline refresh feedback.
+5. Test board layout on desktop display and mobile/tablet fallback widths.

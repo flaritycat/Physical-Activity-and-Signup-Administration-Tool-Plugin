@@ -4,7 +4,7 @@ Tags: activities, signup, events, waitlist, administration
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.1
-Stable tag: 0.1.7
+Stable tag: 0.1.8
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -68,6 +68,10 @@ No. The public checkbox records membership interest. Administrators can manually
 2. Public activity list and signup form.
 
 == Changelog ==
+
+= 0.1.8 =
+
+Redesigns the verified My Signups view with a participant profile header, membership card, visual badge gallery, responsive signup/history cards, private lookup messaging, and accessible lookup notices.
 
 = 0.1.7 =
 
