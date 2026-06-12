@@ -283,6 +283,14 @@
 		return String(template).replace('%s', value || '');
 	}
 
+	function numberedTemplateLabel(template, values) {
+		var output = String(template);
+		values.forEach(function (value, index) {
+			output = output.replace('%' + (index + 1) + '$d', value);
+		});
+		return output;
+	}
+
 	function activityStartsSoon(activity) {
 		if (!activity.starts_at) {
 			return false;
@@ -422,11 +430,15 @@
 		var venue = filterBar.querySelector('[data-pasat-filter-venue]');
 		var reset = filterBar.querySelector('[data-pasat-filter-reset]');
 		var empty = list.querySelector('[data-pasat-filter-empty]');
+		var count = filterBar.querySelector('[data-pasat-filter-count]');
+		var countTemplate = count ? count.getAttribute('data-pasat-filter-template') : '';
+		var total = cards.length;
 
 		function applyFilters() {
 			var searchValue = normalizeFilterValue(search ? search.value : '');
 			var typeValue = type ? type.value : '';
 			var venueValue = venue ? venue.value : '';
+			var hasFilters = !!(searchValue || typeValue || venueValue);
 			var visible = 0;
 
 			cards.forEach(function (card) {
@@ -442,6 +454,15 @@
 
 			if (empty) {
 				empty.hidden = visible !== 0;
+			}
+
+			if (count && countTemplate) {
+				count.textContent = numberedTemplateLabel(countTemplate, [visible, total]);
+			}
+
+			if (reset) {
+				reset.disabled = !hasFilters;
+				reset.setAttribute('aria-disabled', hasFilters ? 'false' : 'true');
 			}
 		}
 
@@ -467,6 +488,8 @@
 				applyFilters();
 			});
 		}
+
+		applyFilters();
 	}
 
 	function boardOptions(board) {
@@ -581,9 +604,42 @@
 		setBoardMessage(board, 'ok', pluralLabel(boardLabel('updatedMinutesAgo', 'Updated %d minutes ago'), Math.floor(elapsed / 60)));
 	}
 
+	function boardFocusSnapshot(list) {
+		var active = document.activeElement;
+		var link;
+		if (!active || !list.contains(active)) {
+			return null;
+		}
+
+		link = active.closest ? active.closest('a[href]') : null;
+		if (!link || !list.contains(link)) {
+			return null;
+		}
+
+		return {
+			href: link.getAttribute('href')
+		};
+	}
+
+	function restoreBoardFocus(list, snapshot) {
+		if (!snapshot || !snapshot.href) {
+			return;
+		}
+
+		Array.prototype.some.call(list.querySelectorAll('a[href]'), function (link) {
+			if (link.getAttribute('href') !== snapshot.href) {
+				return false;
+			}
+
+			focusElement(link);
+			return true;
+		});
+	}
+
 	function renderBoard(board, activities) {
 		var options = boardOptions(board);
 		var list = board.querySelector('[data-pasat-board-items]') || board;
+		var focusSnapshot = boardFocusSnapshot(list);
 		var nextStates = {};
 		list.textContent = '';
 
@@ -675,6 +731,7 @@
 		board._pasatStates = nextStates;
 		board._pasatLastUpdated = Date.now();
 		board._pasatFailures = 0;
+		restoreBoardFocus(list, focusSnapshot);
 		setBoardMessage(board, 'ok', boardLabel('updated', 'Updated just now'));
 	}
 
@@ -812,6 +869,7 @@
 		});
 		var bounds = [];
 		var cards = Array.prototype.slice.call(mapElement.querySelectorAll('[data-pasat-venue-card]'));
+		var status = mapElement.querySelector('[data-pasat-map-status]');
 		var markers = {};
 
 		function activateVenue(venueId, options) {
@@ -822,7 +880,11 @@
 
 			cards.forEach(function (card) {
 				var active = card.getAttribute('data-pasat-venue-id') === id;
+				var button = card.querySelector('[data-pasat-map-focus]');
 				card.classList.toggle('pasat-venue-card--active', active);
+				if (button) {
+					button.setAttribute('aria-pressed', active ? 'true' : 'false');
+				}
 				if (active) {
 					activeCard = card;
 				}
@@ -837,6 +899,17 @@
 				activeCard.scrollIntoView({
 					block: 'nearest'
 				});
+			}
+
+			if (activeCard && options.focusCard) {
+				focusElement(activeCard);
+			}
+
+			if (status && activeCard && options.announce !== false) {
+				status.textContent = templateLabel(
+					mapLabel('showingVenue', 'Showing %s on the map.'),
+					(activeCard.querySelector('.pasat-venue-card__title') || {}).textContent || ''
+				);
 			}
 		}
 
@@ -877,6 +950,11 @@
 			focusButton.addEventListener('click', function () {
 				activateVenue(venueId, {
 					openMarker: true
+				});
+			});
+			card.addEventListener('focusin', function () {
+				activateVenue(venueId, {
+					announce: false
 				});
 			});
 		});

@@ -22,6 +22,8 @@ $pasat_canvas_venues = array_values(
 $pasat_is_activity_map = ! empty( $pasat_options['activity_id'] );
 ?>
 <div class="pasat-public pasat-public--venue-map pasat-venue-map<?php echo $pasat_is_activity_map ? ' pasat-venue-map--activity' : ''; ?>" data-pasat-venue-map data-pasat-map-enabled="<?php echo ! empty( $pasat_options['interactive'] ) ? '1' : '0'; ?>" data-venues="<?php echo esc_attr( wp_json_encode( $pasat_canvas_venues ) ); ?>">
+	<p class="pasat-sr-only" data-pasat-map-status role="status" aria-live="polite" aria-atomic="true"></p>
+
 	<?php if ( $pasat_canvas_venues && ! empty( $pasat_options['interactive'] ) ) : ?>
 		<div
 			class="pasat-venue-map__canvas"
@@ -40,7 +42,7 @@ $pasat_is_activity_map = ! empty( $pasat_options['activity_id'] );
 				$pasat_activity_count   = count( $pasat_venue_activities );
 				$pasat_next_activity    = $pasat_activity_count ? reset( $pasat_venue_activities ) : null;
 				?>
-				<article class="pasat-venue-card" data-pasat-venue-card data-pasat-venue-id="<?php echo esc_attr( (string) $pasat_venue['id'] ); ?>">
+				<article class="pasat-venue-card" data-pasat-venue-card data-pasat-venue-id="<?php echo esc_attr( (string) $pasat_venue['id'] ); ?>" tabindex="-1">
 					<div class="pasat-venue-card__marker" aria-hidden="true"></div>
 					<div class="pasat-venue-card__body">
 						<div class="pasat-venue-card__header">
@@ -93,7 +95,7 @@ $pasat_is_activity_map = ! empty( $pasat_options['activity_id'] );
 					</div>
 					<div class="pasat-venue-card__actions">
 						<?php if ( ! empty( $pasat_venue['has_coordinates'] ) && ! empty( $pasat_options['interactive'] ) ) : ?>
-							<button class="pasat-button pasat-button--secondary pasat-venue-card__link" type="button" data-pasat-map-focus="<?php echo esc_attr( (string) $pasat_venue['id'] ); ?>" aria-label="<?php echo esc_attr( sprintf(
+							<button class="pasat-button pasat-button--secondary pasat-venue-card__link" type="button" data-pasat-map-focus="<?php echo esc_attr( (string) $pasat_venue['id'] ); ?>" aria-pressed="false" aria-label="<?php echo esc_attr( sprintf(
 								/* translators: %s is venue name. */
 								__( 'Show %s on map', 'pasat' ),
 								$pasat_venue['name']

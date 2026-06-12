@@ -2,6 +2,25 @@
 
 All notable PASAT repository-level changes are documented here. The WordPress.org-style plugin changelog is also maintained in `pasat/readme.txt`.
 
+## 0.1.13 - 2026-06-12
+
+Public keyboard accessibility hardening.
+
+### Added
+
+- Live activity-filter result counts so keyboard and screen-reader users get immediate feedback when filters change.
+- Venue map status announcements and active button state for keyboard-triggered map focus actions.
+
+### Fixed
+
+- Preserved keyboard focus on activity-board signup links when the polling board refreshes and re-renders.
+- Disabled the activity-filter reset control until filters are active.
+
+### Changed
+
+- Bumped plugin asset/runtime version to `0.1.13`.
+- Kept database schema version at `0.1.2` because this release does not alter custom tables.
+
 ## 0.1.12 - 2026-06-12
 
 Public contrast QA automation.

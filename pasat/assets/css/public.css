@@ -37,6 +37,19 @@
 	margin-top: 1.5rem;
 }
 
+.pasat-sr-only {
+	border: 0;
+	clip: rect(1px, 1px, 1px, 1px);
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
 .pasat-public a {
 	color: var(--pasat-brand);
 	text-decoration-thickness: 0.08em;
@@ -350,6 +363,19 @@
 
 .pasat-activity-list__no-results[hidden] {
 	display: none;
+}
+
+.pasat-filter-count {
+	align-self: center;
+	color: var(--pasat-muted);
+	font-size: 0.88rem;
+	font-weight: 700;
+	grid-column: 1 / -1;
+	margin: 0;
+}
+
+.pasat-button[data-pasat-filter-reset][disabled] {
+	cursor: not-allowed;
 }
 
 .pasat-activity-board {

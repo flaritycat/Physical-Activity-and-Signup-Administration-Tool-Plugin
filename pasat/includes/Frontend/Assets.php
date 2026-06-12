@@ -31,6 +31,8 @@ final class Assets {
 					'activity'    => __( 'Activity', 'pasat' ),
 					'activities'  => __( 'Activities', 'pasat' ),
 					'directions'  => __( 'Directions', 'pasat' ),
+					/* translators: %s is venue name. */
+					'showingVenue' => __( 'Showing %s on the map.', 'pasat' ),
 					'signUp'      => __( 'Sign up', 'pasat' ),
 				),
 				'board'         => array(

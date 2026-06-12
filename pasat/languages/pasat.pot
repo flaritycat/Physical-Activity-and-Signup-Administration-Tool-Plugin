@@ -1928,3 +1928,15 @@ msgstr ""
 #, php-format
 msgid "Directions to %s"
 msgstr ""
+
+#. translators: 1: visible activity count, 2: total activity count.
+#: templates/public/activity-list.php
+#, php-format
+msgid "Showing %1$d of %2$d activities"
+msgstr ""
+
+#. translators: %s is venue name.
+#: includes/Frontend/Assets.php
+#, php-format
+msgid "Showing %s on the map."
+msgstr ""

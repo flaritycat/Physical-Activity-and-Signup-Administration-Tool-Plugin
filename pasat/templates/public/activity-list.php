@@ -21,11 +21,12 @@ $pasat_board_options = wp_parse_args(
 );
 $pasat_board_mode = sanitize_key( (string) $pasat_board_options['mode'] );
 $pasat_board_mode = in_array( $pasat_board_mode, array( 'grid', 'kiosk', 'list' ), true ) ? $pasat_board_mode : 'list';
-$pasat_activity_repo = new PASAT\Database\ActivitiesRepository();
-$pasat_board_attrs   = array();
-$pasat_selected_id   = isset( $_GET['pasat_activity_id'] ) ? absint( wp_unslash( $_GET['pasat_activity_id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only public preselection.
-$pasat_types         = array();
-$pasat_venues        = array();
+$pasat_activity_repo    = new PASAT\Database\ActivitiesRepository();
+$pasat_board_attrs      = array();
+$pasat_selected_id      = isset( $_GET['pasat_activity_id'] ) ? absint( wp_unslash( $_GET['pasat_activity_id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only public preselection.
+$pasat_types            = array();
+$pasat_venues           = array();
+$pasat_filter_count_id = wp_unique_id( 'pasat-filter-count-' );
 
 if ( $pasat_board ) {
 	$pasat_board_attrs = array(
@@ -102,12 +103,12 @@ $pasat_board_status = static function ( array $pasat_activity, array $pasat_capa
 		<div class="pasat-activity-list__tools" data-pasat-activity-filters>
 			<label class="pasat-filter-field">
 				<span><?php esc_html_e( 'Search activities', 'pasat' ); ?></span>
-				<input type="search" data-pasat-filter-search placeholder="<?php esc_attr_e( 'Name, venue, or description', 'pasat' ); ?>" autocomplete="off">
+				<input type="search" data-pasat-filter-search placeholder="<?php esc_attr_e( 'Name, venue, or description', 'pasat' ); ?>" autocomplete="off" aria-describedby="<?php echo esc_attr( $pasat_filter_count_id ); ?>">
 			</label>
 			<?php if ( $pasat_types ) : ?>
 				<label class="pasat-filter-field">
 					<span><?php esc_html_e( 'Type', 'pasat' ); ?></span>
-					<select data-pasat-filter-type>
+					<select data-pasat-filter-type aria-describedby="<?php echo esc_attr( $pasat_filter_count_id ); ?>">
 						<option value=""><?php esc_html_e( 'All types', 'pasat' ); ?></option>
 						<?php foreach ( $pasat_types as $pasat_type ) : ?>
 							<option value="<?php echo esc_attr( sanitize_title( $pasat_type ) ); ?>"><?php echo esc_html( $pasat_type ); ?></option>
@@ -118,7 +119,7 @@ $pasat_board_status = static function ( array $pasat_activity, array $pasat_capa
 			<?php if ( $pasat_venues ) : ?>
 				<label class="pasat-filter-field">
 					<span><?php esc_html_e( 'Venue', 'pasat' ); ?></span>
-					<select data-pasat-filter-venue>
+					<select data-pasat-filter-venue aria-describedby="<?php echo esc_attr( $pasat_filter_count_id ); ?>">
 						<option value=""><?php esc_html_e( 'All venues', 'pasat' ); ?></option>
 						<?php foreach ( $pasat_venues as $pasat_venue ) : ?>
 							<option value="<?php echo esc_attr( sanitize_title( $pasat_venue ) ); ?>"><?php echo esc_html( $pasat_venue ); ?></option>
@@ -126,7 +127,26 @@ $pasat_board_status = static function ( array $pasat_activity, array $pasat_capa
 					</select>
 				</label>
 			<?php endif; ?>
-			<button type="button" class="pasat-button pasat-button--secondary" data-pasat-filter-reset><?php esc_html_e( 'Reset', 'pasat' ); ?></button>
+			<button type="button" class="pasat-button pasat-button--secondary" data-pasat-filter-reset disabled aria-disabled="true"><?php esc_html_e( 'Reset', 'pasat' ); ?></button>
+			<p
+				id="<?php echo esc_attr( $pasat_filter_count_id ); ?>"
+				class="pasat-filter-count"
+				data-pasat-filter-count
+				data-pasat-filter-total="<?php echo esc_attr( (string) count( $pasat_activities ) ); ?>"
+				data-pasat-filter-template="<?php esc_attr_e( 'Showing %1$d of %2$d activities', 'pasat' ); ?>"
+				role="status"
+				aria-live="polite"
+				aria-atomic="true"
+			>
+				<?php
+				printf(
+					/* translators: 1: visible activity count, 2: total activity count. */
+					esc_html__( 'Showing %1$d of %2$d activities', 'pasat' ),
+					count( $pasat_activities ),
+					count( $pasat_activities )
+				);
+				?>
+			</p>
 		</div>
 	<?php endif; ?>
 	<?php if ( $pasat_board ) : ?>
@@ -273,7 +293,7 @@ $pasat_board_status = static function ( array $pasat_activity, array $pasat_capa
 		</div>
 	<?php endif; ?>
 	<?php if ( ! $pasat_board && count( $pasat_activities ) > 5 ) : ?>
-		<p class="pasat-empty pasat-activity-list__no-results" data-pasat-filter-empty hidden><?php esc_html_e( 'No activities match those filters.', 'pasat' ); ?></p>
+		<p class="pasat-empty pasat-activity-list__no-results" data-pasat-filter-empty role="status" aria-live="polite" hidden><?php esc_html_e( 'No activities match those filters.', 'pasat' ); ?></p>
 	<?php endif; ?>
 	<?php if ( ! $pasat_board && ! $pasat_activities ) : ?>
 		<p class="pasat-empty"><?php esc_html_e( 'No public activities are currently available.', 'pasat' ); ?></p>

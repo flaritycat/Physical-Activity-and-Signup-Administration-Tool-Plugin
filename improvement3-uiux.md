@@ -313,7 +313,7 @@ Acceptance criteria:
 3. Redesign signup form and notices.
 4. Redesign venue map/cards and map behavior.
 5. Improve my-signups, membership, and badges presentation. Completed in `0.1.8`.
-6. Add accessibility polish and responsive checks. Continued in `0.1.12`; contrast checks are automated, remaining work is keyboard, screen-reader, and cross-theme checks.
+6. Add accessibility polish and responsive checks. Continued in `0.1.13`; contrast checks are automated and the first keyboard fixes are in place, remaining work is manual screen-reader, cross-theme, and follow-up keyboard checks.
 7. Redesign poster PDFs and QR print workflow. Mostly completed in `0.1.7`; keep visual QA and ZIP manifest refinements.
 8. Clean up admin dashboard and key admin pages.
 9. Improve activity board display/kiosk readability and refresh feedback. Completed in `0.1.9`.
